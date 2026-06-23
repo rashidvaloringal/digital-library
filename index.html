@@ -241,7 +241,7 @@
     <div class="spinner"></div>
     <div class="status" id="loadStatus">📚 ഡിജിറ്റൽ ഗ്രന്ഥശേഖരം ലോഡ് ചെയ്യുന്നു...</div>
     <div class="sub-status" id="loadSubStatus"></div>
-    <div id="manualInjectControls" style="display:none; text-align:center; margin-top:15px; gap:10px;">
+    <div id="manualInjectControls" style="display:block; text-align:center; margin-top:15px; gap:10px;">
       <button class="import-btn" onclick="document.getElementById('masterFileInput').click()">
         <i class="fas fa-file-code"></i> 1. Import Setup (books.json)
       </button>
@@ -249,7 +249,7 @@
     <input type="file" id="masterFileInput" accept=".json" style="display:none;" onchange="handleMasterUpload(event)">
   </div>
 
-  <audio id="silentAudio" loop src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA=="></audio>
+  <audio id="silentAudio" loop playsinline src="https://raw.githubusercontent.com/anars/blank-audio/master/10-minutes-of-silence.mp3"></audio>
   <audio id="ambRain" loop src="https://assets.mixkit.co/active_storage/sfx/2433/2433-84.wav"></audio>
   <audio id="ambWind" loop src="https://assets.mixkit.co/active_storage/sfx/2432/2432-84.wav"></audio>
   <audio id="ambNasheed" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
@@ -494,9 +494,8 @@
     let partMap = {};
     let audioProgressInterval = null;
     
-    // TOC Drill-down state
     let tocTree = [];
-    let tocPath = []; // Array of objects { title: string, nodes: array }
+    let tocPath = []; 
 
     function openDB() {
       return new Promise((resolve, reject) => {
@@ -584,16 +583,15 @@
     }
 
     function showImportScreen() {
-      document.getElementById('loadStatus').textContent = '📂 books.json മാസ്റ്റർ ലിസ്റ്റ് കണ്ടെത്താനായില്ല';
+      document.getElementById('loadStatus').textContent = '📂 books.json മാസ്റ്റർ ലിസ്റ്റ് ഇൻജെക്ട് ചെയ്യുക';
       document.getElementById('manualInjectControls').style.display = 'block';
     }
 
     function populateInjectorOptions() {
       const select = document.getElementById('injectorTargetBookSelect'); if(!select) return;
-      select.innerHTML = STATE.books.map(b => `<option value="${b.id}">${b.titleMl} (${b.id})</option>`).join('');
+      select.innerHTML = STATE.books.map(b => `<option value="${b.id}">${b.titleMl || b.title} (${b.id})</option>`).join('');
     }
 
-    /* Strict Rule: Only accept books.json */
     async function handleMasterUpload(e) {
       const file = e.target.files[0]; if (!file) return;
       if (file.name !== 'books.json') { alert("books.json ഫയൽ മാത്രമേ മാസ്റ്റർ ഫയൽ ആയി അപ്‌ലോഡ് ചെയ്യാൻ പാടുള്ളൂ!"); return; }
@@ -608,7 +606,6 @@
       } catch(err) { alert("Invalid JSON file"); }
     }
 
-    // MULTIPLE PARTS CHUNKS BULK INJECTOR
     async function handleBulkPartsUpload(e) {
       const files = e.target.files; if (!files.length) return;
       const targetBookId = document.getElementById('injectorTargetBookSelect').value;
@@ -647,13 +644,11 @@
         let plainEn = en.replace(/<\/?[^>]+(>|$)/g, "").trim();
         let uniqueId = bookId + "_bk_" + id;
         
-        // H ടാഗ് ഡിറ്റക്ഷൻ ലോജിക്
         let hMatch = ar.match(/<(h[1-6])[^>]*>(.*?)<\/\1>/i);
         let isHead = !!hMatch;
         let headingAr = hMatch ? hMatch[2].replace(/<[^>]+>/g, "").trim() : "";
         let hTagLevel = hMatch ? hMatch[1].toLowerCase() : "";
 
-        // JSON id കൃത്യമായി സംരക്ഷിക്കുന്നു
         list.push({
           id: id, rowId: id, sheetId: id, uid: uniqueId, part: part, page: page,
           arStr: ar, mlStr: ml, enStr: en, isHead: isHead, headingAr: headingAr,
@@ -754,7 +749,6 @@
     function compileBookCollections(list, bookId) {
       STATE.data = list; STATE.totalPages = list.length; 
       
-      // RESUME READING: Load stored exact state
       STATE.currentPage = parseInt(localStorage.getItem(bookId + '_index')) || 0;
       STATE.charOffset = parseInt(localStorage.getItem(bookId + '_offset')) || 0;
       if (STATE.currentPage >= STATE.totalPages) STATE.currentPage = 0;
@@ -787,7 +781,6 @@
       localStorage.setItem(STATE.currentBookId + '_offset', STATE.charOffset);
     }
 
-    // Uninterrupted Audio: Visual ൽ നിന്ന് മാറുമ്പോൾ ഓഡിയോ കട്ട് ആവാതിരിക്കാൻ
     function switchViewportTab(mode) {
       STATE.mode = mode;
       document.getElementById('ebookView').style.display = mode === 'ebook' ? 'block' : 'none';
@@ -800,10 +793,8 @@
         document.getElementById('visualMode').classList.add('show');
         updateVisualChunk(); applyVisualBg();
       } else {
-        // വീഡിയോ മാത്രം നിർത്തുക, ശബ്ദം തുടരും
         document.getElementById('visualMode').classList.remove('show');
         document.getElementById('visualVideo').pause();
-        // iframe src ക്ലിയർ ചെയ്യാതിരിക്കുകയാണെങ്കിൽ മെയിൻ ത്രെഡ് ബ്ലോക്ക് ചെയ്യില്ല, എന്നാലും മെമ്മറിക്കായി ഹിഡൻ ആക്കുക.
         renderPage();
       }
     }
@@ -812,7 +803,6 @@
       const menu = document.getElementById('partSelectMenu'); if(!menu) return;
       const parts = Object.keys(partMap).sort((a, b) => parseInt(a) - parseInt(b));
       
-      // സെലക്ട് ചെയ്ത ഭാഗം മെനുവിൽ അപ്ഡേറ്റ് ചെയ്യുക
       let activePart = STATE.data[STATE.currentPage]?.part || parts[0];
       STATE.currentPart = activePart;
       
@@ -841,7 +831,6 @@
       document.getElementById('miniTitle').textContent = (row.mlPure || '').substring(0, 40) + '...';
       document.getElementById('miniProgress').textContent = `ഭാഗം ${row.part} - പേജ് ${row.page}`;
       
-      // Update part dropdown silently if part changed via pagination
       const menu = document.getElementById('partSelectMenu');
       if (menu && menu.value !== row.part) { menu.value = row.part; STATE.currentPart = row.part; }
 
@@ -870,7 +859,7 @@
     }
 
     /* =======================================================================
-       STABLE MEDIA VOICE ENGINE
+       STABLE MEDIA VOICE ENGINE WITH SEAMLESS BACKGROUND TRICK
        ======================================================================= */
     function setupVoices() {
       systemVoices = synth.getVoices();
@@ -883,15 +872,14 @@
     }
 
     function togglePlay() {
-      // മീഡിയ സെഷൻ സിൻക്രോണൈസ് ചെയ്യാൻ സൈലൻ്റ് ട്രാക്ക് ഇവിടെ തന്നെ എനേബിൾ ചെയ്യുക
-      document.getElementById('silentAudio').play().catch(()=>{});
-
       if (STATE.playing) {
         synth.pause(); STATE.playing = false; updatePlayIcon();
-        document.getElementById('silentAudio').pause(); handleAmbient();
+        document.getElementById('silentAudio').getAnimations(); 
+        handleAmbient();
       } else {
         if (synth.paused) { 
           synth.resume(); STATE.playing = true; updatePlayIcon(); handleAmbient(); 
+          document.getElementById('silentAudio').play().catch(()=>{});
         } else { STATE.playing = true; updatePlayIcon(); playAudioLine(); }
       }
     }
@@ -928,7 +916,10 @@
       }, 100);
 
       currentUtterance.onstart = () => {
-        document.getElementById('silentAudio').play().catch(()=>{}); handleAmbient(); updateMediaSessionMeta();
+        // പശ്ചാത്തലത്തിൽ മൊബൈൽ സ്ലീപ്പ് മോഡിലേക്ക് പോകാതിരിക്കാൻ 10 മിനിറ്റ് സൈലന്റ് ഓഡിയോ പ്ലേ ചെയ്യുന്നു
+        document.getElementById('silentAudio').play().catch(()=>{}); 
+        handleAmbient(); 
+        updateMediaSessionMeta();
       };
       
       currentUtterance.onboundary = (e) => {
@@ -951,7 +942,9 @@
       if (audioProgressInterval) clearInterval(audioProgressInterval);
       document.getElementById('audioProgressBar').style.width = '0%';
       document.getElementById('visProgressBar').style.width = '0%';
-      document.getElementById('silentAudio').pause(); handleAmbient(); syncHighlights();
+      document.getElementById('silentAudio').pause(); 
+      handleAmbient(); 
+      syncHighlights();
     }
 
     function updatePlayIcon() {
@@ -1033,7 +1026,6 @@
       const youtubeEl = document.getElementById('visualYoutube');
       let videoId = extractYoutubeId(ytInput);
 
-      // Error 153/150 Fix: Added playsinline, full origin and correct YT API Parameters
       if (videoId) {
         videoEl.style.display = 'none'; videoEl.pause(); youtubeEl.style.display = 'block';
         youtubeEl.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&playsinline=1&showinfo=0&rel=0`;
@@ -1098,7 +1090,6 @@
                 else currentPart.children.push(node);
             }
         } else if (index % 5 === 0 || index === STATE.currentPage || index === 0 || index === STATE.data.length - 1) {
-            // Push regular reading pages inside the deepest available parent
             let node = { type: 'page', title: `വായന - പേജ് ${row.page}`, subtitle: row.mlPure.substring(0, 20) + "...", index: index, children: [], page: row.page, raw: row };
             if (currentH2) currentH2.children.push(node);
             else if (currentH1) currentH1.children.push(node);
