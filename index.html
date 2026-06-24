@@ -31,6 +31,13 @@
       --mini-player: 65px;
       --font-scale: 18px;
       --align-mode: justify;
+      /* Font color defaults */
+      --ar-color: #1a5f7a;
+      --ml-color: #2c3e50;
+      --en-color: #7f8c8d;
+      /* Text shadow for visual mode */
+      --text-shadow-color: rgba(0,0,0,0.9);
+      --text-shadow-blur: 8px;
     }
 
     [data-theme="dark"] {
@@ -38,12 +45,18 @@
       --text-dark: #f8fafc; --text-muted: #94a3b8;
       --primary: #bb86fc; --primary-dark: #9c27b0;
       --primary-light: rgba(187,134,252,0.15); --border: #334155;
+      --ar-color: #81d4fa;
+      --ml-color: #e2e8f0;
+      --en-color: #94a3b8;
     }
 
     [data-theme="sepia"] {
       --bg: #e2d9c8; --surface: #f4ecd8; --card-bg: #f4ecd8;
       --text-dark: #5c4b37; --text-muted: #8c7a65;
       --primary: #d97706; --primary-dark: #b45309; --border: #d6cbb5;
+      --ar-color: #7a4a1a;
+      --ml-color: #5c4b37;
+      --en-color: #8c7a65;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -66,7 +79,6 @@
     .spinner { border: 4px solid var(--border); border-top: 4px solid var(--primary-green); border-radius: 50%; width: 45px; height: 45px; animation: spin 0.8s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .status { font-size: 16px; font-weight: bold; color: var(--primary-green); }
-    .sub-status { font-size: 13px; color: var(--text-muted); margin-top: 5px; }
     .import-btn { padding: 12px 30px; background: var(--primary-green); color: white; border-radius: 10px; font-weight: bold; transition: 0.2s; cursor: pointer;}
     .import-btn:active { transform: scale(0.95); }
 
@@ -81,8 +93,8 @@
     .home-title { font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
     .top-bar .actions i { cursor: pointer; padding: 5px; font-size: 18px; margin-left: 10px; }
     
-    .tabs { display: flex; justify-content: space-around; background: var(--primary-green); padding-bottom: 5px; }
-    .tab-item { color: #bdc3c7; padding: 10px; cursor: pointer; font-weight: bold; font-size: 14px; text-transform: uppercase; border-bottom: 3px solid transparent; transition: 0.3s; }
+    .tabs { display: flex; justify-content: space-around; background: var(--primary-green); padding-bottom: 5px; overflow-x: auto; }
+    .tab-item { color: #bdc3c7; padding: 10px 15px; cursor: pointer; font-weight: bold; font-size: 13px; text-transform: uppercase; border-bottom: 3px solid transparent; transition: 0.3s; white-space: nowrap; flex-shrink: 0; }
     .tab-item.active { color: white; border-bottom-color: white; }
 
     .search-bar { padding: 10px 0; display: none; }
@@ -132,15 +144,24 @@
     .reader-actions .active-bm { color: #f59e0b; text-shadow: 0 0 10px rgba(245,158,11,0.5); }
 
     .reader-content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 90px; }
-    .reader-part-dropdown-container { display: flex; justify-content: center; margin-bottom: 15px; }
-    .reader-part-select { width: 100%; max-width: 400px; padding: 10px; border-radius: 8px; border: 2px solid var(--border); background: var(--surface); color: var(--text-dark); font-weight: bold; font-family: var(--font-ml); }
+    /* Removed .reader-part-dropdown-container - Part dropdown removed from ebook view */
 
-    .reader-page-card { background: var(--surface); padding: 25px 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); min-height: 50vh; }
+    .reader-page-card { background: var(--surface); padding: 25px 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); min-height: 50vh; position: relative; }
     .head-badge { display: table; margin: 0 auto 16px auto; padding: 6px 20px; background: var(--primary-light); color: var(--primary-dark); font-weight: 700; border-radius: 50px; font-size: 13px; border: 1px solid var(--primary); }
-    .ar-content { font-family: var(--font-ar); font-size: calc(var(--font-scale) + 6px); color: #1a5f7a; direction: rtl; line-height: 2.2; font-weight: 700; text-align: right; margin-bottom: 16px; }
-    [data-theme="dark"] .ar-content { color: #81d4fa; }
-    .ml-content { font-size: var(--font-scale); line-height: 2.1; margin-bottom: 12px; }
-    .en-content { font-size: calc(var(--font-scale) - 1px); line-height: 1.9; color: var(--text-muted); font-style: italic; border-top: 1px dashed var(--border); padding-top: 15px; }
+    
+    /* Language-specific font and color settings */
+    .ar-content { font-family: var(--font-ar); font-size: calc(var(--font-scale) + 6px); color: var(--ar-color); direction: rtl; line-height: 2.2; font-weight: 700; text-align: right; margin-bottom: 16px; }
+    .ml-content { font-family: var(--font-ml); font-size: var(--font-scale); color: var(--ml-color); line-height: 2.1; margin-bottom: 12px; }
+    .en-content { font-family: var(--font-ml); font-size: calc(var(--font-scale) - 1px); color: var(--en-color); line-height: 1.9; font-style: italic; border-top: 1px dashed var(--border); padding-top: 15px; }
+    
+    /* Touch swipe for page turning */
+    .swipe-area { position: absolute; top: 0; bottom: 0; width: 30%; z-index: 5; cursor: pointer; }
+    .swipe-left { left: 0; }
+    .swipe-right { right: 0; }
+    .swipe-hint { position: absolute; top: 50%; transform: translateY(-50%); opacity: 0; transition: opacity 0.3s; background: rgba(0,0,0,0.05); padding: 20px 10px; border-radius: 8px; pointer-events: none; }
+    .swipe-area:hover .swipe-hint { opacity: 0.3; }
+    .swipe-left .swipe-hint { left: 10px; }
+    .swipe-right .swipe-hint { right: 10px; }
     
     .word-token { cursor: pointer; transition: 0.15s; padding: 0 2px; border-radius: 4px; display: inline-block; }
     .word-hl { background: #facc15 !important; color: #000 !important; font-weight: bold; border-radius: 4px; box-shadow: 0 2px 8px rgba(250,204,21,0.5); }
@@ -183,16 +204,22 @@
     .visual-video-wrapper iframe, .visual-video-wrapper video { width: 100vw; height: 100vh; object-fit: cover; pointer-events: none; border: none; }
     .visual-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0); z-index: 2; }
     
-    .visual-content { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 120px 25px; color: white; text-align: center; }
-    .vis-ar { font-family: var(--font-ar); font-size: 34px; direction: rtl; line-height: 2.2; margin-bottom: 20px; text-shadow: 0 2px 25px rgba(0,0,0,1); color: #81d4fa; }
-    .vis-ml { font-size: 24px; line-height: 2; text-shadow: 0 2px 25px rgba(0,0,0,1); margin-bottom: 15px; }
-    .vis-en { font-size: 20px; font-style: italic; opacity: 0.85; text-shadow: 0 2px 25px rgba(0,0,0,1); }
+    .visual-content { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 120px 25px; color: white; text-align: center; pointer-events: none; }
+    .vis-ar { font-family: var(--font-ar); font-size: 34px; direction: rtl; line-height: 2.2; margin-bottom: 20px; color: #81d4fa; text-shadow: 0 2px var(--text-shadow-blur) var(--text-shadow-color), 0 0 20px var(--text-shadow-color); }
+    .vis-ml { font-size: 24px; line-height: 2; text-shadow: 0 2px var(--text-shadow-blur) var(--text-shadow-color), 0 0 20px var(--text-shadow-color); margin-bottom: 15px; color: white; }
+    .vis-en { font-size: 20px; font-style: italic; opacity: 0.85; text-shadow: 0 2px var(--text-shadow-blur) var(--text-shadow-color), 0 0 20px var(--text-shadow-color); color: #ddd; }
 
     .visual-controls { position: absolute; top: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 30px; z-index: 20; font-size: 26px; color: white; text-shadow: 0 2px 15px rgba(0,0,0,0.9); align-items: center; background: rgba(0,0,0,0.6); padding: 8px 25px; border-radius: 50px; backdrop-filter: blur(5px); }
     .vis-play { font-size: 36px; color: #38bdf8; }
     .vis-close-btn { color: #ef4444; }
     .visual-progress { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 500px; height: 3px; background: rgba(255,255,255,0.3); }
     .vis-progress-bar { height: 100%; background: #38bdf8; width: 0%; }
+
+    /* Fullscreen zoom for visual */
+    .visual-mode.fullscreen .visual-video-wrapper iframe,
+    .visual-mode.fullscreen .visual-video-wrapper video {
+      transform: scale(1.3);
+    }
 
     /* ================================================================
        MODALS & FIXED DRAWERS
@@ -203,7 +230,6 @@
     .modal-box { position: fixed; bottom: -100%; left: 0; width: 100%; max-height: 85vh; background: var(--surface); z-index: 3001; border-radius: 20px 20px 0 0; transition: bottom 0.3s cubic-bezier(0.2,0.8,0.2,1); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -10px 40px rgba(0,0,0,0.2); }
     .modal-box.show { bottom: 0; }
     
-    /* Header Freeze (Sticky) */
     .modal-header { flex-shrink: 0; background: var(--surface); display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--border); z-index: 10; color: var(--text-dark); font-weight: bold; }
     .modal-close { font-size: 22px; cursor: pointer; background: none; border: none; color: var(--text-dark); }
     .modal-body { flex: 1; overflow-y: auto; padding: 20px; }
@@ -214,9 +240,14 @@
     .setting-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary-green); }
     .setting-group select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dark); font-family: var(--font-ml); }
     .setting-group input[type="range"] { width: 100%; accent-color: var(--primary-green); cursor: pointer; }
+    .setting-group input[type="color"] { width: 40px; height: 40px; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; background: transparent; padding: 2px; }
     .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .theme-btn { padding: 10px; border: 2px solid var(--border); border-radius: 8px; text-align: center; font-weight: bold; font-size: 13px; cursor: pointer; background: var(--bg); color: var(--text-dark);}
     .theme-btn.active { border-color: var(--primary-green); background: var(--primary-light); color: var(--primary-green); }
+
+    /* Font family selectors per language */
+    .font-select-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .font-select-row select { flex: 1; min-width: 120px; padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dark); }
 
     /* ================================================================
        ADVANCED BREADCRUMB DRILL-DOWN TOC
@@ -234,6 +265,15 @@
 
     .import-zone { text-align: center; padding: 10px 20px; }
     .import-input-field { width: 100%; padding: 10px; margin-top: 5px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dark); }
+
+    /* Category dropdown for filtering */
+    .category-filter { display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 0; }
+    .category-filter .cat-btn { padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dark); font-size: 12px; cursor: pointer; transition: 0.2s; }
+    .category-filter .cat-btn.active { background: var(--primary-green); color: white; border-color: var(--primary-green); }
+    .category-filter .cat-btn:active { transform: scale(0.95); }
+
+    /* Random background toggle */
+    .random-toggle { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--bg); border-radius: 8px; border: 1px solid var(--border); }
   </style>
 </head>
 <body>
@@ -242,7 +282,7 @@
     <div class="spinner"></div>
     <div class="status" id="loadStatus">📚 ഡിജിറ്റൽ ഗ്രന്ഥശേഖരം ലോഡ് ചെയ്യുന്നു...</div>
     <div class="sub-status" id="loadSubStatus"></div>
-    <div id="manualInjectControls" style="display:none; text-align:center; margin-top:15px; gap:10px;">
+    <div id="manualInjectControls" style="display:block; text-align:center; margin-top:15px; gap:10px;">
       <button class="import-btn" onclick="document.getElementById('masterFileInput').click()">
         <i class="fas fa-file-code"></i> 1. Import Setup (books.json)
       </button>
@@ -250,12 +290,9 @@
     <input type="file" id="masterFileInput" accept=".json" style="display:none;" onchange="handleMasterUpload(event)">
   </div>
 
-  <!-- 🔥 SILENT AUDIO TRICK: 10 മിനിറ്റ് നിശബ്ദ MP3 - ബാഗ്രൗണ്ട് വോയിസിനായി -->
-  <audio id="silentAudio" loop playsinline>
-    <source src="https://raw.githubusercontent.com/anars/blank-audio/master/10-minutes-of-silence.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="ambRain" loop src="https://actions.google.com/sounds/v1/weather/rain_heavy_loud.ogg"></audio>
-  <audio id="ambWind" loop src="https://actions.google.com/sounds/v1/weather/wind_constant.ogg"></audio>
+  <audio id="silentAudio" loop playsinline src="https://raw.githubusercontent.com/anars/blank-audio/master/10-minutes-of-silence.mp3"></audio>
+  <audio id="ambRain" loop src="https://assets.mixkit.co/active_storage/sfx/2433/2433-84.wav"></audio>
+  <audio id="ambWind" loop src="https://assets.mixkit.co/active_storage/sfx/2432/2432-84.wav"></audio>
   <audio id="ambNasheed" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 
   <div id="homeView">
@@ -270,11 +307,13 @@
       <div class="search-bar" id="searchBar">
         <input type="text" id="searchInput" placeholder="ഗ്രന്ഥങ്ങൾ തിരയുക (Search books...)" oninput="searchBooks(this.value)">
       </div>
-      <div class="tabs">
+      <div class="tabs" id="mainTabs">
         <div class="tab-item active" id="tab-all" onclick="filterShelf('all')">All Books</div>
         <div class="tab-item" id="tab-cats" onclick="filterShelf('categories')">Categories</div>
         <div class="tab-item" id="tab-auths" onclick="filterShelf('authors')">Authors</div>
       </div>
+      <!-- Category filter dropdown (expanded) -->
+      <div class="category-filter" id="categoryFilter" style="display:none; padding-top:10px;"></div>
     </header>
 
     <div class="container">
@@ -300,12 +339,18 @@
     </header>
 
     <div class="reader-content" id="readerContent">
-      <div class="reader-part-dropdown-container">
-        <select id="partSelectMenu" class="reader-part-select" onchange="switchPart(this.value)"></select>
-      </div>
+      <!-- Part dropdown removed from ebook view as requested -->
 
       <div id="ebookView">
-        <div class="reader-page-card" id="readerPageCard"></div>
+        <div class="reader-page-card" id="readerPageCard">
+          <!-- Swipe areas for touch page turning -->
+          <div class="swipe-area swipe-left" onclick="changePage(-1)">
+            <div class="swipe-hint"><i class="fas fa-chevron-left"></i></div>
+          </div>
+          <div class="swipe-area swipe-right" onclick="changePage(1)">
+            <div class="swipe-hint"><i class="fas fa-chevron-right"></i></div>
+          </div>
+        </div>
         <div class="reader-pagination">
           <button onclick="changePage(-1)"><i class="fas fa-chevron-left"></i> Prev</button>
           <span class="page-num" id="readerPageNum">0 / 0</span>
@@ -368,6 +413,7 @@
       <i class="fas fa-play vis-play" id="visPlayBtn" onclick="toggleVisualPlay()"></i>
       <i class="fas fa-forward-step" onclick="changeVisualPage(1)"></i>
       <i class="fas fa-stop" onclick="stopVisualAudio()"></i>
+      <i class="fas fa-arrows-alt" onclick="toggleVisualFullscreen()" title="Fullscreen Zoom"></i>
       <i class="fas fa-times-circle vis-close-btn" onclick="closeVisualMode()"></i>
     </div>
 
@@ -401,6 +447,49 @@
         <label class="setting-label">📏 Speech Speed Velocity</label>
         <input type="range" id="optSpeed" min="0.5" max="1.5" step="0.1" value="1.0" onchange="applyAudioSettings(true)">
       </div>
+      
+      <!-- Font settings per language -->
+      <div class="setting-group">
+        <label class="setting-label">🔤 Font Family & Color per Language</label>
+        <div class="font-select-row">
+          <select id="fontAr" onchange="applyFontSettings()" style="flex:1;">
+            <option value="Amiri">Amiri</option>
+            <option value="Traditional Arabic">Traditional Arabic</option>
+            <option value="Arial">Arial</option>
+          </select>
+          <input type="color" id="colorAr" value="#1a5f7a" onchange="applyFontSettings()">
+          <label style="font-size:11px;">العربية</label>
+        </div>
+        <div class="font-select-row" style="margin-top:5px;">
+          <select id="fontMl" onchange="applyFontSettings()" style="flex:1;">
+            <option value="Manjari">Manjari</option>
+            <option value="Noto Sans Malayalam">Noto Sans Malayalam</option>
+            <option value="Arial">Arial</option>
+          </select>
+          <input type="color" id="colorMl" value="#2c3e50" onchange="applyFontSettings()">
+          <label style="font-size:11px;">മലയാളം</label>
+        </div>
+        <div class="font-select-row" style="margin-top:5px;">
+          <select id="fontEn" onchange="applyFontSettings()" style="flex:1;">
+            <option value="Manjari">Manjari</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Arial">Arial</option>
+          </select>
+          <input type="color" id="colorEn" value="#7f8c8d" onchange="applyFontSettings()">
+          <label style="font-size:11px;">English</label>
+        </div>
+      </div>
+
+      <!-- Visual text shadow color -->
+      <div class="setting-group">
+        <label class="setting-label">🎨 Visual Mode Text Shadow Color</label>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <input type="color" id="visShadowColor" value="#000000" onchange="applyVisualShadow()">
+          <input type="range" id="visShadowBlur" min="2" max="20" value="8" onchange="applyVisualShadow()" style="flex:1;">
+          <label style="font-size:12px; min-width:40px;" id="visShadowLabel">8px</label>
+        </div>
+      </div>
+
       <div class="setting-group">
         <label class="setting-label">📖 Display Core Layers</label>
         <div class="setting-row"><span>അറബിക് വരികൾ (Arabic)</span><input type="checkbox" id="optShowAr" checked onchange="renderAllViews()"></div>
@@ -432,10 +521,36 @@
         <div class="setting-row"><span><b>🔄 Auto Page Navigation Link</b></span><input type="checkbox" id="optAutoNext" checked></div>
         <div class="setting-row"><span><b>🔊 Click Token to Speak Word</b></span><input type="checkbox" id="optTouchSpeak" checked></div>
       </div>
+
+      <!-- Visual background source -->
       <div class="setting-group">
-        <label class="setting-label">🎬 YouTube Reel Stream ID/URL</label>
-        <input type="text" id="optYoutubeId" placeholder="e.g. dQw4w9WgXcQ അല്ലെങ്കിൽ പൂർണ്ണ ലിങ്ക്" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text-dark);">
-        <button class="import-btn" style="width:100%; margin-top:5px; padding:8px;" onclick="applyVisualBg()">Update Video Hook</button>
+        <label class="setting-label">🎬 Visual Background Source</label>
+        <select id="optBgSource" onchange="applyVisualBg()">
+          <option value="youtube">YouTube (URL/ID)</option>
+          <option value="folder">Folder Assets (Images/Audio)</option>
+        </select>
+        <div id="youtubeSettings">
+          <input type="text" id="optYoutubeId" placeholder="e.g. dQw4w9WgXcQ അല്ലെങ്കിൽ പൂർണ്ണ ലിങ്ക്" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text-dark); margin-top:5px;">
+        </div>
+        <div id="folderSettings" style="display:none; margin-top:5px;">
+          <input type="file" id="folderBgInput" webkitdirectory directory multiple accept="image/*,audio/*" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text-dark);" onchange="handleFolderAssets(event)">
+          <div id="folderAssetList" style="margin-top:8px; max-height:100px; overflow-y:auto; font-size:12px; color:var(--text-muted);"></div>
+          <div class="random-toggle" style="margin-top:8px;">
+            <span>🎲 Random Cycle</span>
+            <input type="checkbox" id="optRandomBg" onchange="applyVisualBg()">
+            <span style="font-size:11px;">(auto-rotate every 10s)</span>
+          </div>
+          <select id="optSelectedAsset" style="margin-top:5px; width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text-dark);" onchange="applyVisualBg()"></select>
+        </div>
+        <button class="import-btn" style="width:100%; margin-top:5px; padding:8px;" onclick="applyVisualBg()">Update Background</button>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">🔍 Fullscreen Zoom</label>
+        <div class="setting-row">
+          <span>Enable Zoom in Visual Mode</span>
+          <input type="checkbox" id="optFullscreenZoom" checked onchange="applyVisualZoom()">
+        </div>
       </div>
     </div>
   </div>
@@ -489,7 +604,9 @@
       totalPages: 0, data: [], bookmarks: [], playing: false, theme: 'light',
       mode: 'ebook', fontScale: 18, showAr: true, showMl: true, showEn: true,
       ttsLang: 'ml-IN', speed: 1.0, autoNext: true, touchSpeak: true,
-      currentBookId: null, visualYoutubeId: '', charOffset: 0, shelfFilter: 'all'
+      currentBookId: null, visualYoutubeId: '', charOffset: 0, shelfFilter: 'all',
+      folderAssets: [], currentAssetIndex: 0, randomBg: false, bgSource: 'youtube',
+      fullscreenZoom: true
     };
 
     let systemVoices = [];
@@ -497,10 +614,11 @@
     let currentUtterance = null;
     let partMap = {};
     let audioProgressInterval = null;
+    let randomBgInterval = null;
     
-    // TOC Drill-down state
     let tocTree = [];
-    let tocPath = []; // Array of objects { title: string, nodes: array }
+    let tocPath = []; 
+    let isClosingReader = false;
 
     function openDB() {
       return new Promise((resolve, reject) => {
@@ -588,8 +706,7 @@
     }
 
     function showImportScreen() {
-      document.getElementById('loadStatus').textContent = '📂 books.json മാസ്റ്റർ ലിസ്റ്റ് കണ്ടെത്താനായില്ല';
-      document.getElementById('loadSubStatus').textContent = 'ദയവായി books.json ഫയൽ അപ്‌ലോഡ് ചെയ്യുക';
+      document.getElementById('loadStatus').textContent = '📂 books.json മാസ്റ്റർ ലിസ്റ്റ് ഇൻജെക്ട് ചെയ്യുക';
       document.getElementById('manualInjectControls').style.display = 'block';
     }
 
@@ -598,7 +715,6 @@
       select.innerHTML = STATE.books.map(b => `<option value="${b.id}">${b.titleMl || b.title} (${b.id})</option>`).join('');
     }
 
-    /* Strict Rule: Only accept books.json */
     async function handleMasterUpload(e) {
       const file = e.target.files[0]; if (!file) return;
       if (file.name !== 'books.json') { alert("books.json ഫയൽ മാത്രമേ മാസ്റ്റർ ഫയൽ ആയി അപ്‌ലോഡ് ചെയ്യാൻ പാടുള്ളൂ!"); return; }
@@ -613,7 +729,6 @@
       } catch(err) { alert("Invalid JSON file"); }
     }
 
-    // MULTIPLE PARTS CHUNKS BULK INJECTOR
     async function handleBulkPartsUpload(e) {
       const files = e.target.files; if (!files.length) return;
       const targetBookId = document.getElementById('injectorTargetBookSelect').value;
@@ -652,13 +767,11 @@
         let plainEn = en.replace(/<\/?[^>]+(>|$)/g, "").trim();
         let uniqueId = bookId + "_bk_" + id;
         
-        // H ടാഗ് ഡിറ്റക്ഷൻ ലോജിക്
         let hMatch = ar.match(/<(h[1-6])[^>]*>(.*?)<\/\1>/i);
         let isHead = !!hMatch;
         let headingAr = hMatch ? hMatch[2].replace(/<[^>]+>/g, "").trim() : "";
         let hTagLevel = hMatch ? hMatch[1].toLowerCase() : "";
 
-        // JSON id കൃത്യമായി സംരക്ഷിക്കുന്നു
         list.push({
           id: id, rowId: id, sheetId: id, uid: uniqueId, part: part, page: page,
           arStr: ar, mlStr: ml, enStr: en, isHead: isHead, headingAr: headingAr,
@@ -690,12 +803,41 @@
             <button class="open-btn" onclick="event.stopPropagation();openBook('${book.id}')">Open</button>
           </div>
         </div>`).join("");
+      
+      // Update category filter
+      updateCategoryFilter(books);
+    }
+
+    function updateCategoryFilter(books) {
+      const container = document.getElementById('categoryFilter');
+      if (!container) return;
+      
+      const categories = {};
+      books.forEach(b => {
+        const cat = b.lang || b.category || 'General';
+        if (!categories[cat]) categories[cat] = [];
+        categories[cat].push(b);
+      });
+      
+      container.innerHTML = Object.keys(categories).map(cat => 
+        `<button class="cat-btn" onclick="filterByCategory('${cat}')">${cat} (${categories[cat].length})</button>`
+      ).join('');
+    }
+
+    function filterByCategory(category) {
+      const filtered = STATE.books.filter(b => (b.lang || b.category || 'General') === category);
+      renderBooks(filtered);
+      document.querySelectorAll('.cat-btn').forEach(el => el.classList.remove('active'));
+      event.target.classList.add('active');
     }
 
     function filterShelf(type) {
       document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
       document.getElementById('tab-' + (type === 'all' ? 'all' : (type === 'categories' ? 'cats' : 'auths'))).classList.add('active');
       STATE.shelfFilter = type;
+      
+      // Show category filter only for categories tab
+      document.getElementById('categoryFilter').style.display = type === 'categories' ? 'flex' : 'none';
       
       if(type === 'all') {
         renderBooks(STATE.books);
@@ -759,7 +901,6 @@
     function compileBookCollections(list, bookId) {
       STATE.data = list; STATE.totalPages = list.length; 
       
-      // RESUME READING: Load stored exact state
       STATE.currentPage = parseInt(localStorage.getItem(bookId + '_index')) || 0;
       STATE.charOffset = parseInt(localStorage.getItem(bookId + '_offset')) || 0;
       if (STATE.currentPage >= STATE.totalPages) STATE.currentPage = 0;
@@ -768,19 +909,23 @@
     }
 
     function openReader() {
+      isClosingReader = false;
       document.getElementById('readerView').classList.add('show');
       document.getElementById('homeView').style.display = 'none';
       document.getElementById('readerTitle').textContent = STATE.currentBook.titleMl || STATE.currentBook.title;
       partMap = {};
       STATE.data.forEach(item => { if (!partMap[item.part]) partMap[item.part] = []; partMap[item.part].push(item); });
       
-      renderPartDropdown(); renderPage(); updateBookmarkUI();
+      renderPage(); updateBookmarkUI();
       document.getElementById('miniPlayer').classList.add('show');
       switchViewportTab('ebook');
     }
 
     function closeReader() {
-      stopAudio(); document.getElementById('readerView').classList.remove('show');
+      isClosingReader = true;
+      // Don't stop audio - keep playing even when going home
+      // stopAudio(); - removed
+      document.getElementById('readerView').classList.remove('show');
       document.getElementById('homeView').style.display = 'flex';
       document.getElementById('miniPlayer').classList.remove('show'); 
       closeVisualMode();
@@ -792,7 +937,6 @@
       localStorage.setItem(STATE.currentBookId + '_offset', STATE.charOffset);
     }
 
-    // Uninterrupted Audio: Visual ൽ നിന്ന് മാറുമ്പോൾ ഓഡിയോ കട്ട് ആവാതിരിക്കാൻ
     function switchViewportTab(mode) {
       STATE.mode = mode;
       document.getElementById('ebookView').style.display = mode === 'ebook' ? 'block' : 'none';
@@ -805,29 +949,9 @@
         document.getElementById('visualMode').classList.add('show');
         updateVisualChunk(); applyVisualBg();
       } else {
-        // വീഡിയോ മാത്രം നിർത്തുക, ശബ്ദം തുടരും
         document.getElementById('visualMode').classList.remove('show');
         document.getElementById('visualVideo').pause();
         renderPage();
-      }
-    }
-
-    function renderPartDropdown() {
-      const menu = document.getElementById('partSelectMenu'); if(!menu) return;
-      const parts = Object.keys(partMap).sort((a, b) => parseInt(a) - parseInt(b));
-      
-      // സെലക്ട് ചെയ്ത ഭാഗം മെനുവിൽ അപ്ഡേറ്റ് ചെയ്യുക
-      let activePart = STATE.data[STATE.currentPage]?.part || parts[0];
-      STATE.currentPart = activePart;
-      
-      menu.innerHTML = parts.map(part => `<option value="${part}" ${activePart === part ? 'selected' : ''}>📄 Part / ഭാഗം ${part}</option>`).join('');
-    }
-
-    function switchPart(part) {
-      STATE.currentPart = part; const data = partMap[part];
-      if (data) {
-        const firstIndex = STATE.data.indexOf(data[0]);
-        if (firstIndex !== -1) { STATE.currentPage = firstIndex; STATE.charOffset = 0; saveState(); renderPage(); if(STATE.playing) playAudioLine(); }
       }
     }
 
@@ -840,17 +964,25 @@
       if (STATE.showMl && row.mlStr) html += `<div class="ml-content">${highlightWords(row.mlStr)}</div>`;
       if (STATE.showEn && row.enStr) html += `<div class="en-content">${row.enStr}</div>`;
 
-      document.getElementById('readerPageCard').innerHTML = html;
+      document.getElementById('readerPageCard').innerHTML = 
+        `<div style="position:relative;">${html}
+          <div class="swipe-area swipe-left" onclick="changePage(-1)">
+            <div class="swipe-hint"><i class="fas fa-chevron-left"></i></div>
+          </div>
+          <div class="swipe-area swipe-right" onclick="changePage(1)">
+            <div class="swipe-hint"><i class="fas fa-chevron-right"></i></div>
+          </div>
+        </div>`;
+      
       document.getElementById('readerPageNum').textContent = `${STATE.currentPage + 1} / ${STATE.totalPages}`;
       document.getElementById('miniTitle').textContent = (row.mlPure || '').substring(0, 40) + '...';
       document.getElementById('miniProgress').textContent = `ഭാഗം ${row.part} - പേജ് ${row.page}`;
-      
-      // Update part dropdown silently if part changed via pagination
-      const menu = document.getElementById('partSelectMenu');
-      if (menu && menu.value !== row.part) { menu.value = row.part; STATE.currentPart = row.part; }
 
       updateAudioUI(); syncHighlights();
       if (document.getElementById('visualMode').classList.contains('show')) updateVisualChunk();
+      
+      // Apply font settings
+      applyFontSettings();
     }
 
     function highlightWords(text) {
@@ -874,7 +1006,7 @@
     }
 
     /* =======================================================================
-       🔥 STABLE MEDIA VOICE ENGINE - SILENT AUDIO TRICK ENABLED
+       STABLE MEDIA VOICE ENGINE WITH SEAMLESS BACKGROUND TRICK
        ======================================================================= */
     function setupVoices() {
       systemVoices = synth.getVoices();
@@ -888,25 +1020,14 @@
 
     function togglePlay() {
       if (STATE.playing) {
-        synth.pause(); 
-        STATE.playing = false; 
-        updatePlayIcon();
-        // 🔥 പോസ് ചെയ്യുമ്പോൾ സൈലൻ്റ് ട്രാക്ക് നിർത്തുന്നു
-        document.getElementById('silentAudio').pause(); 
+        synth.pause(); STATE.playing = false; updatePlayIcon();
+        document.getElementById('silentAudio').pause();
         handleAmbient();
       } else {
         if (synth.paused) { 
-          synth.resume(); 
-          STATE.playing = true; 
-          updatePlayIcon(); 
-          // 🔥 റെസ്യൂം ചെയ്യുമ്പോൾ സൈലൻ്റ് ട്രാക്ക് പുനരാരംഭിക്കുന്നു
+          synth.resume(); STATE.playing = true; updatePlayIcon(); handleAmbient(); 
           document.getElementById('silentAudio').play().catch(()=>{});
-          handleAmbient(); 
-        } else { 
-          STATE.playing = true; 
-          updatePlayIcon(); 
-          playAudioLine(); 
-        }
+        } else { STATE.playing = true; updatePlayIcon(); playAudioLine(); }
       }
     }
 
@@ -941,7 +1062,6 @@
         document.getElementById('visProgressBar').style.width = progress + '%';
       }, 100);
 
-      // 🔥 TTS സ്റ്റാർട്ട് ആകുമ്പോൾ സൈലൻ്റ് ട്രാക്ക് ഉറപ്പാക്കുന്നു (ബാഗ്രൗണ്ട് സപ്പോർട്ട്)
       currentUtterance.onstart = () => {
         document.getElementById('silentAudio').play().catch(()=>{}); 
         handleAmbient(); 
@@ -964,15 +1084,10 @@
     }
 
     function stopAudio() {
-      synth.cancel(); 
-      STATE.playing = false; 
-      STATE.charOffset = 0; 
-      saveState(); 
-      updatePlayIcon();
+      synth.cancel(); STATE.playing = false; STATE.charOffset = 0; saveState(); updatePlayIcon();
       if (audioProgressInterval) clearInterval(audioProgressInterval);
       document.getElementById('audioProgressBar').style.width = '0%';
       document.getElementById('visProgressBar').style.width = '0%';
-      // 🔥 സ്റ്റോപ്പ് ചെയ്യുമ്പോൾ സൈലൻ്റ് ട്രാക്ക് നിർത്തുന്നു
       document.getElementById('silentAudio').pause(); 
       handleAmbient(); 
       syncHighlights();
@@ -1004,6 +1119,49 @@
     }
 
     /* =======================================================================
+       FONT & COLOR SETTINGS
+       ======================================================================= */
+    function applyFontSettings() {
+      const fontAr = document.getElementById('fontAr').value;
+      const fontMl = document.getElementById('fontMl').value;
+      const fontEn = document.getElementById('fontEn').value;
+      const colorAr = document.getElementById('colorAr').value;
+      const colorMl = document.getElementById('colorMl').value;
+      const colorEn = document.getElementById('colorEn').value;
+      
+      document.documentElement.style.setProperty('--font-ar', fontAr);
+      document.documentElement.style.setProperty('--font-ml', fontMl);
+      document.documentElement.style.setProperty('--ar-color', colorAr);
+      document.documentElement.style.setProperty('--ml-color', colorMl);
+      document.documentElement.style.setProperty('--en-color', colorEn);
+      
+      // Also apply to visual mode text colors
+      document.querySelector('.vis-ar').style.color = colorAr;
+      document.querySelector('.vis-ml').style.color = colorMl;
+      document.querySelector('.vis-en').style.color = colorEn;
+      
+      // Save preferences
+      localStorage.setItem('font_ar', fontAr);
+      localStorage.setItem('font_ml', fontMl);
+      localStorage.setItem('font_en', fontEn);
+      localStorage.setItem('color_ar', colorAr);
+      localStorage.setItem('color_ml', colorMl);
+      localStorage.setItem('color_en', colorEn);
+      
+      renderPage();
+    }
+
+    function applyVisualShadow() {
+      const color = document.getElementById('visShadowColor').value;
+      const blur = document.getElementById('visShadowBlur').value;
+      document.getElementById('visShadowLabel').textContent = blur + 'px';
+      document.documentElement.style.setProperty('--text-shadow-color', color + 'CC');
+      document.documentElement.style.setProperty('--text-shadow-blur', blur + 'px');
+      localStorage.setItem('vis_shadow_color', color);
+      localStorage.setItem('vis_shadow_blur', blur);
+    }
+
+    /* =======================================================================
        CINEMATIC VISUAL REELS HOOK PIPELINES & YT ERR 153 FIX
        ======================================================================= */
     function openVisualMode() {
@@ -1016,6 +1174,7 @@
       document.getElementById('visualMode').classList.remove('show');
       document.getElementById('visualVideo').pause();
       document.getElementById('visualYoutube').src = '';
+      if (randomBgInterval) clearInterval(randomBgInterval);
       renderPage();
     }
 
@@ -1051,22 +1210,116 @@
     function changeVisualPage(delta) { changePage(delta); }
     function stopVisualAudio() { stopAudio(); }
 
-    function applyVisualBg() {
-      const ytInput = document.getElementById('optYoutubeId').value.trim();
-      const videoEl = document.getElementById('visualVideo');
-      const youtubeEl = document.getElementById('visualYoutube');
-      let videoId = extractYoutubeId(ytInput);
+    function toggleVisualFullscreen() {
+      STATE.fullscreenZoom = !STATE.fullscreenZoom;
+      document.getElementById('visualMode').classList.toggle('fullscreen', STATE.fullscreenZoom);
+      localStorage.setItem('vis_fullscreen', STATE.fullscreenZoom ? 'true' : 'false');
+      applyVisualZoom();
+    }
 
-      // Error 153/150 Fix: Added playsinline, full origin and correct YT API Parameters
-      if (videoId) {
-        videoEl.style.display = 'none'; videoEl.pause(); youtubeEl.style.display = 'block';
-        youtubeEl.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&playsinline=1&showinfo=0&rel=0`;
-      } else {
-        youtubeEl.style.display = 'none'; youtubeEl.src = ''; videoEl.style.display = 'block';
-        videoEl.src = 'https://assets.mixkit.co/videos/preview/mixkit-forest-trees-3524-large.mp4';
-        videoEl.loop = true; videoEl.play().catch(() => {});
+    function applyVisualZoom() {
+      const enabled = document.getElementById('optFullscreenZoom').checked;
+      STATE.fullscreenZoom = enabled;
+      document.getElementById('visualMode').classList.toggle('fullscreen', enabled);
+    }
+
+    function applyVisualBg() {
+      const source = document.getElementById('optBgSource').value;
+      STATE.bgSource = source;
+      
+      document.getElementById('youtubeSettings').style.display = source === 'youtube' ? 'block' : 'none';
+      document.getElementById('folderSettings').style.display = source === 'folder' ? 'block' : 'none';
+      
+      if (source === 'youtube') {
+        const ytInput = document.getElementById('optYoutubeId').value.trim();
+        const videoEl = document.getElementById('visualVideo');
+        const youtubeEl = document.getElementById('visualYoutube');
+        let videoId = extractYoutubeId(ytInput);
+
+        if (videoId && videoId.length === 11) {
+          videoEl.style.display = 'none'; videoEl.pause(); youtubeEl.style.display = 'block';
+          youtubeEl.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&playsinline=1&showinfo=0&rel=0`;
+        } else {
+          youtubeEl.style.display = 'none'; youtubeEl.src = ''; videoEl.style.display = 'block';
+          videoEl.src = 'https://assets.mixkit.co/videos/preview/mixkit-forest-trees-3524-large.mp4';
+          videoEl.loop = true; videoEl.play().catch(() => {});
+        }
+      } else if (source === 'folder') {
+        applyFolderAsset();
       }
       adjustVideoScale();
+    }
+
+    function handleFolderAssets(event) {
+      const files = event.target.files;
+      STATE.folderAssets = [];
+      const assetList = document.getElementById('folderAssetList');
+      const selectEl = document.getElementById('optSelectedAsset');
+      selectEl.innerHTML = '';
+      
+      let images = [], audio = [];
+      for (let file of files) {
+        if (file.type.startsWith('image/')) images.push(file);
+        if (file.type.startsWith('audio/')) audio.push(file);
+      }
+      
+      STATE.folderAssets = { images, audio };
+      
+      let listHtml = '';
+      if (images.length) listHtml += `<div>🖼️ Images: ${images.map(f => f.name).join(', ')}</div>`;
+      if (audio.length) listHtml += `<div>🎵 Audio: ${audio.map(f => f.name).join(', ')}</div>`;
+      assetList.innerHTML = listHtml || 'No media files found';
+      
+      // Populate select with combined list
+      [...images, ...audio].forEach((file, idx) => {
+        selectEl.appendChild(new Option(file.name, idx));
+      });
+      
+      // Start random cycle if enabled
+      if (document.getElementById('optRandomBg').checked) {
+        startRandomBgCycle();
+      }
+    }
+
+    function applyFolderAsset() {
+      const selectEl = document.getElementById('optSelectedAsset');
+      const idx = parseInt(selectEl.value);
+      if (isNaN(idx) || !STATE.folderAssets || !STATE.folderAssets.images) return;
+      
+      const allAssets = [...STATE.folderAssets.images, ...STATE.folderAssets.audio];
+      if (idx >= allAssets.length) return;
+      
+      const file = allAssets[idx];
+      const videoEl = document.getElementById('visualVideo');
+      const youtubeEl = document.getElementById('visualYoutube');
+      youtubeEl.style.display = 'none';
+      youtubeEl.src = '';
+      videoEl.style.display = 'block';
+      
+      if (file.type.startsWith('image/')) {
+        // For images, we show as video with image overlay
+        videoEl.src = URL.createObjectURL(file);
+        videoEl.loop = true;
+        videoEl.play().catch(() => {});
+      } else if (file.type.startsWith('audio/')) {
+        // For audio, keep video background but play audio
+        const audioEl = document.getElementById('ambRain'); // reuse ambient
+        audioEl.src = URL.createObjectURL(file);
+        if (STATE.playing) audioEl.play().catch(() => {});
+      }
+    }
+
+    function startRandomBgCycle() {
+      if (randomBgInterval) clearInterval(randomBgInterval);
+      STATE.randomBg = true;
+      randomBgInterval = setInterval(() => {
+        if (!STATE.folderAssets || !STATE.folderAssets.images) return;
+        const allAssets = [...STATE.folderAssets.images, ...STATE.folderAssets.audio];
+        if (allAssets.length < 2) return;
+        const randomIdx = Math.floor(Math.random() * allAssets.length);
+        document.getElementById('optSelectedAsset').value = randomIdx;
+        applyFolderAsset();
+      }, 10000);
     }
 
     function extractYoutubeId(url) {
@@ -1122,7 +1375,6 @@
                 else currentPart.children.push(node);
             }
         } else if (index % 5 === 0 || index === STATE.currentPage || index === 0 || index === STATE.data.length - 1) {
-            // Push regular reading pages inside the deepest available parent
             let node = { type: 'page', title: `വായന - പേജ് ${row.page}`, subtitle: row.mlPure.substring(0, 20) + "...", index: index, children: [], page: row.page, raw: row };
             if (currentH2) currentH2.children.push(node);
             else if (currentH1) currentH1.children.push(node);
@@ -1231,6 +1483,26 @@
       document.getElementById('optFontSize').value = localStorage.getItem('m_rb_fsize') || '18';
       applyFontSize();
       STATE.showAr = true; STATE.showMl = true; STATE.showEn = true;
+      
+      // Load font preferences
+      document.getElementById('fontAr').value = localStorage.getItem('font_ar') || 'Amiri';
+      document.getElementById('fontMl').value = localStorage.getItem('font_ml') || 'Manjari';
+      document.getElementById('fontEn').value = localStorage.getItem('font_en') || 'Manjari';
+      document.getElementById('colorAr').value = localStorage.getItem('color_ar') || '#1a5f7a';
+      document.getElementById('colorMl').value = localStorage.getItem('color_ml') || '#2c3e50';
+      document.getElementById('colorEn').value = localStorage.getItem('color_en') || '#7f8c8d';
+      
+      // Load visual shadow preferences
+      document.getElementById('visShadowColor').value = localStorage.getItem('vis_shadow_color') || '#000000';
+      document.getElementById('visShadowBlur').value = localStorage.getItem('vis_shadow_blur') || '8';
+      applyVisualShadow();
+      
+      // Load fullscreen preference
+      const fs = localStorage.getItem('vis_fullscreen') === 'true';
+      document.getElementById('optFullscreenZoom').checked = fs;
+      STATE.fullscreenZoom = fs;
+      
+      applyFontSettings();
     }
 
     function renderAllViews() {
@@ -1257,6 +1529,14 @@
         if(opt === 'nasheed') { nasheed.volume = 0.15; nasheed.play().catch(()=>{}); }
       }
     }
+
+    // Handle background source toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const bgSource = document.getElementById('optBgSource');
+      if (bgSource) {
+        bgSource.onchange = applyVisualBg;
+      }
+    });
   </script>
 </body>
 </html>
