@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Adventure Digital Library Pro</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Manjari:wght@400;700&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Manjari:wght@400;700&family=Chilanka&family=Gayathri&family=Scheherazade+New:wght@400;700&family=Lateef&display=swap" rel="stylesheet">
+  
   <style>
     /* ================================================================
        ROOT VARIABLES & THEMES
@@ -17,8 +19,12 @@
       --text-dark: #2c3e50; 
       --accent: #27ae60; 
       --shadow: 0 4px 15px rgba(0,0,0,0.06);
+      
+      /* Dynamic Font Variables */
       --font-ar: 'Amiri', serif;
       --font-ml: 'Manjari', sans-serif;
+      --font-en: sans-serif;
+      
       --surface: #ffffff;
       --text-muted: #7f8c8d;
       --primary: #8b5a2b;
@@ -30,14 +36,6 @@
       --bottom-nav: 70px;
       --mini-player: 65px;
       --font-scale: 18px;
-      --align-mode: justify;
-      /* Font color defaults */
-      --ar-color: #1a5f7a;
-      --ml-color: #2c3e50;
-      --en-color: #7f8c8d;
-      /* Text shadow for visual mode */
-      --text-shadow-color: rgba(0,0,0,0.9);
-      --text-shadow-blur: 8px;
     }
 
     [data-theme="dark"] {
@@ -45,18 +43,12 @@
       --text-dark: #f8fafc; --text-muted: #94a3b8;
       --primary: #bb86fc; --primary-dark: #9c27b0;
       --primary-light: rgba(187,134,252,0.15); --border: #334155;
-      --ar-color: #81d4fa;
-      --ml-color: #e2e8f0;
-      --en-color: #94a3b8;
     }
 
     [data-theme="sepia"] {
       --bg: #e2d9c8; --surface: #f4ecd8; --card-bg: #f4ecd8;
       --text-dark: #5c4b37; --text-muted: #8c7a65;
       --primary: #d97706; --primary-dark: #b45309; --border: #d6cbb5;
-      --ar-color: #7a4a1a;
-      --ml-color: #5c4b37;
-      --en-color: #8c7a65;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -93,8 +85,8 @@
     .home-title { font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
     .top-bar .actions i { cursor: pointer; padding: 5px; font-size: 18px; margin-left: 10px; }
     
-    .tabs { display: flex; justify-content: space-around; background: var(--primary-green); padding-bottom: 5px; overflow-x: auto; }
-    .tab-item { color: #bdc3c7; padding: 10px 15px; cursor: pointer; font-weight: bold; font-size: 13px; text-transform: uppercase; border-bottom: 3px solid transparent; transition: 0.3s; white-space: nowrap; flex-shrink: 0; }
+    .tabs { display: flex; justify-content: space-around; background: var(--primary-green); padding-bottom: 5px; }
+    .tab-item { color: #bdc3c7; padding: 10px; cursor: pointer; font-weight: bold; font-size: 14px; text-transform: uppercase; border-bottom: 3px solid transparent; transition: 0.3s; }
     .tab-item.active { color: white; border-bottom-color: white; }
 
     .search-bar { padding: 10px 0; display: none; }
@@ -105,9 +97,17 @@
     .container { padding: 15px; max-width: 1000px; margin: auto; width: 100%; }
     
     /* ================================================================
-       BOOK CARD GRID SYSTEM
+       BOOK CARD GRID SYSTEM & CATEGORY ACCORDION
        ================================================================ */
     .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+    
+    /* Accordion style for categories/authors */
+    details.group-details { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 15px; grid-column: 1/-1; overflow: hidden; }
+    details.group-details summary { padding: 15px; font-weight: bold; color: var(--primary-green); cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; background: var(--primary-light); }
+    details.group-details summary::-webkit-details-marker { display: none; }
+    details.group-details .group-content { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 15px; border-top: 1px solid var(--border); background: var(--bg); }
+    [data-theme="dark"] details.group-details summary { color: var(--primary); }
+
     .book-card {
       background: var(--card-bg); border-radius: var(--radius); overflow: hidden;
       box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; flex-direction: column; transition: transform 0.2s; position: relative; cursor: pointer;
@@ -144,24 +144,13 @@
     .reader-actions .active-bm { color: #f59e0b; text-shadow: 0 0 10px rgba(245,158,11,0.5); }
 
     .reader-content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 90px; }
-    /* Removed .reader-part-dropdown-container - Part dropdown removed from ebook view */
-
-    .reader-page-card { background: var(--surface); padding: 25px 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); min-height: 50vh; position: relative; }
+    
+    .reader-page-card { background: var(--surface); padding: 25px 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); min-height: 50vh; }
     .head-badge { display: table; margin: 0 auto 16px auto; padding: 6px 20px; background: var(--primary-light); color: var(--primary-dark); font-weight: 700; border-radius: 50px; font-size: 13px; border: 1px solid var(--primary); }
-    
-    /* Language-specific font and color settings */
-    .ar-content { font-family: var(--font-ar); font-size: calc(var(--font-scale) + 6px); color: var(--ar-color); direction: rtl; line-height: 2.2; font-weight: 700; text-align: right; margin-bottom: 16px; }
-    .ml-content { font-family: var(--font-ml); font-size: var(--font-scale); color: var(--ml-color); line-height: 2.1; margin-bottom: 12px; }
-    .en-content { font-family: var(--font-ml); font-size: calc(var(--font-scale) - 1px); color: var(--en-color); line-height: 1.9; font-style: italic; border-top: 1px dashed var(--border); padding-top: 15px; }
-    
-    /* Touch swipe for page turning */
-    .swipe-area { position: absolute; top: 0; bottom: 0; width: 30%; z-index: 5; cursor: pointer; }
-    .swipe-left { left: 0; }
-    .swipe-right { right: 0; }
-    .swipe-hint { position: absolute; top: 50%; transform: translateY(-50%); opacity: 0; transition: opacity 0.3s; background: rgba(0,0,0,0.05); padding: 20px 10px; border-radius: 8px; pointer-events: none; }
-    .swipe-area:hover .swipe-hint { opacity: 0.3; }
-    .swipe-left .swipe-hint { left: 10px; }
-    .swipe-right .swipe-hint { right: 10px; }
+    .ar-content { font-family: var(--font-ar); font-size: calc(var(--font-scale) + 6px); color: #1a5f7a; direction: rtl; line-height: 2.2; font-weight: 700; text-align: right; margin-bottom: 16px; }
+    [data-theme="dark"] .ar-content { color: #81d4fa; }
+    .ml-content { font-family: var(--font-ml); font-size: var(--font-scale); line-height: 2.1; margin-bottom: 12px; }
+    .en-content { font-family: var(--font-en); font-size: calc(var(--font-scale) - 1px); line-height: 1.9; color: var(--text-muted); font-style: italic; border-top: 1px dashed var(--border); padding-top: 15px; }
     
     .word-token { cursor: pointer; transition: 0.15s; padding: 0 2px; border-radius: 4px; display: inline-block; }
     .word-hl { background: #facc15 !important; color: #000 !important; font-weight: bold; border-radius: 4px; box-shadow: 0 2px 8px rgba(250,204,21,0.5); }
@@ -181,13 +170,13 @@
     .mini-player { position: fixed; bottom: var(--bottom-nav); width: 100%; height: 52px; background: var(--surface); border-top: 1px solid var(--border); display: none; align-items: center; padding: 0 14px; z-index: 1500; box-shadow: 0 -4px 15px rgba(0,0,0,0.06); }
     .mini-player.show { display: flex; }
     .mini-details { flex: 1; overflow: hidden; cursor: pointer; }
-    .mini-title { font-weight: bold; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mini-title { font-weight: bold; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--font-ml); }
     .mini-progress { font-size: 10px; color: var(--text-muted); }
     .mini-controls { display: flex; gap: 14px; font-size: 18px; color: var(--primary-green); align-items: center; }
 
     .audio-player { background: var(--surface); padding: 25px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-lg); text-align: center; }
     .audio-icon { font-size: 60px; color: var(--primary-green); margin-bottom: 15px; }
-    .audio-title-text { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+    .audio-title-text { font-family: var(--font-ml); font-size: 18px; font-weight: bold; margin-bottom: 5px; }
     .audio-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
     .audio-controls { display: flex; justify-content: center; align-items: center; gap: 25px; }
     .audio-controls i { font-size: 28px; color: var(--primary-green); cursor: pointer; }
@@ -196,7 +185,7 @@
     .progress-bar { height: 100%; background: var(--primary-green); border-radius: 3px; width: 0%; transition: width 0.1s; }
 
     /* ================================================================
-       CINEMATIC VISUAL VIEWPORT
+       CINEMATIC VISUAL VIEWPORT (With Stroke Enhancement)
        ================================================================ */
     .visual-mode { position: fixed; inset: 0; z-index: 2500; display: none; background: #000; flex-direction: column; }
     .visual-mode.show { display: flex; }
@@ -204,22 +193,18 @@
     .visual-video-wrapper iframe, .visual-video-wrapper video { width: 100vw; height: 100vh; object-fit: cover; pointer-events: none; border: none; }
     .visual-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0); z-index: 2; }
     
-    .visual-content { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 120px 25px; color: white; text-align: center; pointer-events: none; }
-    .vis-ar { font-family: var(--font-ar); font-size: 34px; direction: rtl; line-height: 2.2; margin-bottom: 20px; color: #81d4fa; text-shadow: 0 2px var(--text-shadow-blur) var(--text-shadow-color), 0 0 20px var(--text-shadow-color); }
-    .vis-ml { font-size: 24px; line-height: 2; text-shadow: 0 2px var(--text-shadow-blur) var(--text-shadow-color), 0 0 20px var(--text-shadow-color); margin-bottom: 15px; color: white; }
-    .vis-en { font-size: 20px; font-style: italic; opacity: 0.85; text-shadow: 0 2px var(--text-shadow-blur) var(--text-shadow-color), 0 0 20px var(--text-shadow-color); color: #ddd; }
+    .visual-content { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 120px 25px; color: white; text-align: center; }
+    
+    /* Text stroke and enhanced shadow for better visibility on white backgrounds */
+    .vis-ar { font-family: var(--font-ar); font-size: 34px; direction: rtl; line-height: 2.2; margin-bottom: 20px; color: #81d4fa; -webkit-text-stroke: 1px black; text-shadow: 2px 2px 5px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,1); }
+    .vis-ml { font-family: var(--font-ml); font-size: 24px; line-height: 2; margin-bottom: 15px; -webkit-text-stroke: 1px black; text-shadow: 2px 2px 5px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,1); }
+    .vis-en { font-family: var(--font-en); font-size: 20px; font-style: italic; opacity: 0.9; -webkit-text-stroke: 0.5px black; text-shadow: 2px 2px 5px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,1); }
 
     .visual-controls { position: absolute; top: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 30px; z-index: 20; font-size: 26px; color: white; text-shadow: 0 2px 15px rgba(0,0,0,0.9); align-items: center; background: rgba(0,0,0,0.6); padding: 8px 25px; border-radius: 50px; backdrop-filter: blur(5px); }
     .vis-play { font-size: 36px; color: #38bdf8; }
     .vis-close-btn { color: #ef4444; }
     .visual-progress { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 500px; height: 3px; background: rgba(255,255,255,0.3); }
     .vis-progress-bar { height: 100%; background: #38bdf8; width: 0%; }
-
-    /* Fullscreen zoom for visual */
-    .visual-mode.fullscreen .visual-video-wrapper iframe,
-    .visual-mode.fullscreen .visual-video-wrapper video {
-      transform: scale(1.3);
-    }
 
     /* ================================================================
        MODALS & FIXED DRAWERS
@@ -230,6 +215,7 @@
     .modal-box { position: fixed; bottom: -100%; left: 0; width: 100%; max-height: 85vh; background: var(--surface); z-index: 3001; border-radius: 20px 20px 0 0; transition: bottom 0.3s cubic-bezier(0.2,0.8,0.2,1); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -10px 40px rgba(0,0,0,0.2); }
     .modal-box.show { bottom: 0; }
     
+    /* Header Freeze (Sticky) */
     .modal-header { flex-shrink: 0; background: var(--surface); display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--border); z-index: 10; color: var(--text-dark); font-weight: bold; }
     .modal-close { font-size: 22px; cursor: pointer; background: none; border: none; color: var(--text-dark); }
     .modal-body { flex: 1; overflow-y: auto; padding: 20px; }
@@ -239,15 +225,11 @@
     .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg); border-radius: 8px; margin-bottom: 5px; font-size: 14px; border: 1px solid var(--border); }
     .setting-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary-green); }
     .setting-group select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dark); font-family: var(--font-ml); }
+    .setting-row select { width: auto; padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-dark); }
     .setting-group input[type="range"] { width: 100%; accent-color: var(--primary-green); cursor: pointer; }
-    .setting-group input[type="color"] { width: 40px; height: 40px; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; background: transparent; padding: 2px; }
     .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .theme-btn { padding: 10px; border: 2px solid var(--border); border-radius: 8px; text-align: center; font-weight: bold; font-size: 13px; cursor: pointer; background: var(--bg); color: var(--text-dark);}
     .theme-btn.active { border-color: var(--primary-green); background: var(--primary-light); color: var(--primary-green); }
-
-    /* Font family selectors per language */
-    .font-select-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .font-select-row select { flex: 1; min-width: 120px; padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dark); }
 
     /* ================================================================
        ADVANCED BREADCRUMB DRILL-DOWN TOC
@@ -265,15 +247,6 @@
 
     .import-zone { text-align: center; padding: 10px 20px; }
     .import-input-field { width: 100%; padding: 10px; margin-top: 5px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dark); }
-
-    /* Category dropdown for filtering */
-    .category-filter { display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 0; }
-    .category-filter .cat-btn { padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dark); font-size: 12px; cursor: pointer; transition: 0.2s; }
-    .category-filter .cat-btn.active { background: var(--primary-green); color: white; border-color: var(--primary-green); }
-    .category-filter .cat-btn:active { transform: scale(0.95); }
-
-    /* Random background toggle */
-    .random-toggle { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--bg); border-radius: 8px; border: 1px solid var(--border); }
   </style>
 </head>
 <body>
@@ -307,13 +280,11 @@
       <div class="search-bar" id="searchBar">
         <input type="text" id="searchInput" placeholder="ഗ്രന്ഥങ്ങൾ തിരയുക (Search books...)" oninput="searchBooks(this.value)">
       </div>
-      <div class="tabs" id="mainTabs">
+      <div class="tabs">
         <div class="tab-item active" id="tab-all" onclick="filterShelf('all')">All Books</div>
         <div class="tab-item" id="tab-cats" onclick="filterShelf('categories')">Categories</div>
         <div class="tab-item" id="tab-auths" onclick="filterShelf('authors')">Authors</div>
       </div>
-      <!-- Category filter dropdown (expanded) -->
-      <div class="category-filter" id="categoryFilter" style="display:none; padding-top:10px;"></div>
     </header>
 
     <div class="container">
@@ -339,18 +310,8 @@
     </header>
 
     <div class="reader-content" id="readerContent">
-      <!-- Part dropdown removed from ebook view as requested -->
-
       <div id="ebookView">
-        <div class="reader-page-card" id="readerPageCard">
-          <!-- Swipe areas for touch page turning -->
-          <div class="swipe-area swipe-left" onclick="changePage(-1)">
-            <div class="swipe-hint"><i class="fas fa-chevron-left"></i></div>
-          </div>
-          <div class="swipe-area swipe-right" onclick="changePage(1)">
-            <div class="swipe-hint"><i class="fas fa-chevron-right"></i></div>
-          </div>
-        </div>
+        <div class="reader-page-card" id="readerPageCard"></div>
         <div class="reader-pagination">
           <button onclick="changePage(-1)"><i class="fas fa-chevron-left"></i> Prev</button>
           <span class="page-num" id="readerPageNum">0 / 0</span>
@@ -390,7 +351,7 @@
   </div>
 
   <div class="mini-player" id="miniPlayer">
-    <div class="mini-details" onclick="switchViewportTab('audio')">
+    <div class="mini-details" onclick="restorePlayingBook()">
       <div class="mini-title" id="miniTitle">Ready Track</div>
       <div class="mini-progress" id="miniProgress">Part 0 - Page 0</div>
     </div>
@@ -413,7 +374,6 @@
       <i class="fas fa-play vis-play" id="visPlayBtn" onclick="toggleVisualPlay()"></i>
       <i class="fas fa-forward-step" onclick="changeVisualPage(1)"></i>
       <i class="fas fa-stop" onclick="stopVisualAudio()"></i>
-      <i class="fas fa-arrows-alt" onclick="toggleVisualFullscreen()" title="Fullscreen Zoom"></i>
       <i class="fas fa-times-circle vis-close-btn" onclick="closeVisualMode()"></i>
     </div>
 
@@ -434,6 +394,33 @@
     </div>
     <div class="modal-body">
       <div class="setting-group">
+        <label class="setting-label">🔤 Font Customization (ഫോണ്ടുകൾ)</label>
+        <div class="setting-row"><span>മലയാളം</span>
+          <select id="optFontMl" onchange="applyFonts()">
+            <option value="'Manjari', sans-serif">Manjari</option>
+            <option value="'Chilanka', cursive">Chilanka</option>
+            <option value="'Gayathri', sans-serif">Gayathri</option>
+            <option value="sans-serif">System Default</option>
+          </select>
+        </div>
+        <div class="setting-row"><span>Arabic (അറബിക്)</span>
+          <select id="optFontAr" onchange="applyFonts()">
+            <option value="'Amiri', serif">Amiri</option>
+            <option value="'Scheherazade New', serif">Scheherazade New</option>
+            <option value="'Lateef', serif">Lateef</option>
+            <option value="serif">System Default</option>
+          </select>
+        </div>
+        <div class="setting-row"><span>English (ഇംഗ്ലീഷ്)</span>
+          <select id="optFontEn" onchange="applyFonts()">
+            <option value="sans-serif">Sans-Serif</option>
+            <option value="serif">Serif</option>
+            <option value="monospace">Monospace</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="setting-group">
         <label class="setting-label">🎙️ TTS Voice Control & Language Channel</label>
         <select id="optAudioLang" onchange="setupVoices(); applyAudioSettings(true);" style="margin-bottom:10px;">
           <option value="ml-IN" selected>മലയാളം (Malayalam)</option>
@@ -447,49 +434,6 @@
         <label class="setting-label">📏 Speech Speed Velocity</label>
         <input type="range" id="optSpeed" min="0.5" max="1.5" step="0.1" value="1.0" onchange="applyAudioSettings(true)">
       </div>
-      
-      <!-- Font settings per language -->
-      <div class="setting-group">
-        <label class="setting-label">🔤 Font Family & Color per Language</label>
-        <div class="font-select-row">
-          <select id="fontAr" onchange="applyFontSettings()" style="flex:1;">
-            <option value="Amiri">Amiri</option>
-            <option value="Traditional Arabic">Traditional Arabic</option>
-            <option value="Arial">Arial</option>
-          </select>
-          <input type="color" id="colorAr" value="#1a5f7a" onchange="applyFontSettings()">
-          <label style="font-size:11px;">العربية</label>
-        </div>
-        <div class="font-select-row" style="margin-top:5px;">
-          <select id="fontMl" onchange="applyFontSettings()" style="flex:1;">
-            <option value="Manjari">Manjari</option>
-            <option value="Noto Sans Malayalam">Noto Sans Malayalam</option>
-            <option value="Arial">Arial</option>
-          </select>
-          <input type="color" id="colorMl" value="#2c3e50" onchange="applyFontSettings()">
-          <label style="font-size:11px;">മലയാളം</label>
-        </div>
-        <div class="font-select-row" style="margin-top:5px;">
-          <select id="fontEn" onchange="applyFontSettings()" style="flex:1;">
-            <option value="Manjari">Manjari</option>
-            <option value="Georgia">Georgia</option>
-            <option value="Arial">Arial</option>
-          </select>
-          <input type="color" id="colorEn" value="#7f8c8d" onchange="applyFontSettings()">
-          <label style="font-size:11px;">English</label>
-        </div>
-      </div>
-
-      <!-- Visual text shadow color -->
-      <div class="setting-group">
-        <label class="setting-label">🎨 Visual Mode Text Shadow Color</label>
-        <div style="display:flex; align-items:center; gap:12px;">
-          <input type="color" id="visShadowColor" value="#000000" onchange="applyVisualShadow()">
-          <input type="range" id="visShadowBlur" min="2" max="20" value="8" onchange="applyVisualShadow()" style="flex:1;">
-          <label style="font-size:12px; min-width:40px;" id="visShadowLabel">8px</label>
-        </div>
-      </div>
-
       <div class="setting-group">
         <label class="setting-label">📖 Display Core Layers</label>
         <div class="setting-row"><span>അറബിക് വരികൾ (Arabic)</span><input type="checkbox" id="optShowAr" checked onchange="renderAllViews()"></div>
@@ -521,36 +465,10 @@
         <div class="setting-row"><span><b>🔄 Auto Page Navigation Link</b></span><input type="checkbox" id="optAutoNext" checked></div>
         <div class="setting-row"><span><b>🔊 Click Token to Speak Word</b></span><input type="checkbox" id="optTouchSpeak" checked></div>
       </div>
-
-      <!-- Visual background source -->
       <div class="setting-group">
-        <label class="setting-label">🎬 Visual Background Source</label>
-        <select id="optBgSource" onchange="applyVisualBg()">
-          <option value="youtube">YouTube (URL/ID)</option>
-          <option value="folder">Folder Assets (Images/Audio)</option>
-        </select>
-        <div id="youtubeSettings">
-          <input type="text" id="optYoutubeId" placeholder="e.g. dQw4w9WgXcQ അല്ലെങ്കിൽ പൂർണ്ണ ലിങ്ക്" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text-dark); margin-top:5px;">
-        </div>
-        <div id="folderSettings" style="display:none; margin-top:5px;">
-          <input type="file" id="folderBgInput" webkitdirectory directory multiple accept="image/*,audio/*" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text-dark);" onchange="handleFolderAssets(event)">
-          <div id="folderAssetList" style="margin-top:8px; max-height:100px; overflow-y:auto; font-size:12px; color:var(--text-muted);"></div>
-          <div class="random-toggle" style="margin-top:8px;">
-            <span>🎲 Random Cycle</span>
-            <input type="checkbox" id="optRandomBg" onchange="applyVisualBg()">
-            <span style="font-size:11px;">(auto-rotate every 10s)</span>
-          </div>
-          <select id="optSelectedAsset" style="margin-top:5px; width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text-dark);" onchange="applyVisualBg()"></select>
-        </div>
-        <button class="import-btn" style="width:100%; margin-top:5px; padding:8px;" onclick="applyVisualBg()">Update Background</button>
-      </div>
-
-      <div class="setting-group">
-        <label class="setting-label">🔍 Fullscreen Zoom</label>
-        <div class="setting-row">
-          <span>Enable Zoom in Visual Mode</span>
-          <input type="checkbox" id="optFullscreenZoom" checked onchange="applyVisualZoom()">
-        </div>
+        <label class="setting-label">🎬 YouTube Reel Stream ID/URL</label>
+        <input type="text" id="optYoutubeId" placeholder="e.g. dQw4w9WgXcQ അല്ലെങ്കിൽ പൂർണ്ണ ലിങ്ക്" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text-dark);">
+        <button class="import-btn" style="width:100%; margin-top:5px; padding:8px;" onclick="applyVisualBg()">Update Video Hook</button>
       </div>
     </div>
   </div>
@@ -599,26 +517,27 @@
     const CHUNKS_STORE = "book_chunks";
     const CATALOG_STORE = "master_catalog";
 
+    // Separate UI state from Audio background state
     const STATE = {
-      books: [], currentBook: null, currentPart: null, currentPage: 0,
+      books: [], currentBook: null, currentPage: 0,
       totalPages: 0, data: [], bookmarks: [], playing: false, theme: 'light',
       mode: 'ebook', fontScale: 18, showAr: true, showMl: true, showEn: true,
       ttsLang: 'ml-IN', speed: 1.0, autoNext: true, touchSpeak: true,
-      currentBookId: null, visualYoutubeId: '', charOffset: 0, shelfFilter: 'all',
-      folderAssets: [], currentAssetIndex: 0, randomBg: false, bgSource: 'youtube',
-      fullscreenZoom: true
+      currentBookId: null, visualYoutubeId: '', charOffset: 0, shelfFilter: 'all'
+    };
+
+    const PLAY_STATE = {
+      bookId: null, data: [], page: 0, charOffset: 0, totalPages: 0
     };
 
     let systemVoices = [];
     let synth = window.speechSynthesis;
     let currentUtterance = null;
-    let partMap = {};
     let audioProgressInterval = null;
-    let randomBgInterval = null;
+    let touchStartX = 0; let touchEndX = 0;
     
     let tocTree = [];
     let tocPath = []; 
-    let isClosingReader = false;
 
     function openDB() {
       return new Promise((resolve, reject) => {
@@ -672,7 +591,7 @@
     }
 
     /* =======================================================================
-       INITIALIZATION PIPELINES
+       INITIALIZATION PIPELINES & GESTURES
        ======================================================================= */
     document.addEventListener('DOMContentLoaded', async () => {
       loadPreferences();
@@ -680,6 +599,7 @@
       if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = setupVoices;
       window.addEventListener("resize", adjustVideoScale);
       setupMediaSession();
+      setupSwipeGestures();
       
       STATE.books = await loadCatalogFromDB();
       if(STATE.books && STATE.books.length > 0) {
@@ -690,6 +610,23 @@
         loadLibrary();
       }
     });
+
+    function setupSwipeGestures() {
+      const ebookViewArea = document.getElementById('ebookView');
+      ebookViewArea.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, {passive: true});
+      ebookViewArea.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      }, {passive: true});
+    }
+
+    function handleSwipe() {
+      const SWIPE_THRESHOLD = 50;
+      if (touchStartX - touchEndX > SWIPE_THRESHOLD) changePage(1); // Swipe left -> Next
+      if (touchEndX - touchStartX > SWIPE_THRESHOLD) changePage(-1); // Swipe right -> Prev
+    }
 
     async function loadLibrary() {
       try {
@@ -803,41 +740,12 @@
             <button class="open-btn" onclick="event.stopPropagation();openBook('${book.id}')">Open</button>
           </div>
         </div>`).join("");
-      
-      // Update category filter
-      updateCategoryFilter(books);
-    }
-
-    function updateCategoryFilter(books) {
-      const container = document.getElementById('categoryFilter');
-      if (!container) return;
-      
-      const categories = {};
-      books.forEach(b => {
-        const cat = b.lang || b.category || 'General';
-        if (!categories[cat]) categories[cat] = [];
-        categories[cat].push(b);
-      });
-      
-      container.innerHTML = Object.keys(categories).map(cat => 
-        `<button class="cat-btn" onclick="filterByCategory('${cat}')">${cat} (${categories[cat].length})</button>`
-      ).join('');
-    }
-
-    function filterByCategory(category) {
-      const filtered = STATE.books.filter(b => (b.lang || b.category || 'General') === category);
-      renderBooks(filtered);
-      document.querySelectorAll('.cat-btn').forEach(el => el.classList.remove('active'));
-      event.target.classList.add('active');
     }
 
     function filterShelf(type) {
       document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
       document.getElementById('tab-' + (type === 'all' ? 'all' : (type === 'categories' ? 'cats' : 'auths'))).classList.add('active');
       STATE.shelfFilter = type;
-      
-      // Show category filter only for categories tab
-      document.getElementById('categoryFilter').style.display = type === 'categories' ? 'flex' : 'none';
       
       if(type === 'all') {
         renderBooks(STATE.books);
@@ -856,7 +764,11 @@
       const grid = document.getElementById('bookGrid');
       let html = "";
       for(let key in groupedObj) {
-        html += `<div style="grid-column: 1/-1; margin-top:15px; padding:8px; background:var(--primary-light); border-radius:6px; font-weight:bold; color:var(--primary-green); text-transform: capitalize;"><i class="fas fa-folder-open"></i> ${key}</div>`;
+        html += `
+        <details class="group-details">
+          <summary><div><i class="fas fa-folder-open"></i> ${key}</div><div style="font-size:12px; color:var(--text-muted);"><i class="fas fa-book"></i> ${groupedObj[key].length} Books <i class="fas fa-chevron-down" style="margin-left:5px;"></i></div></summary>
+          <div class="group-content">
+        `;
         groupedObj[key].forEach(book => {
           html += `
             <div class="book-card" onclick="openBook('${book.id}')">
@@ -871,6 +783,7 @@
               </div>
             </div>`;
         });
+        html += `</div></details>`;
       }
       grid.innerHTML = html;
     }
@@ -909,25 +822,28 @@
     }
 
     function openReader() {
-      isClosingReader = false;
       document.getElementById('readerView').classList.add('show');
       document.getElementById('homeView').style.display = 'none';
       document.getElementById('readerTitle').textContent = STATE.currentBook.titleMl || STATE.currentBook.title;
-      partMap = {};
-      STATE.data.forEach(item => { if (!partMap[item.part]) partMap[item.part] = []; partMap[item.part].push(item); });
       
       renderPage(); updateBookmarkUI();
-      document.getElementById('miniPlayer').classList.add('show');
+      
+      if(STATE.playing || PLAY_STATE.bookId) {
+          document.getElementById('miniPlayer').classList.add('show');
+      } else {
+          document.getElementById('miniPlayer').classList.add('show'); // Show it ready to play
+      }
       switchViewportTab('ebook');
     }
 
     function closeReader() {
-      isClosingReader = true;
-      // Don't stop audio - keep playing even when going home
-      // stopAudio(); - removed
+      // do not stop audio when going home
       document.getElementById('readerView').classList.remove('show');
       document.getElementById('homeView').style.display = 'flex';
-      document.getElementById('miniPlayer').classList.remove('show'); 
+      
+      if(!STATE.playing) {
+          document.getElementById('miniPlayer').classList.remove('show');
+      }
       closeVisualMode();
     }
 
@@ -964,25 +880,17 @@
       if (STATE.showMl && row.mlStr) html += `<div class="ml-content">${highlightWords(row.mlStr)}</div>`;
       if (STATE.showEn && row.enStr) html += `<div class="en-content">${row.enStr}</div>`;
 
-      document.getElementById('readerPageCard').innerHTML = 
-        `<div style="position:relative;">${html}
-          <div class="swipe-area swipe-left" onclick="changePage(-1)">
-            <div class="swipe-hint"><i class="fas fa-chevron-left"></i></div>
-          </div>
-          <div class="swipe-area swipe-right" onclick="changePage(1)">
-            <div class="swipe-hint"><i class="fas fa-chevron-right"></i></div>
-          </div>
-        </div>`;
-      
+      document.getElementById('readerPageCard').innerHTML = html;
       document.getElementById('readerPageNum').textContent = `${STATE.currentPage + 1} / ${STATE.totalPages}`;
-      document.getElementById('miniTitle').textContent = (row.mlPure || '').substring(0, 40) + '...';
-      document.getElementById('miniProgress').textContent = `ഭാഗം ${row.part} - പേജ് ${row.page}`;
-
-      updateAudioUI(); syncHighlights();
-      if (document.getElementById('visualMode').classList.contains('show')) updateVisualChunk();
       
-      // Apply font settings
-      applyFontSettings();
+      // Update UI texts if this is the book currently loaded
+      if(!STATE.playing || PLAY_STATE.bookId === STATE.currentBookId) {
+          document.getElementById('miniTitle').textContent = (row.mlPure || '').substring(0, 40) + '...';
+          document.getElementById('miniProgress').textContent = `ഭാഗം ${row.part} - പേജ് ${row.page}`;
+          updateAudioUI(); 
+      }
+      syncHighlights();
+      if (document.getElementById('visualMode').classList.contains('show')) updateVisualChunk();
     }
 
     function highlightWords(text) {
@@ -995,18 +903,33 @@
     }
 
     function touchSeek(offset) {
-      if(!STATE.touchSpeak) return; STATE.charOffset = offset; saveState(); synth.cancel(); STATE.playing = false; togglePlay();
+      if(!STATE.touchSpeak) return; 
+      STATE.charOffset = offset; saveState(); 
+      
+      if(PLAY_STATE.bookId === STATE.currentBookId) {
+          PLAY_STATE.charOffset = offset;
+          if(STATE.playing) { synth.cancel(); playAudioLine(); }
+          else { togglePlay(); }
+      } else {
+          togglePlay(); // Initialize playing to current book
+      }
     }
 
     function changePage(delta) {
       const newPage = STATE.currentPage + delta; if (newPage < 0 || newPage >= STATE.totalPages) return;
       STATE.currentPage = newPage; STATE.charOffset = 0; saveState();
       renderPage(); document.getElementById('readerContent').scrollTop = 0;
-      if (STATE.playing) playAudioLine();
+      
+      // Update audio playback if playing the currently visible book
+      if (STATE.playing && PLAY_STATE.bookId === STATE.currentBookId) {
+          PLAY_STATE.page = STATE.currentPage;
+          PLAY_STATE.charOffset = 0;
+          playAudioLine();
+      }
     }
 
     /* =======================================================================
-       STABLE MEDIA VOICE ENGINE WITH SEAMLESS BACKGROUND TRICK
+       PERSISTENT BACKGROUND TTS ENGINE
        ======================================================================= */
     function setupVoices() {
       systemVoices = synth.getVoices();
@@ -1021,18 +944,29 @@
     function togglePlay() {
       if (STATE.playing) {
         synth.pause(); STATE.playing = false; updatePlayIcon();
-        document.getElementById('silentAudio').pause();
+        document.getElementById('silentAudio').pause(); 
         handleAmbient();
       } else {
-        if (synth.paused) { 
+        // If it was paused and we're looking at the same book it was playing
+        if (synth.paused && PLAY_STATE.bookId === STATE.currentBookId) { 
           synth.resume(); STATE.playing = true; updatePlayIcon(); handleAmbient(); 
           document.getElementById('silentAudio').play().catch(()=>{});
-        } else { STATE.playing = true; updatePlayIcon(); playAudioLine(); }
+        } else { 
+          // Start playing the currently OPEN book and overwrite background audio state
+          PLAY_STATE.bookId = STATE.currentBookId;
+          PLAY_STATE.data = STATE.data;
+          PLAY_STATE.page = STATE.currentPage;
+          PLAY_STATE.charOffset = STATE.charOffset;
+          PLAY_STATE.totalPages = STATE.totalPages;
+          STATE.playing = true; updatePlayIcon(); 
+          playAudioLine(); 
+        }
       }
     }
 
     function playAudioLine() {
-      const row = STATE.data[STATE.currentPage]; if (!row) return;
+      if(!PLAY_STATE.data || PLAY_STATE.data.length === 0) return;
+      const row = PLAY_STATE.data[PLAY_STATE.page]; if (!row) return;
       const audioLangSetting = document.getElementById("optAudioLang").value;
       
       let fullText = row.mlStr;
@@ -1040,9 +974,20 @@
       else if (audioLangSetting === "en-US") fullText = row.enStr;
       else if (audioLangSetting === "ar-EG") fullText = row.arPure;
 
-      if (!fullText) { if (STATE.autoNext) changePage(1); return; }
-      let playableText = fullText.substring(STATE.charOffset);
-      if (playableText.trim() === "") { changePage(1); return; }
+      if (!fullText) { 
+          if (STATE.autoNext && PLAY_STATE.page < PLAY_STATE.totalPages - 1) { 
+              PLAY_STATE.page++; PLAY_STATE.charOffset = 0; playAudioLine(); 
+          } 
+          return; 
+      }
+      
+      let playableText = fullText.substring(PLAY_STATE.charOffset);
+      if (playableText.trim() === "") { 
+          if (STATE.autoNext && PLAY_STATE.page < PLAY_STATE.totalPages - 1) { 
+              PLAY_STATE.page++; PLAY_STATE.charOffset = 0; playAudioLine(); 
+          }
+          return; 
+      }
 
       synth.cancel();
       currentUtterance = new SpeechSynthesisUtterance(playableText);
@@ -1052,14 +997,19 @@
       if(vName) currentUtterance.voice = systemVoices.find(v => v.name === vName);
       currentUtterance.rate = parseFloat(document.getElementById("optSpeed").value) || 1.0;
 
-      let baseCharOffset = STATE.charOffset; const currentPageOnStart = STATE.currentPage;
+      let baseCharOffset = PLAY_STATE.charOffset; 
+      const currentPageOnStart = PLAY_STATE.page;
 
       if (audioProgressInterval) clearInterval(audioProgressInterval);
       let progress = 0;
       audioProgressInterval = setInterval(() => {
         progress += 0.5; if (progress > 100) progress = 0;
-        if (STATE.mode === 'audio') document.getElementById('audioProgressBar').style.width = progress + '%';
-        document.getElementById('visProgressBar').style.width = progress + '%';
+        if (STATE.mode === 'audio' && STATE.currentBookId === PLAY_STATE.bookId) {
+             document.getElementById('audioProgressBar').style.width = progress + '%';
+        }
+        if (STATE.currentBookId === PLAY_STATE.bookId) {
+             document.getElementById('visProgressBar').style.width = progress + '%';
+        }
       }, 100);
 
       currentUtterance.onstart = () => {
@@ -1070,27 +1020,55 @@
       
       currentUtterance.onboundary = (e) => {
         if(typeof e.charIndex === 'number' && (e.name === 'word' || !e.name)) {
-          STATE.charOffset = baseCharOffset + e.charIndex; saveState();
-          syncHighlights(); updateVisualChunk();
+          PLAY_STATE.charOffset = baseCharOffset + e.charIndex; 
+          
+          // Sync UI highlights ONLY if looking at the currently playing book
+          if(STATE.currentBookId === PLAY_STATE.bookId && STATE.currentPage === PLAY_STATE.page) {
+              STATE.charOffset = PLAY_STATE.charOffset;
+              saveState();
+              syncHighlights(); 
+              updateVisualChunk();
+          }
+          
+          // Update mini player unconditionally
+          document.getElementById('miniTitle').textContent = (row.mlPure || '').substring(0, 40) + '...';
+          document.getElementById('miniProgress').textContent = `ഭാഗം ${row.part} - പേജ് ${row.page}`;
         }
       };
 
       currentUtterance.onend = () => {
-        if (STATE.playing && STATE.autoNext && STATE.currentPage === currentPageOnStart) {
-          changePage(1);
+        if (STATE.playing && STATE.autoNext && PLAY_STATE.page === currentPageOnStart) {
+            PLAY_STATE.page++;
+            PLAY_STATE.charOffset = 0;
+            if(PLAY_STATE.page < PLAY_STATE.totalPages) {
+                if(STATE.currentBookId === PLAY_STATE.bookId) {
+                    STATE.currentPage = PLAY_STATE.page;
+                    STATE.charOffset = 0;
+                    saveState();
+                    renderPage();
+                }
+                playAudioLine();
+            } else {
+                stopAudio();
+            }
         }
       };
       synth.speak(currentUtterance);
     }
 
     function stopAudio() {
-      synth.cancel(); STATE.playing = false; STATE.charOffset = 0; saveState(); updatePlayIcon();
+      synth.cancel(); STATE.playing = false; PLAY_STATE.bookId = null;
+      updatePlayIcon();
       if (audioProgressInterval) clearInterval(audioProgressInterval);
       document.getElementById('audioProgressBar').style.width = '0%';
       document.getElementById('visProgressBar').style.width = '0%';
       document.getElementById('silentAudio').pause(); 
       handleAmbient(); 
       syncHighlights();
+      
+      if(document.getElementById('homeView').style.display !== 'none') {
+         document.getElementById('miniPlayer').classList.remove('show');
+      }
     }
 
     function updatePlayIcon() {
@@ -1100,14 +1078,34 @@
       document.getElementById('visPlayBtn').className = `fas ${icon} vis-play`;
     }
 
-    function applyAudioSettings(restart) { if(restart && STATE.playing) playAudioLine(); }
+    function restorePlayingBook() {
+      if(PLAY_STATE.bookId && PLAY_STATE.bookId !== STATE.currentBookId) {
+          openBook(PLAY_STATE.bookId).then(() => {
+             STATE.currentPage = PLAY_STATE.page;
+             STATE.charOffset = PLAY_STATE.charOffset;
+             saveState();
+             renderPage();
+             switchViewportTab('audio');
+          });
+      } else {
+          openReader();
+          switchViewportTab('audio');
+      }
+    }
+
+    function applyAudioSettings(restart) { if(restart && STATE.playing) { synth.cancel(); playAudioLine(); } }
 
     function syncHighlights() {
       document.querySelectorAll(".word-token").forEach(el => el.classList.remove('word-hl'));
+      // Only highlight if current view matches playing view or if audio is paused and we are adjusting
+      if(STATE.playing && (STATE.currentBookId !== PLAY_STATE.bookId || STATE.currentPage !== PLAY_STATE.page)) return;
+      
       let spans = document.querySelectorAll(".word-token"); let targetSpan = null;
+      let effectiveOffset = (STATE.playing && STATE.currentBookId === PLAY_STATE.bookId) ? PLAY_STATE.charOffset : STATE.charOffset;
+      
       for(let i=spans.length-1; i>=0; i--) {
         let spanOffset = parseInt(spans[i].id.replace('eb_w_', ''));
-        if(spanOffset <= STATE.charOffset) { targetSpan = spans[i]; break; }
+        if(spanOffset <= effectiveOffset) { targetSpan = spans[i]; break; }
       }
       if(targetSpan) targetSpan.classList.add('word-hl');
     }
@@ -1119,84 +1117,47 @@
     }
 
     /* =======================================================================
-       FONT & COLOR SETTINGS
-       ======================================================================= */
-    function applyFontSettings() {
-      const fontAr = document.getElementById('fontAr').value;
-      const fontMl = document.getElementById('fontMl').value;
-      const fontEn = document.getElementById('fontEn').value;
-      const colorAr = document.getElementById('colorAr').value;
-      const colorMl = document.getElementById('colorMl').value;
-      const colorEn = document.getElementById('colorEn').value;
-      
-      document.documentElement.style.setProperty('--font-ar', fontAr);
-      document.documentElement.style.setProperty('--font-ml', fontMl);
-      document.documentElement.style.setProperty('--ar-color', colorAr);
-      document.documentElement.style.setProperty('--ml-color', colorMl);
-      document.documentElement.style.setProperty('--en-color', colorEn);
-      
-      // Also apply to visual mode text colors
-      document.querySelector('.vis-ar').style.color = colorAr;
-      document.querySelector('.vis-ml').style.color = colorMl;
-      document.querySelector('.vis-en').style.color = colorEn;
-      
-      // Save preferences
-      localStorage.setItem('font_ar', fontAr);
-      localStorage.setItem('font_ml', fontMl);
-      localStorage.setItem('font_en', fontEn);
-      localStorage.setItem('color_ar', colorAr);
-      localStorage.setItem('color_ml', colorMl);
-      localStorage.setItem('color_en', colorEn);
-      
-      renderPage();
-    }
-
-    function applyVisualShadow() {
-      const color = document.getElementById('visShadowColor').value;
-      const blur = document.getElementById('visShadowBlur').value;
-      document.getElementById('visShadowLabel').textContent = blur + 'px';
-      document.documentElement.style.setProperty('--text-shadow-color', color + 'CC');
-      document.documentElement.style.setProperty('--text-shadow-blur', blur + 'px');
-      localStorage.setItem('vis_shadow_color', color);
-      localStorage.setItem('vis_shadow_blur', blur);
-    }
-
-    /* =======================================================================
        CINEMATIC VISUAL REELS HOOK PIPELINES & YT ERR 153 FIX
        ======================================================================= */
     function openVisualMode() {
       document.getElementById('visualMode').classList.add('show');
       updateVisualChunk(); applyVisualBg();
-      if (!STATE.playing) { STATE.playing = true; playAudioLine(); updatePlayIcon(); }
+      if (!STATE.playing) { togglePlay(); }
     }
 
     function closeVisualMode() {
       document.getElementById('visualMode').classList.remove('show');
       document.getElementById('visualVideo').pause();
       document.getElementById('visualYoutube').src = '';
-      if (randomBgInterval) clearInterval(randomBgInterval);
       renderPage();
     }
 
     function updateVisualChunk() {
       const row = STATE.data[STATE.currentPage]; if (!row) return;
       const audioLangSetting = document.getElementById("optAudioLang").value;
-      document.getElementById('visArText').innerHTML = generateVisualWords(row.arPure, audioLangSetting === 'ar-EG');
-      document.getElementById('visMlText').innerHTML = generateVisualWords(row.mlPure, audioLangSetting === 'ml-IN');
-      document.getElementById('visEnText').innerHTML = generateVisualWords(row.enPure, audioLangSetting === 'en-US');
+      
+      let effectivePureAr = (PLAY_STATE.bookId === STATE.currentBookId) ? PLAY_STATE.data[PLAY_STATE.page]?.arPure : row.arPure;
+      let effectivePureMl = (PLAY_STATE.bookId === STATE.currentBookId) ? PLAY_STATE.data[PLAY_STATE.page]?.mlPure : row.mlPure;
+      let effectivePureEn = (PLAY_STATE.bookId === STATE.currentBookId) ? PLAY_STATE.data[PLAY_STATE.page]?.enPure : row.enPure;
+
+      document.getElementById('visArText').innerHTML = generateVisualWords(effectivePureAr, audioLangSetting === 'ar-EG');
+      document.getElementById('visMlText').innerHTML = generateVisualWords(effectivePureMl, audioLangSetting === 'ml-IN');
+      document.getElementById('visEnText').innerHTML = generateVisualWords(effectivePureEn, audioLangSetting === 'en-US');
     }
 
     function generateVisualWords(pureString, isCurrentAudioLang) {
       if(!pureString) return "...";
       let tokens = pureString.split(/(\s+)/); let activeTokenIdx = 0; let acc = 0;
+      let effectiveOffset = PLAY_STATE.charOffset;
+      
       for(let i=0; i<tokens.length; i++) {
-        if(acc <= STATE.charOffset) activeTokenIdx = i; else break;
+        if(acc <= effectiveOffset) activeTokenIdx = i; else break;
         acc += tokens[i].length;
       }
       let html = ""; acc = 0;
       tokens.forEach((token, idx) => {
         let isWord = token.trim() !== "";
-        let isHighlight = isCurrentAudioLang && (acc === STATE.charOffset) && isWord;
+        let isHighlight = isCurrentAudioLang && (acc <= effectiveOffset && acc + token.length > effectiveOffset) && isWord;
         let hlClass = isHighlight ? "word-hl" : "";
         if(Math.abs(idx - activeTokenIdx) <= 6) {
           if(isWord) html += `<span class="word-token ${hlClass}">${token}</span>`; else html += token;
@@ -1210,116 +1171,21 @@
     function changeVisualPage(delta) { changePage(delta); }
     function stopVisualAudio() { stopAudio(); }
 
-    function toggleVisualFullscreen() {
-      STATE.fullscreenZoom = !STATE.fullscreenZoom;
-      document.getElementById('visualMode').classList.toggle('fullscreen', STATE.fullscreenZoom);
-      localStorage.setItem('vis_fullscreen', STATE.fullscreenZoom ? 'true' : 'false');
-      applyVisualZoom();
-    }
-
-    function applyVisualZoom() {
-      const enabled = document.getElementById('optFullscreenZoom').checked;
-      STATE.fullscreenZoom = enabled;
-      document.getElementById('visualMode').classList.toggle('fullscreen', enabled);
-    }
-
     function applyVisualBg() {
-      const source = document.getElementById('optBgSource').value;
-      STATE.bgSource = source;
-      
-      document.getElementById('youtubeSettings').style.display = source === 'youtube' ? 'block' : 'none';
-      document.getElementById('folderSettings').style.display = source === 'folder' ? 'block' : 'none';
-      
-      if (source === 'youtube') {
-        const ytInput = document.getElementById('optYoutubeId').value.trim();
-        const videoEl = document.getElementById('visualVideo');
-        const youtubeEl = document.getElementById('visualYoutube');
-        let videoId = extractYoutubeId(ytInput);
-
-        if (videoId && videoId.length === 11) {
-          videoEl.style.display = 'none'; videoEl.pause(); youtubeEl.style.display = 'block';
-          youtubeEl.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&playsinline=1&showinfo=0&rel=0`;
-        } else {
-          youtubeEl.style.display = 'none'; youtubeEl.src = ''; videoEl.style.display = 'block';
-          videoEl.src = 'https://assets.mixkit.co/videos/preview/mixkit-forest-trees-3524-large.mp4';
-          videoEl.loop = true; videoEl.play().catch(() => {});
-        }
-      } else if (source === 'folder') {
-        applyFolderAsset();
-      }
-      adjustVideoScale();
-    }
-
-    function handleFolderAssets(event) {
-      const files = event.target.files;
-      STATE.folderAssets = [];
-      const assetList = document.getElementById('folderAssetList');
-      const selectEl = document.getElementById('optSelectedAsset');
-      selectEl.innerHTML = '';
-      
-      let images = [], audio = [];
-      for (let file of files) {
-        if (file.type.startsWith('image/')) images.push(file);
-        if (file.type.startsWith('audio/')) audio.push(file);
-      }
-      
-      STATE.folderAssets = { images, audio };
-      
-      let listHtml = '';
-      if (images.length) listHtml += `<div>🖼️ Images: ${images.map(f => f.name).join(', ')}</div>`;
-      if (audio.length) listHtml += `<div>🎵 Audio: ${audio.map(f => f.name).join(', ')}</div>`;
-      assetList.innerHTML = listHtml || 'No media files found';
-      
-      // Populate select with combined list
-      [...images, ...audio].forEach((file, idx) => {
-        selectEl.appendChild(new Option(file.name, idx));
-      });
-      
-      // Start random cycle if enabled
-      if (document.getElementById('optRandomBg').checked) {
-        startRandomBgCycle();
-      }
-    }
-
-    function applyFolderAsset() {
-      const selectEl = document.getElementById('optSelectedAsset');
-      const idx = parseInt(selectEl.value);
-      if (isNaN(idx) || !STATE.folderAssets || !STATE.folderAssets.images) return;
-      
-      const allAssets = [...STATE.folderAssets.images, ...STATE.folderAssets.audio];
-      if (idx >= allAssets.length) return;
-      
-      const file = allAssets[idx];
+      const ytInput = document.getElementById('optYoutubeId').value.trim();
       const videoEl = document.getElementById('visualVideo');
       const youtubeEl = document.getElementById('visualYoutube');
-      youtubeEl.style.display = 'none';
-      youtubeEl.src = '';
-      videoEl.style.display = 'block';
-      
-      if (file.type.startsWith('image/')) {
-        // For images, we show as video with image overlay
-        videoEl.src = URL.createObjectURL(file);
-        videoEl.loop = true;
-        videoEl.play().catch(() => {});
-      } else if (file.type.startsWith('audio/')) {
-        // For audio, keep video background but play audio
-        const audioEl = document.getElementById('ambRain'); // reuse ambient
-        audioEl.src = URL.createObjectURL(file);
-        if (STATE.playing) audioEl.play().catch(() => {});
-      }
-    }
+      let videoId = extractYoutubeId(ytInput);
 
-    function startRandomBgCycle() {
-      if (randomBgInterval) clearInterval(randomBgInterval);
-      STATE.randomBg = true;
-      randomBgInterval = setInterval(() => {
-        if (!STATE.folderAssets || !STATE.folderAssets.images) return;
-        const allAssets = [...STATE.folderAssets.images, ...STATE.folderAssets.audio];
-        if (allAssets.length < 2) return;
-        const randomIdx = Math.floor(Math.random() * allAssets.length);
-        document.getElementById('optSelectedAsset').value = randomIdx;
-        applyFolderAsset();
-      }, 10000);
+      if (videoId) {
+        videoEl.style.display = 'none'; videoEl.pause(); youtubeEl.style.display = 'block';
+        youtubeEl.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&playsinline=1&showinfo=0&rel=0`;
+      } else {
+        youtubeEl.style.display = 'none'; youtubeEl.src = ''; videoEl.style.display = 'block';
+        videoEl.src = 'https://assets.mixkit.co/videos/preview/mixkit-forest-trees-3524-large.mp4';
+        videoEl.loop = true; videoEl.play().catch(() => {});
+      }
+      adjustVideoScale();
     }
 
     function extractYoutubeId(url) {
@@ -1420,7 +1286,13 @@
       renderTOCLevel();
     }
 
-    function jumpToPage(index) { STATE.currentPage = index; STATE.charOffset = 0; saveState(); renderPage(); if(STATE.playing) playAudioLine(); }
+    function jumpToPage(index) { 
+        STATE.currentPage = index; STATE.charOffset = 0; saveState(); 
+        renderPage(); 
+        if(STATE.playing && PLAY_STATE.bookId === STATE.currentBookId) { 
+            PLAY_STATE.page = index; PLAY_STATE.charOffset = 0; playAudioLine(); 
+        } 
+    }
     
     /* =======================================================================
        MEDIA INTERACTION UTILITIES & BACKGROUND CONTROLS
@@ -1429,17 +1301,18 @@
       if('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', togglePlay);
         navigator.mediaSession.setActionHandler('pause', togglePlay);
-        navigator.mediaSession.setActionHandler('nexttrack', () => changePage(1));
-        navigator.mediaSession.setActionHandler('previoustrack', () => changePage(-1));
+        navigator.mediaSession.setActionHandler('nexttrack', () => { if(STATE.playing) changePage(1); });
+        navigator.mediaSession.setActionHandler('previoustrack', () => { if(STATE.playing) changePage(-1); });
         navigator.mediaSession.setActionHandler('stop', stopAudio);
       }
     }
 
     function updateMediaSessionMeta() {
-      if('mediaSession' in navigator && STATE.currentBook) {
-        let b = STATE.data[STATE.currentPage];
+      if('mediaSession' in navigator && PLAY_STATE.bookId) {
+        let activeBookMeta = STATE.books.find(b => b.id === PLAY_STATE.bookId);
+        let b = PLAY_STATE.data[PLAY_STATE.page];
         navigator.mediaSession.metadata = new MediaMetadata({
-          title: STATE.currentBook.title,
+          title: activeBookMeta ? activeBookMeta.title : 'Digital Library',
           artist: `ഭാഗം ${b?.part || ''} - പേജ് ${b?.page || ''}`,
           album: 'Adventure Premium Sandbox'
         });
@@ -1477,32 +1350,36 @@
       document.documentElement.style.setProperty('--font-scale', size + 'px');
       localStorage.setItem('m_rb_fsize', size); renderPage();
     }
+    
+    function applyFonts() {
+      const fontMl = document.getElementById('optFontMl').value;
+      const fontAr = document.getElementById('optFontAr').value;
+      const fontEn = document.getElementById('optFontEn').value;
+      
+      document.documentElement.style.setProperty('--font-ml', fontMl);
+      document.documentElement.style.setProperty('--font-ar', fontAr);
+      document.documentElement.style.setProperty('--font-en', fontEn);
+      
+      localStorage.setItem('pref_font_ml', fontMl);
+      localStorage.setItem('pref_font_ar', fontAr);
+      localStorage.setItem('pref_font_en', fontEn);
+    }
 
     function loadPreferences() {
       setTheme(localStorage.getItem('m_rb_theme') || 'light');
       document.getElementById('optFontSize').value = localStorage.getItem('m_rb_fsize') || '18';
+      
+      let fMl = localStorage.getItem('pref_font_ml') || "'Manjari', sans-serif";
+      let fAr = localStorage.getItem('pref_font_ar') || "'Amiri', serif";
+      let fEn = localStorage.getItem('pref_font_en') || "sans-serif";
+      
+      if(document.getElementById('optFontMl')) document.getElementById('optFontMl').value = fMl;
+      if(document.getElementById('optFontAr')) document.getElementById('optFontAr').value = fAr;
+      if(document.getElementById('optFontEn')) document.getElementById('optFontEn').value = fEn;
+      
+      applyFonts();
       applyFontSize();
       STATE.showAr = true; STATE.showMl = true; STATE.showEn = true;
-      
-      // Load font preferences
-      document.getElementById('fontAr').value = localStorage.getItem('font_ar') || 'Amiri';
-      document.getElementById('fontMl').value = localStorage.getItem('font_ml') || 'Manjari';
-      document.getElementById('fontEn').value = localStorage.getItem('font_en') || 'Manjari';
-      document.getElementById('colorAr').value = localStorage.getItem('color_ar') || '#1a5f7a';
-      document.getElementById('colorMl').value = localStorage.getItem('color_ml') || '#2c3e50';
-      document.getElementById('colorEn').value = localStorage.getItem('color_en') || '#7f8c8d';
-      
-      // Load visual shadow preferences
-      document.getElementById('visShadowColor').value = localStorage.getItem('vis_shadow_color') || '#000000';
-      document.getElementById('visShadowBlur').value = localStorage.getItem('vis_shadow_blur') || '8';
-      applyVisualShadow();
-      
-      // Load fullscreen preference
-      const fs = localStorage.getItem('vis_fullscreen') === 'true';
-      document.getElementById('optFullscreenZoom').checked = fs;
-      STATE.fullscreenZoom = fs;
-      
-      applyFontSettings();
     }
 
     function renderAllViews() {
@@ -1529,14 +1406,6 @@
         if(opt === 'nasheed') { nasheed.volume = 0.15; nasheed.play().catch(()=>{}); }
       }
     }
-
-    // Handle background source toggle
-    document.addEventListener('DOMContentLoaded', function() {
-      const bgSource = document.getElementById('optBgSource');
-      if (bgSource) {
-        bgSource.onchange = applyVisualBg;
-      }
-    });
   </script>
 </body>
 </html>
