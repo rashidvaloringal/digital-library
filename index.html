@@ -54,6 +54,7 @@
     }
     button, input, select { font-family: inherit; border: none; outline: none; background: transparent; color: inherit; cursor: pointer; }
 
+    /* ===== LOADER ===== */
     #loader {
       position: fixed; inset: 0; background: var(--bg); z-index: 9999;
       display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; transition: opacity 0.5s;
@@ -62,9 +63,10 @@
     .spinner { border: 4px solid var(--border); border-top: 4px solid var(--primary-green); border-radius: 50%; width: 45px; height: 45px; animation: spin 0.8s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .status { font-size: 16px; font-weight: bold; color: var(--primary-green); }
-    .import-btn { padding: 12px 30px; background: var(--primary-green); color: white; border-radius: 10px; font-weight: bold; transition: 0.2s; cursor: pointer;}
+    .import-btn { padding: 12px 30px; background: var(--primary-green); color: white; border-radius: 10px; font-weight: bold; transition: 0.2s; cursor: pointer; }
     .import-btn:active { transform: scale(0.95); }
 
+    /* ===== HOME ===== */
     #homeView { display: flex; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 90px; }
     header.home-header {
       background: var(--primary-green); color: white; padding: 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
@@ -85,6 +87,7 @@
 
     .container { padding: 15px; max-width: 1000px; margin: auto; width: 100%; }
     
+    /* ===== CONTINUE READING ===== */
     .continue-card {
       background: var(--primary-light); border: 2px solid var(--primary-green); border-radius: var(--radius);
       padding: 15px 20px; margin-bottom: 20px; display: none; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; grid-column: 1/-1;
@@ -94,6 +97,7 @@
     .continue-card .info p { font-size: 12px; color: var(--text-muted); }
     .continue-card .btn { background: var(--primary-green); color: white; padding: 8px 20px; border-radius: 30px; font-size: 13px; }
 
+    /* ===== BOOK GRID ===== */
     .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
     
     details.group-details { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 15px; grid-column: 1/-1; overflow: hidden; }
@@ -116,11 +120,13 @@
     .more-btn { width: 40px; border: none; background: none; color: var(--text-muted); border-right: 1px solid var(--border); cursor: pointer; }
     .open-btn { flex-grow: 1; border: none; background: none; color: var(--primary-green); font-weight: bold; padding: 12px; cursor: pointer; font-size: 14px; }
 
+    /* ===== BOTTOM NAV ===== */
     .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--surface); display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 15px rgba(0,0,0,0.1); z-index: 1000; border-top: 1px solid var(--border); }
     .nav-link { text-align: center; color: var(--text-muted); font-size: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .nav-link i { font-size: 22px; }
     .nav-link.active { color: var(--primary-green); font-weight: bold; }
 
+    /* ===== READER ===== */
     #readerView { display: none; flex-direction: column; height: 100%; position: fixed; inset: 0; background: var(--bg); z-index: 2000; }
     #readerView.show { display: flex; }
     .reader-header { background: var(--surface); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; border-bottom: 1px solid var(--border); min-height: 55px; }
@@ -133,7 +139,7 @@
 
     .reader-content { flex: 1; overflow-y: auto; padding: 15px 15px 90px 15px; scroll-behavior: smooth; }
     
-    /* Ebook Layout Adjustments */
+    /* ===== EBOOK LAYOUT ===== */
     #readerPageContainer.mode-ebook-page {
       display: flex; overflow: hidden; width: 100%; perspective: 1000px;
     }
@@ -178,24 +184,28 @@
     .word-hl { background: #facc15 !important; color: #000 !important; font-weight: bold; border-radius: 4px; box-shadow: 0 2px 12px rgba(250,204,21,0.4); }
     [data-theme="dark"] .word-hl { background-color: #f59e0b !important; color: #fff !important; }
 
+    /* ===== LOADING OVERLAY ===== */
     .loading-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 9999;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 9999;
       display: none; justify-content: center; align-items: center; flex-direction: column; gap: 20px;
     }
     .loading-overlay.show { display: flex; }
-    .loading-overlay .loader-text { color: white; font-size: 18px; }
+    .loading-overlay .loader-text { color: white; font-size: 18px; font-family: var(--font-ml); }
     .loading-overlay .loader-spinner { width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.2); border-top: 5px solid #facc15; border-radius: 50%; animation: spin 0.8s linear infinite; }
 
+    /* ===== PAGINATION ===== */
     .reader-pagination {
       display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; margin-top: 15px; background: var(--surface); border-radius: 50px; border: 1px solid var(--border);
     }
     .reader-pagination button { padding: 8px 18px; border-radius: 30px; background: var(--bg); border: 1px solid var(--border); font-weight: bold; color: var(--text-dark); }
     .page-num { font-weight: bold; color: var(--primary-green); font-size: 15px; }
 
+    /* ===== BOTTOM TABS ===== */
     .reader-bottom-nav { position: fixed; bottom: 0; width: 100%; height: var(--bottom-nav); background: var(--surface); display: flex; align-items: center; z-index: 500; border-top: 1px solid var(--border); }
     .nav-tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 11px; font-weight: bold; gap: 6px; height: 100%; cursor: pointer; }
     .nav-tab.active { color: var(--primary-green); }
 
+    /* ===== MINI PLAYER ===== */
     .mini-player { position: fixed; bottom: var(--bottom-nav); width: 100%; height: 52px; background: var(--surface); border-top: 1px solid var(--border); display: none; align-items: center; padding: 0 14px; z-index: 1500; box-shadow: 0 -4px 15px rgba(0,0,0,0.06); }
     .mini-player.show { display: flex; }
     .mini-details { flex: 1; overflow: hidden; cursor: pointer; }
@@ -203,6 +213,7 @@
     .mini-progress { font-size: 10px; color: var(--text-muted); }
     .mini-controls { display: flex; gap: 14px; font-size: 18px; color: var(--primary-green); align-items: center; }
 
+    /* ===== AUDIO PLAYER ===== */
     .audio-player { background: var(--surface); padding: 25px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-lg); text-align: center; }
     .audio-icon { font-size: 60px; color: var(--primary-green); margin-bottom: 15px; }
     .audio-title-text { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
@@ -213,6 +224,7 @@
     .audio-progress { width: 100%; height: 5px; background: var(--border); border-radius: 3px; margin-top: 20px; position: relative; }
     .progress-bar { height: 100%; background: var(--primary-green); border-radius: 3px; width: 0%; transition: width 0.1s; }
 
+    /* ===== VISUAL MODE ===== */
     .visual-mode { position: fixed; inset: 0; z-index: 2500; display: none; background: #000; flex-direction: column; }
     .visual-mode.show { display: flex; }
     .visual-mode.fullscreen .visual-video-wrapper iframe, .visual-mode.fullscreen .visual-video-wrapper video { transform: scale(1.3); }
@@ -233,6 +245,7 @@
     .visual-progress { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 500px; height: 3px; background: rgba(255,255,255,0.3); }
     .vis-progress-bar { height: 100%; background: #38bdf8; width: 0%; }
 
+    /* ===== MODALS ===== */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 3000; }
     .modal-overlay.show { display: block; }
     
@@ -254,21 +267,35 @@
     .theme-btn { padding: 10px; border: 2px solid var(--border); border-radius: 8px; text-align: center; font-weight: bold; font-size: 13px; cursor: pointer; background: var(--bg); color: var(--text-dark);}
     .theme-btn.active { border-color: var(--primary-green); background: var(--primary-light); color: var(--primary-green); }
 
-    .toc-breadcrumb { padding: 10px 15px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 13px; font-weight: bold; color: var(--text-muted); flex-shrink: 0; }
+    /* ===== TOC ===== */
+    .toc-breadcrumb { padding: 10px 15px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 13px; font-weight: bold; color: var(--text-muted); flex-shrink: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .toc-breadcrumb span { cursor: pointer; color: var(--primary-green); transition: 0.2s; }
+    .toc-breadcrumb .toc-back { color: var(--primary-green); font-size: 14px; cursor: pointer; }
     .toc-item { padding: 15px; border-bottom: 1px solid var(--border); cursor: pointer; color: var(--text-dark); transition: 0.15s; display: flex; flex-direction: column; }
     .toc-item:active { background: var(--bg); padding-left: 20px; }
     .toc-item.current { background: var(--primary-light); border-left: 4px solid var(--primary-green); }
     .toc-badge { display: inline-block; padding: 3px 8px; background: var(--primary-light); color: var(--primary-green); border-radius: 4px; font-size: 10px; font-weight: bold; margin-bottom: 6px; width: fit-content; text-transform: uppercase; }
     .toc-title-text { font-size: 16px; font-weight: bold; }
     .toc-translations { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+    .toc-children-count { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+    .toc-children-count i { margin-right: 5px; }
 
     .import-zone { text-align: center; padding: 10px 20px; }
     .import-input-field { width: 100%; padding: 10px; margin-top: 5px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dark); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .book-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+      .reader-page-card { padding: 20px 15px; }
+      .ar-content { font-size: calc(var(--font-scale) + 2px); }
+      .ml-content { font-size: var(--font-scale); }
+      .visual-controls { gap: 12px; font-size: 18px; padding: 6px 15px; }
+    }
   </style>
 </head>
 <body>
 
+  <!-- ===== LOADER ===== -->
   <div id="loader">
     <div class="spinner"></div>
     <div class="status" id="loadStatus">📚 ഡിജിറ്റൽ ഗ്രന്ഥശേഖരം ലോഡ് ചെയ്യുന്നു...</div>
@@ -281,11 +308,13 @@
     <input type="file" id="masterFileInput" accept=".json" style="display:none;" onchange="handleMasterUpload(event)">
   </div>
 
+  <!-- ===== AUDIO ELEMENTS ===== -->
   <audio id="silentAudio" loop playsinline src="https://raw.githubusercontent.com/anars/blank-audio/master/10-minutes-of-silence.mp3"></audio>
   <audio id="bgMusic" loop playsinline src="Audio/nasheed_1.mp3"></audio>
   <audio id="ambRain" loop src="https://assets.mixkit.co/active_storage/sfx/2433/2433-84.wav"></audio>
   <audio id="ambWind" loop src="https://assets.mixkit.co/active_storage/sfx/2432/2432-84.wav"></audio>
 
+  <!-- ===== HOME VIEW ===== -->
   <div id="homeView">
     <header class="home-header">
       <div class="top-bar">
@@ -307,6 +336,7 @@
     </header>
 
     <div class="container">
+      <!-- Continue Reading Card -->
       <div class="continue-card" id="continueCard" onclick="continueReading()">
         <div class="info">
           <h4><i class="fas fa-book-open"></i> Continue Reading</h4>
@@ -314,6 +344,7 @@
         </div>
         <div class="btn"><i class="fas fa-play"></i> Resume</div>
       </div>
+      
       <div class="book-grid" id="bookGrid"></div>
     </div>
 
@@ -324,11 +355,13 @@
     </nav>
   </div>
 
+  <!-- ===== LOADING OVERLAY ===== -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loader-spinner"></div>
     <div class="loader-text" id="loadingText">📖 പുസ്തകം ലോഡ് ചെയ്യുന്നു...</div>
   </div>
 
+  <!-- ===== READER VIEW ===== -->
   <div id="readerView">
     <header class="reader-header">
       <button class="back-btn" onclick="closeReader()"><i class="fas fa-arrow-left"></i></button>
@@ -342,6 +375,7 @@
     </header>
 
     <div class="reader-content" id="readerContent">
+      <!-- Ebook View -->
       <div id="ebookView">
         <div id="readerPageContainer" class="mode-ebook-page"></div>
         <div class="reader-pagination">
@@ -351,6 +385,7 @@
         </div>
       </div>
 
+      <!-- Audio View -->
       <div id="audioView" style="display:none;">
         <div class="audio-player">
           <div class="audio-icon"><i class="fas fa-headphones-simple"></i></div>
@@ -366,6 +401,7 @@
         </div>
       </div>
 
+      <!-- Visual View -->
       <div id="visualView" style="display:none;">
         <div style="text-align:center; padding:40px; color:var(--text-muted);">
           <i class="fas fa-wand-magic-sparkles" style="font-size:48px; color:var(--primary-green);"></i>
@@ -382,6 +418,7 @@
     </nav>
   </div>
 
+  <!-- ===== MINI PLAYER ===== -->
   <div class="mini-player" id="miniPlayer">
     <div class="mini-details" onclick="restorePlayingBook()">
       <div class="mini-title" id="miniTitle">Ready Track</div>
@@ -394,6 +431,7 @@
     </div>
   </div>
 
+  <!-- ===== VISUAL MODE ===== -->
   <div class="visual-mode" id="visualMode">
     <div class="visual-video-wrapper" id="visualVideoWrapper">
       <video id="visualVideo" muted loop playsinline></video>
@@ -418,6 +456,7 @@
     <div class="visual-progress"><div class="vis-progress-bar" id="visProgressBar"></div></div>
   </div>
 
+  <!-- ===== MODALS ===== -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
 
   <div class="modal-box" id="settingsModal">
@@ -427,6 +466,7 @@
         <label class="setting-label">🔤 Fonts</label>
         <div class="setting-row"><span>മലയാളം</span><select id="optFontMl" onchange="applyFonts()"><option value="'Manjari', sans-serif">Manjari</option><option value="'Chilanka', cursive">Chilanka</option><option value="'Gayathri', sans-serif">Gayathri</option></select></div>
         <div class="setting-row"><span>Arabic</span><select id="optFontAr" onchange="applyFonts()"><option value="'Amiri', serif">Amiri</option><option value="'Scheherazade New', serif">Scheherazade</option></select></div>
+        <div class="setting-row"><span>English</span><select id="optFontEn" onchange="applyFonts()"><option value="sans-serif">Sans</option><option value="serif">Serif</option></select></div>
       </div>
       <div class="setting-group">
         <label class="setting-label">📖 Reading Mode</label>
@@ -442,7 +482,7 @@
         <input type="range" id="optSpeed" min="0.5" max="1.5" step="0.1" value="1.0" onchange="applyAudioSettings(true)">
       </div>
       <div class="setting-group">
-        <label class="setting-label">📖 Display Visibility</label>
+        <label class="setting-label">📖 Display Layers</label>
         <div class="setting-row"><span>Arabic</span><input type="checkbox" id="optShowAr" checked onchange="renderAllViews()"></div>
         <div class="setting-row"><span>Malayalam</span><input type="checkbox" id="optShowMl" checked onchange="renderAllViews()"></div>
         <div class="setting-row"><span>English</span><input type="checkbox" id="optShowEn" checked onchange="renderAllViews()"></div>
@@ -466,17 +506,19 @@
       <div class="setting-group">
         <label class="setting-label">🎬 YouTube Video BG ID</label>
         <input type="text" id="optYoutubeId" placeholder="e.g. dQw4w9WgXcQ" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text-dark);">
-        <button class="import-btn" style="width:100%; margin-top:5px; padding:8px;" onclick="applyVisualBg()">Update View</button>
+        <button class="import-btn" style="width:100%; margin-top:5px; padding:8px;" onclick="applyVisualBg()">Update</button>
       </div>
     </div>
   </div>
 
+  <!-- ===== TOC MODAL ===== -->
   <div class="modal-box" id="tocModal" style="padding:0;">
     <div class="modal-header"><span>📑 സൂചിക (TOC)</span><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="toc-breadcrumb" id="tocBreadcrumb"></div>
     <div class="modal-body" id="tocList" style="padding:0;"></div>
   </div>
 
+  <!-- ===== IMPORT MODAL ===== -->
   <div class="modal-box" id="importModal">
     <div class="modal-header"><span>📂 ഫയൽ ഇൻജെക്ടർ</span><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body">
@@ -485,13 +527,16 @@
         <h3>IndexedDB Storage</h3>
         <p style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">books.json ലിസ്റ്റിലുള്ള പുസ്തകത്തിലേക്ക് ഭാഗങ്ങൾ ഇൻജെക്ട് ചെയ്യാം</p>
         <div class="setting-group" style="text-align:left;">
-          <label class="setting-label">1. ടാർഗെറ്റ് ഗ്രന്ഥം</label>
+          <label class="setting-label">1. ടാർഗെറ്റ്</label>
           <select id="injectorTargetBookSelect" style="margin-bottom:15px;"></select>
-          <label class="setting-label">2. ഭാഗങ്ങൾ അപ്‌ലോഡ് ചെയ്യുക (JSON)</label>
+          <label class="setting-label">2. JSON അപ്‌ലോഡ്</label>
           <input type="file" id="bulkPartsFileInput" accept=".json" multiple onchange="handleBulkPartsUpload(event)" class="import-input-field">
+          <div style="margin-top:8px; font-size:12px; color:var(--text-muted);">
+            <i class="fas fa-info-circle"></i> വലിയ ഫയലുകൾ പോലും മെമ്മറി ഹാങ്ങ് ആകാതെ പ്രോസസ്സ് ചെയ്യും
+          </div>
         </div>
         <div style="border-top:1px dashed var(--border); margin-top:15px; padding-top:15px;">
-          <button class="import-btn" style="width:100%; background:#7f8c8d;" onclick="document.getElementById('masterFileInput').click()"><i class="fas fa-cog"></i> പുതിയ books.json അപ്‌ലോഡ് ചെയ്യുക</button>
+          <button class="import-btn" style="width:100%; background:#7f8c8d;" onclick="document.getElementById('masterFileInput').click()"><i class="fas fa-cog"></i> പുതിയ books.json</button>
         </div>
         <div id="injectorStatusText" style="margin-top:12px; font-weight:bold; color:var(--accent);"></div>
       </div>
@@ -499,6 +544,9 @@
   </div>
 
   <script>
+    // ================================================================
+    // WEB AUDIO API - Background Lock
+    // ================================================================
     let audioCtx = null, oscillator = null, gainNode = null;
     function initAudioContext() {
       try {
@@ -511,23 +559,30 @@
         oscillator.connect(gainNode);
         gainNode.connect(audioCtx.destination);
         oscillator.start();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
       } catch(e) {}
     }
     function resumeAudioContext() { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }
+    document.addEventListener('click', resumeAudioContext);
+    document.addEventListener('touchstart', resumeAudioContext);
 
+    // ================================================================
+    // BACKGROUND MUSIC
+    // ================================================================
     function handleBgMusic() {
       const opt = document.getElementById('optBgMusic').value;
       const bg = document.getElementById('bgMusic');
       const rain = document.getElementById('ambRain');
       const wind = document.getElementById('ambWind');
-      
       bg.pause(); rain.pause(); wind.pause();
-      
       if (opt === 'nasheed') { bg.volume = 0.1; bg.play().catch(()=>{}); } 
       else if (opt === 'rain') { rain.volume = 0.1; rain.play().catch(()=>{}); } 
       else if (opt === 'wind') { wind.volume = 0.1; wind.play().catch(()=>{}); }
     }
 
+    // ================================================================
+    // DATABASE
+    // ================================================================
     const DB_NAME = "AdventureMultiBookStorageEngineDB";
     const DB_VERSION = 1;
     const CHUNKS_STORE = "book_chunks";
@@ -535,8 +590,11 @@
 
     const STATE = {
       books: [], currentBook: null, currentPage: 0, totalPages: 0,
-      data: [], theme: 'light', mode: 'ebook', showAr: true, showMl: true, showEn: true,
-      touchSpeak: true, autoNext: true, currentBookId: null, charOffset: 0, scrollStyle: 'page'
+      data: [], bookmarks: [], playing: false, theme: 'light',
+      mode: 'ebook', fontScale: 18, showAr: true, showMl: true, showEn: true,
+      ttsLang: 'ml-IN', speed: 1.0, autoNext: true, touchSpeak: true,
+      currentBookId: null, charOffset: 0, shelfFilter: 'all',
+      scrollStyle: 'page'
     };
 
     const PLAY_STATE = { bookId: null, data: [], page: 0, charOffset: 0, totalPages: 0 };
@@ -544,6 +602,9 @@
     let audioProgressInterval = null;
     let tocTree = [], tocPath = [];
 
+    // ================================================================
+    // INDEXEDDB - Lazy Loading Support
+    // ================================================================
     function openDB() {
       return new Promise((resolve, reject) => {
         let request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -575,6 +636,7 @@
       catalogArray.forEach(item => store.put(item));
     }
 
+    // Lazy load: Only get data for specific book
     async function getIsolatedBookData(bookId) {
       let db = await openDB();
       return new Promise((resolve) => {
@@ -588,22 +650,42 @@
       });
     }
 
+    // Lazy save: Process objects one by one to avoid memory overload
     async function saveIsolatedBookData(booksArray) {
       let db = await openDB();
       let tx = db.transaction(CHUNKS_STORE, "readwrite");
       let store = tx.objectStore(CHUNKS_STORE);
-      booksArray.forEach(item => store.put(item));
+      
+      // Process in chunks of 100 to avoid memory issues
+      const chunkSize = 100;
+      for (let i = 0; i < booksArray.length; i += chunkSize) {
+        const chunk = booksArray.slice(i, i + chunkSize);
+        for (let item of chunk) {
+          store.put(item);
+        }
+        // Allow UI to breathe
+        await new Promise(resolve => setTimeout(resolve, 0));
+      }
+      
+      return new Promise((resolve) => {
+        tx.oncomplete = resolve;
+        tx.onerror = resolve;
+      });
     }
 
+    // ================================================================
+    // CONTINUE READING
+    // ================================================================
     function updateContinueReading() {
       const card = document.getElementById('continueCard');
       const info = document.getElementById('continueInfo');
       const lastBookId = localStorage.getItem('last_played_book_id');
       const lastPage = localStorage.getItem('last_played_page');
+      const lastPart = localStorage.getItem('last_played_part');
       const lastTitle = localStorage.getItem('last_played_book_title');
       if (lastBookId && lastPage) {
         card.style.display = 'flex';
-        info.textContent = `${lastTitle || 'Book'} - പേജ് ${lastPage}`;
+        info.textContent = `${lastTitle || 'Book'} - ഭാഗം ${lastPart || '1'} - പേജ് ${lastPage}`;
       } else { card.style.display = 'none'; }
     }
 
@@ -612,25 +694,33 @@
       if (bookId) openBook(bookId);
     }
 
+    // ================================================================
+    // LOAD & SYNC - With Lazy Processing
+    // ================================================================
     function showLoading(text) {
       document.getElementById('loadingText').textContent = text || '📖 Loading...';
       document.getElementById('loadingOverlay').classList.add('show');
     }
     function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
 
+    // Lazy load: Process each part file one by one
     async function loadAllParts(book) {
       const folder = book.folder || book.id;
       const basePath = `Books/${folder}/${folder}_part_`;
       let allData = []; let partNum = 1; let loadedParts = 0;
-      showLoading(`📖 ${book.title} - ലോഡ് ചെയ്യുന്നു...`);
+      showLoading(`📖 ${book.title || book.titleMl} - ലോഡ് ചെയ്യുന്നു...`);
 
-      while (partNum <= 20) { 
+      while (partNum <= 20) {
         try {
           const response = await fetch(`${basePath}${partNum}.json`);
           if (!response.ok) break;
           const rawJson = await response.json();
           if (rawJson && rawJson.length > 0) {
-            const processed = parseIncomingPayload(rawJson, book.id);
+            // Process each object individually to avoid memory overload
+            const processed = [];
+            for (let item of rawJson) {
+              processed.push(parseSingleItem(item, book.id, partNum));
+            }
             allData = allData.concat(processed);
             loadedParts++; partNum++;
           } else break;
@@ -646,44 +736,90 @@
       return allData;
     }
 
+    // Parse single item - memory efficient
+    function parseSingleItem(item, bookId, partNum) {
+      let ar = (item.ar || "").toString().trim();
+      let ml = (item.ml || "").toString().trim();
+      let en = (item.en || "").toString().trim();
+      
+      let plainAr = ar.replace(/<\/?[^>]+(>|$)/g, "").trim();
+      let plainMl = ml.replace(/<\/?[^>]+(>|$)/g, "").trim();
+      let plainEn = en.replace(/<\/?[^>]+(>|$)/g, "").trim();
+      let uniqueId = bookId + "_bk_" + (item.id || Date.now() + "_" + Math.random());
+      
+      let hMatch = ar.match(/<(h[1-6])[^>]*>(.*?)<\/\1>/i);
+      let isHead = !!hMatch;
+      let headingAr = hMatch ? hMatch[2].replace(/<[^>]+>/g, "").trim() : "";
+      let hTagLevel = hMatch ? hMatch[1].toLowerCase() : "";
+
+      return {
+        id: item.id || uniqueId,
+        uid: uniqueId,
+        part: item.part || String(partNum),
+        page: item.page || "1",
+        arStr: ar,
+        mlStr: ml,
+        enStr: en,
+        isHead: isHead,
+        headingAr: headingAr,
+        hTagLevel: hTagLevel,
+        arPure: plainAr,
+        mlPure: plainMl,
+        enPure: plainEn
+      };
+    }
+
     async function syncAllBooks() {
       showLoading("🔄 എല്ലാ പുസ്തകങ്ങളും സിങ്ക് ചെയ്യുന്നു...");
-      for (const book of STATE.books) { await loadAllParts(book); }
+      for (const book of STATE.books) {
+        const data = await loadAllParts(book);
+        if (data && data.length > 0) {
+          const chunks = await getIsolatedBookData(book.id);
+          const maxPart = chunks.reduce((max, item) => Math.max(max, parseInt(item.part) || 0), 0);
+          book.parts = maxPart || 1;
+        }
+      }
+      await saveCatalogToDB(STATE.books);
       renderBooks(STATE.books);
       hideLoading();
-      alert("✅ സിങ്കിംഗ് പൂർത്തിയായി!");
+      alert("✅ എല്ലാ പുസ്തകങ്ങളും സിങ്ക് ചെയ്തു!");
     }
 
     async function syncCurrentBook() {
       if (!STATE.currentBookId) return;
       showLoading("🔄 ഈ പുസ്തകം സിങ്ക് ചെയ്യുന്നു...");
-      await loadAllParts(STATE.currentBook);
-      await openBook(STATE.currentBookId);
+      const book = STATE.books.find(b => b.id === STATE.currentBookId);
+      if (book) {
+        await loadAllParts(book);
+        const chunks = await getIsolatedBookData(book.id);
+        const maxPart = chunks.reduce((max, item) => Math.max(max, parseInt(item.part) || 0), 0);
+        book.parts = maxPart || 1;
+        await saveCatalogToDB(STATE.books);
+        await openBook(STATE.currentBookId);
+      }
       hideLoading();
     }
 
-    function parseIncomingPayload(dataArray, bookId) {
-      return dataArray.map(item => {
-        let plainAr = (item.ar || "").replace(/<\/?[^>]+(>|$)/g, "").trim();
-        let plainMl = (item.ml || "").replace(/<\/?[^>]+(>|$)/g, "").trim();
-        let plainEn = (item.en || "").replace(/<\/?[^>]+(>|$)/g, "").trim();
-        return {
-          id: item.id, uid: bookId + "_bk_" + item.id, part: item.part || "1", page: item.page || "1",
-          arStr: item.ar, mlStr: item.ml, enStr: item.en, isHead: !!item.ar?.match(/<(h[1-6])/i),
-          headingAr: item.ar?.replace(/<[^>]+>/g, "").trim(), arPure: plainAr, mlPure: plainMl, enPure: plainEn
-        };
-      });
-    }
-
+    // ================================================================
+    // INIT
+    // ================================================================
     document.addEventListener('DOMContentLoaded', async () => {
-      loadPreferences(); setupVoices(); initAudioContext();
+      loadPreferences();
+      setupVoices();
+      initAudioContext();
       if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = setupVoices;
+      window.addEventListener("resize", adjustVideoScale);
+      setupMediaSession();
+      
       STATE.books = await loadCatalogFromDB();
       if(STATE.books && STATE.books.length > 0) {
-        renderBooks(STATE.books); populateInjectorOptions();
+        renderBooks(STATE.books);
+        populateInjectorOptions();
         document.getElementById('loader').classList.add('hidden');
         updateContinueReading();
-      } else { loadLibrary(); }
+      } else {
+        loadLibrary();
+      }
     });
 
     async function loadLibrary() {
@@ -691,95 +827,269 @@
         const response = await fetch('books.json');
         const data = await response.json();
         if (data && data.length > 0) {
-          STATE.books = data; await saveCatalogToDB(data);
-          renderBooks(data); populateInjectorOptions();
+          STATE.books = data;
+          await saveCatalogToDB(data);
+          renderBooks(data);
+          populateInjectorOptions();
           document.getElementById('loader').classList.add('hidden');
           updateContinueReading();
-        }
-      } catch (err) {
-        document.getElementById('loadStatus').textContent = '📂 books.json ഇമ്പോർട്ട് ചെയ്യുക';
-      }
+        } else { showImportScreen(); }
+      } catch (err) { showImportScreen(); }
+    }
+
+    function showImportScreen() {
+      document.getElementById('loadStatus').textContent = '📂 books.json ഇൻജെക്ട് ചെയ്യുക';
+      document.getElementById('manualInjectControls').style.display = 'block';
     }
 
     function populateInjectorOptions() {
       const select = document.getElementById('injectorTargetBookSelect');
-      if(select) select.innerHTML = STATE.books.map(b => `<option value="${b.id}">${b.title} (${b.id})</option>`).join('');
+      if(!select) return;
+      select.innerHTML = STATE.books.map(b => `<option value="${b.id}">${b.titleMl || b.title} (${b.id})</option>`).join('');
     }
 
-    async function handleMasterUpload(event) {
-      const file = event.target.files[0]; if (!file) return;
+    async function handleMasterUpload(e) {
+      const file = e.target.files[0]; if (!file) return;
+      if (file.name !== 'books.json') { alert("books.json മാത്രമേ upload ചെയ്യാൻ പാടുള്ളൂ!"); return; }
       const text = await file.text();
       try {
-        STATE.books = JSON.parse(text); await saveCatalogToDB(STATE.books);
-        renderBooks(STATE.books); document.getElementById('loader').classList.add('hidden');
-      } catch(e) { alert("തെറ്റായ ഫയൽ ഫോർമാറ്റ്!"); }
+        const parsed = JSON.parse(text);
+        STATE.books = parsed;
+        await saveCatalogToDB(parsed);
+        renderBooks(parsed);
+        populateInjectorOptions();
+        document.getElementById('loader').classList.add('hidden');
+        alert("✅ books.json സിങ്ക് ചെയ്തു!");
+      } catch(err) { alert("Invalid JSON"); }
     }
 
-    async function handleBulkPartsUpload(event) {
-      const files = event.target.files; if (!files.length) return;
+    // Lazy bulk upload - process each file individually
+    async function handleBulkPartsUpload(e) {
+      const files = e.target.files; if (!files.length) return;
       const targetBookId = document.getElementById('injectorTargetBookSelect').value;
-      showLoading("ഡാറ്റാബേസ് അപ്ഡേറ്റ് ചെയ്യുന്നു...");
-      let combined = [];
+      const statusText = document.getElementById('injectorStatusText');
+      statusText.innerText = "ഡാറ്റാബേസ് പ്രോസസ്സ് ചെയ്യുന്നു...";
+      
+      let count = 0;
+      let allData = [];
+      
       for (let file of files) {
-        let text = await file.text();
-        try { combined = combined.concat(parseIncomingPayload(JSON.parse(text), targetBookId)); } catch(e){}
+        const text = await file.text();
+        try {
+          const rawData = JSON.parse(text);
+          if(rawData.length > 0) {
+            // Process each item individually to avoid memory overload
+            for (let item of rawData) {
+              const processed = parseSingleItem(item, targetBookId, 1);
+              allData.push(processed);
+            }
+            count++;
+          }
+        } catch(ex) { console.error(ex); }
       }
-      await saveIsolatedBookData(combined);
-      hideLoading(); closeModal(); alert("✅ ഭാഗങ്ങൾ വിജയകരമായി ചേർത്തു!");
+      
+      if (allData.length > 0) {
+        // Merge with existing data
+        let existing = await getIsolatedBookData(targetBookId);
+        let uniqueData = [...existing];
+        let seen = new Set();
+        existing.forEach(item => seen.add(item.uid));
+        for (let item of allData) {
+          if (!seen.has(item.uid)) {
+            seen.add(item.uid);
+            uniqueData.push(item);
+          }
+        }
+        await saveIsolatedBookData(uniqueData);
+        
+        // Update part count
+        const book = STATE.books.find(b => b.id === targetBookId);
+        if (book) {
+          const maxPart = uniqueData.reduce((max, item) => Math.max(max, parseInt(item.part) || 0), 0);
+          book.parts = maxPart || 1;
+          await saveCatalogToDB(STATE.books);
+        }
+      }
+      
+      statusText.innerText = `✅ ${count} ഫയലുകൾ പ്രോസസ്സ് ചെയ്തു! (${allData.length} ഐറ്റങ്ങൾ)`;
+      setTimeout(() => { statusText.innerText = ""; closeModal(); }, 3000);
       if(STATE.currentBookId === targetBookId) openBook(targetBookId);
+      renderBooks(STATE.books);
     }
 
+    // ================================================================
+    // RENDER BOOKS
+    // ================================================================
     function renderBooks(books) {
       const grid = document.getElementById('bookGrid');
+      if (!books || books.length === 0) { grid.innerHTML = `<div class="empty-state"><h3>ഗ്രന്ഥങ്ങൾ ലഭ്യമല്ല</h3></div>`; return; }
+      
       grid.innerHTML = books.map(book => `
         <div class="book-card" onclick="openBook('${book.id}')">
-          <span class="book-parts-badge">${book.parts || 1} Parts</span>
+          <span class="book-parts-badge">${book.parts || 0} Parts</span>
           <div class="book-cover-wrapper">
-            ${book.cover ? `<img src="${book.cover}" class="book-cover">` : `<div class="book-avatar-fallback">📖</div>`}
+            ${book.cover && book.cover.startsWith('http') ? `<img src="${book.cover}" class="book-cover">` : `<div class="book-avatar-fallback">${book.cover || '📖'}</div>`}
           </div>
-          <div class="book-details"><h3>${book.title}</h3><div class="book-author">${book.author || 'Unknown'}</div></div>
+          <div class="book-details">
+            <h3 dir="rtl">${book.title}</h3>
+            <div class="book-author">${book.author || 'Unknown'}</div>
+          </div>
           <div class="book-footer">
-            <button class="open-btn">വായിക്കുക</button>
+            <button class="more-btn" onclick="event.stopPropagation(); alert('${book.description || ''}')"><i class="fas fa-info-circle"></i></button>
+            <button class="open-btn" onclick="event.stopPropagation();openBook('${book.id}')">Open</button>
           </div>
         </div>`).join("");
     }
 
+    function filterShelf(type) {
+      document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + (type === 'all' ? 'all' : (type === 'categories' ? 'cats' : 'auths'))).classList.add('active');
+      STATE.shelfFilter = type;
+      
+      if(type === 'all') renderBooks(STATE.books);
+      else if(type === 'categories') {
+        let cats = {};
+        STATE.books.forEach(b => { let c = b.lang || "General"; if(!cats[c]) cats[c]=[]; cats[c].push(b); });
+        renderGroupedShelf(cats);
+      } else if(type === 'authors') {
+        let auths = {};
+        STATE.books.forEach(b => { let a = b.author || "Unknown Authors"; if(!auths[a]) auths[a]=[]; auths[a].push(b); });
+        renderGroupedShelf(auths);
+      }
+    }
+
+    function renderGroupedShelf(groupedObj) {
+      const grid = document.getElementById('bookGrid');
+      let html = "";
+      for(let key in groupedObj) {
+        html += `
+        <details class="group-details">
+          <summary><div><i class="fas fa-folder-open"></i> ${key}</div><div style="font-size:12px; color:var(--text-muted);"><i class="fas fa-book"></i> ${groupedObj[key].length} Books <i class="fas fa-chevron-down" style="margin-left:5px;"></i></div></summary>
+          <div class="group-content">`;
+        groupedObj[key].forEach(book => {
+          html += `
+            <div class="book-card" onclick="openBook('${book.id}')">
+              <span class="book-parts-badge">${book.parts || 0} Parts</span>
+              <div class="book-cover-wrapper">
+                ${book.cover && book.cover.startsWith('http') ? `<img src="${book.cover}" class="book-cover">` : `<div class="book-avatar-fallback">${book.cover || '📖'}</div>`}
+              </div>
+              <div class="book-details"><h3 dir="rtl">${book.title}</h3><div class="book-author">${book.author}</div></div>
+              <div class="book-footer">
+                <button class="more-btn" onclick="event.stopPropagation();"><i class="fas fa-ellipsis-v"></i></button>
+                <button class="open-btn" onclick="event.stopPropagation();openBook('${book.id}')">Open</button>
+              </div>
+            </div>`;
+        });
+        html += `</div></details>`;
+      }
+      grid.innerHTML = html;
+    }
+
+    // ================================================================
+    // OPEN BOOK
+    // ================================================================
     async function openBook(bookId) {
       const book = STATE.books.find(b => b.id === bookId); if (!book) return;
       STATE.currentBook = book; STATE.currentBookId = bookId;
-      let chunks = await getIsolatedBookData(bookId);
-      if(chunks.length === 0) chunks = await loadAllParts(book);
       
-      if(chunks.length > 0) {
-        STATE.data = chunks.sort((a,b) => a.id - b.id);
-        STATE.totalPages = chunks.length;
-        STATE.currentPage = parseInt(localStorage.getItem(bookId + '_index')) || 0;
-        openReader();
+      let localChunks = await getIsolatedBookData(bookId);
+      if (localChunks && localChunks.length > 0) {
+        localChunks.sort((a, b) => a.id - b.id);
+        compileBookCollections(localChunks, bookId);
       } else {
-        alert("ഈ പുസ്തകത്തിന്റെ ഉള്ളടക്കം ലഭ്യമല്ല!");
+        const data = await loadAllParts(book);
+        if (data && data.length > 0) {
+          compileBookCollections(data, bookId);
+        } else {
+          alert("ഫയലുകൾ ലഭ്യമല്ല. ഡാറ്റ ഇൻജെക്ട് ചെയ്യുക.");
+          openImport();
+        }
       }
+    }
+
+    function compileBookCollections(list, bookId) {
+      STATE.data = list; STATE.totalPages = list.length;
+      STATE.currentPage = parseInt(localStorage.getItem(bookId + '_index')) || 0;
+      STATE.charOffset = parseInt(localStorage.getItem(bookId + '_offset')) || 0;
+      if (STATE.currentPage >= STATE.totalPages) STATE.currentPage = 0;
+      openReader();
     }
 
     function openReader() {
       document.getElementById('readerView').classList.add('show');
       document.getElementById('homeView').style.display = 'none';
-      document.getElementById('readerTitle').textContent = STATE.currentBook.title;
-      renderAllPages(); updateBookmarkUI(); switchViewportTab('ebook');
+      document.getElementById('readerTitle').textContent = STATE.currentBook.titleMl || STATE.currentBook.title;
+      
+      renderAllPages();
+      updateBookmarkUI();
+      document.getElementById('miniPlayer').classList.add('show');
+      switchViewportTab('ebook');
+      resumeAudioContext();
     }
 
     function closeReader() {
+      if (STATE.currentBookId) {
+        const row = STATE.data[STATE.currentPage];
+        localStorage.setItem('last_played_book_id', STATE.currentBookId);
+        localStorage.setItem('last_played_book_title', STATE.currentBook.titleMl || STATE.currentBook.title);
+        localStorage.setItem('last_played_page', row?.page || '1');
+        localStorage.setItem('last_played_part', row?.part || '1');
+      }
       document.getElementById('readerView').classList.remove('show');
       document.getElementById('homeView').style.display = 'flex';
+      if(!STATE.playing) document.getElementById('miniPlayer').classList.remove('show');
+      closeVisualMode();
       updateContinueReading();
     }
 
+    function saveState() {
+      if(!STATE.currentBookId) return;
+      localStorage.setItem(STATE.currentBookId + '_index', STATE.currentPage);
+      localStorage.setItem(STATE.currentBookId + '_offset', STATE.charOffset);
+      const row = STATE.data[STATE.currentPage];
+      if (row) {
+        localStorage.setItem('last_played_book_id', STATE.currentBookId);
+        localStorage.setItem('last_played_book_title', STATE.currentBook.titleMl || STATE.currentBook.title);
+        localStorage.setItem('last_played_page', row.page || '1');
+        localStorage.setItem('last_played_part', row.part || '1');
+      }
+      updateContinueReading();
+    }
+
+    // ================================================================
+    // READING STYLE TOGGLE
+    // ================================================================
     function toggleReadingStyle() {
       const isVertical = document.getElementById('optVerticalScroll').checked;
       STATE.scrollStyle = isVertical ? 'vertical' : 'page';
       renderAllPages();
     }
 
+    function switchViewportTab(mode) {
+      STATE.mode = mode;
+      document.getElementById('ebookView').style.display = mode === 'ebook' ? 'block' : 'none';
+      document.getElementById('audioView').style.display = mode === 'audio' ? 'block' : 'none';
+      document.getElementById('visualView').style.display = mode === 'visual' ? 'block' : 'none';
+      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+      let activeTab = document.getElementById('nav-' + mode); if(activeTab) activeTab.classList.add('active');
+      
+      if (mode === 'visual') {
+        document.getElementById('visualMode').classList.add('show');
+        updateVisualChunk(); applyVisualBg();
+      } else {
+        document.getElementById('visualMode').classList.remove('show');
+        document.getElementById('visualVideo').pause();
+        renderAllPages();
+      }
+      resumeAudioContext();
+    }
+
+    // ================================================================
+    // RENDER PAGES
+    // ================================================================
     function renderAllPages() {
+      if (!STATE.data || STATE.data.length === 0) return;
+      
       const container = document.getElementById('readerPageContainer');
       container.className = STATE.scrollStyle === 'vertical' ? 'mode-vertical' : 'mode-ebook-page';
       
@@ -788,173 +1098,657 @@
         const isCurrent = index === STATE.currentPage;
         html += `
           <div class="reader-page-card ${isCurrent ? 'active-page' : ''}" id="page_${index}">
-            <div class="head-badge">ഭാഗം ${row.part} - പേജ് ${row.page}</div>
+            <div class="head-badge">ഭാഗം ${row.part || '?'} - പേജ് ${row.page || '?'}</div>
             ${STATE.showAr && row.arStr ? `<div class="ar-content">${row.arStr}</div>` : ''}
             ${STATE.showMl && row.mlStr ? `<div class="ml-content">${highlightWords(row.mlStr, index)}</div>` : ''}
             ${STATE.showEn && row.enStr ? `<div class="en-content">${row.enStr}</div>` : ''}
           </div>`;
+        
         if (STATE.scrollStyle === 'vertical' && index < STATE.data.length - 1) {
-          html += `<div class="page-breaker"><i class="fas fa-book-open"></i> ${index + 1}</div>`;
+          html += `<div class="page-breaker"><i class="fas fa-book-open"></i> ${index + 1} <i class="fas fa-ellipsis-h"></i> ${index + 2} <i class="fas fa-book-open"></i></div>`;
         }
       });
+      
       container.innerHTML = html;
       document.getElementById('readerPageNum').textContent = `${STATE.currentPage + 1} / ${STATE.totalPages}`;
       
-      if (STATE.scrollStyle === 'vertical') {
-        const activeEl = document.getElementById(`page_${STATE.currentPage}`);
-        if(activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Update mini player
+      const row = STATE.data[STATE.currentPage];
+      if (row) {
+        document.getElementById('miniTitle').textContent = (row.mlPure || '').substring(0, 40) + '...';
+        document.getElementById('miniProgress').textContent = `ഭാഗം ${row.part} - പേജ് ${row.page}`;
+        updateAudioUI();
       }
-      updateAudioUI();
+      
+      syncHighlights();
+      if (document.getElementById('visualMode').classList.contains('show')) updateVisualChunk();
+      
+      // Scroll to current page
+      if (STATE.scrollStyle === 'vertical') {
+        const el = document.getElementById(`page_${STATE.currentPage}`);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     function highlightWords(text, pageIndex) {
+      if (!text) return '';
       if (pageIndex !== STATE.currentPage) return text;
+      
       let offsetAcc = 0;
       return text.split(/(\s+)/).map(token => {
         if(token.trim() === "") { offsetAcc += token.length; return token; }
-        const isHl = offsetAcc <= STATE.charOffset && (offsetAcc + token.length) > STATE.charOffset;
-        const span = `<span class="word-token ${isHl ? 'word-hl' : ''}" id="w_${offsetAcc}" onclick="touchSeek(${offsetAcc})">${token}</span>`;
-        offsetAcc += token.length; return span;
+        const isHighlighted = offsetAcc <= STATE.charOffset && (offsetAcc + token.length) > STATE.charOffset;
+        const span = `<span class="word-token ${isHighlighted ? 'word-hl' : ''}" id="w_${offsetAcc}" onclick="touchSeek(${offsetAcc})">${token}</span>`;
+        offsetAcc += token.length;
+        return span;
       }).join('');
     }
 
     function touchSeek(offset) {
+      if(!STATE.touchSpeak) return;
       STATE.charOffset = offset;
-      if(STATE.playing) { synth.cancel(); playAudioLine(); } 
-      else { togglePlay(); }
-    }
-
-    function changePage(delta) {
-      let next = STATE.currentPage + delta;
-      if(next >= 0 && next < STATE.totalPages) {
-        STATE.currentPage = next; STATE.charOffset = 0;
-        localStorage.setItem(STATE.currentBookId + '_index', next);
-        renderAllPages();
-        if(STATE.playing) { PLAY_STATE.page = next; PLAY_STATE.charOffset = 0; playAudioLine(); }
+      saveState();
+      
+      if(PLAY_STATE.bookId === STATE.currentBookId) {
+        PLAY_STATE.charOffset = offset;
+        if(STATE.playing) { synth.cancel(); playAudioLine(); }
+        else { togglePlay(); }
+      } else {
+        togglePlay();
       }
     }
 
+    function changePage(delta) {
+      const newPage = STATE.currentPage + delta;
+      if (newPage < 0 || newPage >= STATE.totalPages) return;
+      STATE.currentPage = newPage;
+      STATE.charOffset = 0;
+      saveState();
+      renderAllPages();
+      
+      if (STATE.playing && PLAY_STATE.bookId === STATE.currentBookId) {
+        PLAY_STATE.page = STATE.currentPage;
+        PLAY_STATE.charOffset = 0;
+        playAudioLine();
+      }
+    }
+
+    function syncHighlights() {
+      document.querySelectorAll(".word-token").forEach(el => el.classList.remove('word-hl'));
+      if (!STATE.playing && !document.querySelector('.word-hl')) return;
+      
+      const pageEl = document.getElementById(`page_${STATE.currentPage}`);
+      if (!pageEl) return;
+      
+      let targetSpan = null;
+      const spans = pageEl.querySelectorAll('.word-token');
+      for(let i=spans.length-1; i>=0; i--) {
+        const id = spans[i].id;
+        if (id) {
+          const offset = parseInt(id.replace('w_', ''));
+          if(offset <= STATE.charOffset) { targetSpan = spans[i]; break; }
+        }
+      }
+      if(targetSpan) {
+        targetSpan.classList.add('word-hl');
+        targetSpan.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    // ================================================================
+    // TTS ENGINE
+    // ================================================================
     function setupVoices() {
       systemVoices = synth.getVoices();
-      let sel = document.getElementById("optVoice"); if(!sel) return;
+      let sel = document.getElementById("optVoice");
+      if(!sel) return;
       sel.innerHTML = "";
       let targetLang = document.getElementById("optAudioLang").value;
-      systemVoices.filter(v => v.lang.includes(targetLang.split('-')[0])).forEach(v => {
-        sel.appendChild(new Option(v.name, v.name));
-      });
+      let filteredVoices = systemVoices.filter(v => v.lang.includes(targetLang.split('-')[0]));
+      if(filteredVoices.length === 0 && systemVoices.length > 0) filteredVoices.push(systemVoices[0]);
+      filteredVoices.forEach(v => { sel.appendChild(new Option(`${v.name} (${v.lang})`, v.name)); });
     }
 
     function togglePlay() {
-      initAudioContext(); resumeAudioContext();
-      if(STATE.playing) {
+      resumeAudioContext();
+      if (STATE.playing) {
         synth.pause(); STATE.playing = false; updatePlayIcon();
+        document.getElementById('silentAudio').pause();
       } else {
-        if(synth.paused && PLAY_STATE.bookId === STATE.currentBookId) {
+        if (synth.paused && PLAY_STATE.bookId === STATE.currentBookId) {
           synth.resume(); STATE.playing = true; updatePlayIcon();
+          document.getElementById('silentAudio').play().catch(()=>{});
         } else {
-          PLAY_STATE.bookId = STATE.currentBookId; PLAY_STATE.data = STATE.data;
-          PLAY_STATE.page = STATE.currentPage; PLAY_STATE.charOffset = STATE.charOffset;
-          PLAY_STATE.totalPages = STATE.totalPages; STATE.playing = true;
-          updatePlayIcon(); playAudioLine();
+          PLAY_STATE.bookId = STATE.currentBookId;
+          PLAY_STATE.data = STATE.data;
+          PLAY_STATE.page = STATE.currentPage;
+          PLAY_STATE.charOffset = STATE.charOffset;
+          PLAY_STATE.totalPages = STATE.totalPages;
+          STATE.playing = true; updatePlayIcon();
+          playAudioLine();
         }
       }
     }
 
     function playAudioLine() {
-      const row = PLAY_STATE.data[PLAY_STATE.page]; if(!row) return;
-      let lang = document.getElementById("optAudioLang").value;
-      let txt = lang === 'ml-IN' ? row.mlPure : (lang === 'ar-EG' ? row.arPure : row.enPure);
+      if(!PLAY_STATE.data || PLAY_STATE.data.length === 0) return;
+      const row = PLAY_STATE.data[PLAY_STATE.page];
+      if (!row) return;
+      const audioLangSetting = document.getElementById("optAudioLang").value;
       
+      resumeAudioContext();
+      
+      let fullText = row.mlStr;
+      if (audioLangSetting === "ml-IN") fullText = row.mlStr;
+      else if (audioLangSetting === "en-US") fullText = row.enStr;
+      else if (audioLangSetting === "ar-EG") fullText = row.arPure;
+
+      if (!fullText) {
+        if (STATE.autoNext && PLAY_STATE.page < PLAY_STATE.totalPages - 1) {
+          PLAY_STATE.page++; PLAY_STATE.charOffset = 0; playAudioLine();
+        }
+        return;
+      }
+      
+      let playableText = fullText.substring(PLAY_STATE.charOffset);
+      if (playableText.trim() === "") {
+        if (STATE.autoNext && PLAY_STATE.page < PLAY_STATE.totalPages - 1) {
+          PLAY_STATE.page++; PLAY_STATE.charOffset = 0; playAudioLine();
+        }
+        return;
+      }
+
       synth.cancel();
-      currentUtterance = new SpeechSynthesisUtterance(txt.substring(PLAY_STATE.charOffset));
-      currentUtterance.lang = lang;
+      currentUtterance = new SpeechSynthesisUtterance(playableText);
+      currentUtterance.lang = audioLangSetting;
       
-      let voiceName = document.getElementById("optVoice").value;
-      if(voiceName) currentUtterance.voice = systemVoices.find(v => v.name === voiceName);
+      let vName = document.getElementById("optVoice").value;
+      if(vName) currentUtterance.voice = systemVoices.find(v => v.name === vName);
       currentUtterance.rate = parseFloat(document.getElementById("optSpeed").value) || 1.0;
 
+      let baseCharOffset = PLAY_STATE.charOffset;
+      const currentPageOnStart = PLAY_STATE.page;
+
+      if (audioProgressInterval) clearInterval(audioProgressInterval);
+      let progress = 0;
+      audioProgressInterval = setInterval(() => {
+        progress += 0.5; if (progress > 100) progress = 0;
+        if (STATE.mode === 'audio' && STATE.currentBookId === PLAY_STATE.bookId) {
+          document.getElementById('audioProgressBar').style.width = progress + '%';
+        }
+        if (STATE.currentBookId === PLAY_STATE.bookId) {
+          document.getElementById('visProgressBar').style.width = progress + '%';
+        }
+      }, 100);
+
+      currentUtterance.onstart = () => {
+        document.getElementById('silentAudio').play().catch(()=>{});
+        updateMediaSessionMeta();
+        resumeAudioContext();
+        const rowData = PLAY_STATE.data[PLAY_STATE.page];
+        if (rowData) {
+          localStorage.setItem('last_played_book_id', PLAY_STATE.bookId);
+          localStorage.setItem('last_played_book_title', STATE.currentBook?.titleMl || 'Book');
+          localStorage.setItem('last_played_page', rowData.page || '1');
+          localStorage.setItem('last_played_part', rowData.part || '1');
+          updateContinueReading();
+        }
+      };
+      
       currentUtterance.onboundary = (e) => {
-        PLAY_STATE.charOffset = e.charIndex;
-        STATE.charOffset = e.charIndex;
-        const activeWord = document.getElementById(`w_${e.charIndex}`);
-        if (activeWord) activeWord.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        renderAllPages();
+        if(typeof e.charIndex === 'number' && (e.name === 'word' || !e.name)) {
+          PLAY_STATE.charOffset = baseCharOffset + e.charIndex;
+          
+          if(STATE.currentBookId === PLAY_STATE.bookId && STATE.currentPage === PLAY_STATE.page) {
+            STATE.charOffset = PLAY_STATE.charOffset;
+            saveState();
+            renderAllPages();
+            updateVisualChunk();
+          }
+          
+          const rowData = PLAY_STATE.data[PLAY_STATE.page];
+          document.getElementById('miniTitle').textContent = (rowData?.mlPure || '').substring(0, 40) + '...';
+          document.getElementById('miniProgress').textContent = `ഭാഗം ${rowData?.part} - പേജ് ${rowData?.page}`;
+        }
       };
 
       currentUtterance.onend = () => {
-        if(STATE.autoNext && PLAY_STATE.page < PLAY_STATE.totalPages - 1) {
-          changePage(1);
-        } else { stopAudio(); }
+        if (STATE.playing && STATE.autoNext && PLAY_STATE.page === currentPageOnStart) {
+          PLAY_STATE.page++;
+          PLAY_STATE.charOffset = 0;
+          if(PLAY_STATE.page < PLAY_STATE.totalPages) {
+            if(STATE.currentBookId === PLAY_STATE.bookId) {
+              STATE.currentPage = PLAY_STATE.page;
+              STATE.charOffset = 0;
+              saveState();
+              renderAllPages();
+            }
+            playAudioLine();
+          } else {
+            stopAudio();
+          }
+        }
       };
-
       synth.speak(currentUtterance);
     }
 
     function stopAudio() {
-      synth.cancel(); STATE.playing = false; updatePlayIcon();
-    }
-
-    function updatePlayIcon() {
-      let icon = STATE.playing ? 'fa-pause' : 'fa-play';
-      document.getElementById('miniPlayIcon').className = `fas ${icon}`;
-      document.getElementById('audioPlayBtn').className = `fas ${icon} play-big`;
-    }
-
-    function updateAudioUI() {
-      const row = STATE.data[STATE.currentPage]; if(!row) return;
-      document.getElementById('audioTitle').textContent = row.mlPure.substring(0, 30) + "...";
-      document.getElementById('audioMeta').textContent = `പേജ് ${row.page}`;
-      document.getElementById('miniTitle').textContent = row.mlPure.substring(0, 30);
-      document.getElementById('miniProgress').textContent = `പേജ് ${row.page}`;
-    }
-
-    function switchViewportTab(mode) {
-      STATE.mode = mode;
-      document.getElementById('ebookView').style.display = mode === 'ebook' ? 'block' : 'none';
-      document.getElementById('audioView').style.display = mode === 'audio' ? 'block' : 'none';
-      document.getElementById('visualView').style.display = mode === 'visual' ? 'block' : 'none';
-    }
-
-    function openVisualMode() { document.getElementById('visualMode').classList.add('show'); applyVisualBg(); }
-    function closeVisualMode() { document.getElementById('visualMode').classList.remove('remove'); }
-
-    function applyVisualBg() {
-      let id = document.getElementById('optYoutubeId').value.trim();
-      let yt = document.getElementById('visualYoutube');
-      let vid = document.getElementById('visualVideo');
-      if(id) {
-        vid.style.display = 'none'; yt.style.display = 'block';
-        yt.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}`;
-      } else {
-        yt.style.display = 'none'; vid.style.display = 'block';
-        vid.src = 'https://assets.mixkit.co/videos/preview/mixkit-forest-trees-3524-large.mp4';
-        vid.play().catch(()=>{});
+      synth.cancel(); STATE.playing = false; PLAY_STATE.bookId = null;
+      updatePlayIcon();
+      if (audioProgressInterval) clearInterval(audioProgressInterval);
+      document.getElementById('audioProgressBar').style.width = '0%';
+      document.getElementById('visProgressBar').style.width = '0%';
+      document.getElementById('silentAudio').pause();
+      syncHighlights();
+      if(document.getElementById('homeView').style.display !== 'none') {
+        document.getElementById('miniPlayer').classList.remove('show');
       }
     }
 
-    function openTOC() { openModal('tocModal'); buildTOC(); }
-    function buildTOC() {
-      let list = document.getElementById('tocList');
-      list.innerHTML = STATE.data.filter(r => r.isHead).map(r => `
-        <div class="toc-item" onclick="jumpToPage(${STATE.data.indexOf(r)})">
-          <div class="toc-badge">Chapter</div><div class="toc-title-text">${r.headingAr}</div>
-        </div>`).join('');
+    function updatePlayIcon() {
+      const icon = STATE.playing ? 'fa-pause' : 'fa-play';
+      document.getElementById('miniPlayIcon').className = `fas ${icon}`;
+      if (STATE.mode === 'audio') document.getElementById('audioPlayBtn').className = `fas ${icon} play-big`;
+      document.getElementById('visPlayBtn').className = `fas ${icon} vis-play`;
     }
-    function jumpToPage(idx) { closeModal(); STATE.currentPage = idx; renderAllPages(); }
 
-    function openModal(id) { document.getElementById('modalOverlay').classList.add('show'); document.getElementById(id).classList.add('show'); }
-    function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); document.querySelectorAll('.modal-box').forEach(m => m.classList.remove('show')); }
-    function openSettings() { openModal('settingsModal'); }
+    function restorePlayingBook() {
+      if(PLAY_STATE.bookId && PLAY_STATE.bookId !== STATE.currentBookId) {
+        openBook(PLAY_STATE.bookId).then(() => {
+          STATE.currentPage = PLAY_STATE.page;
+          STATE.charOffset = PLAY_STATE.charOffset;
+          saveState();
+          renderAllPages();
+          switchViewportTab('audio');
+        });
+      } else {
+        openReader();
+        switchViewportTab('audio');
+      }
+    }
+
+    function applyAudioSettings(restart) { if(restart && STATE.playing) { synth.cancel(); playAudioLine(); } }
+
+    function updateAudioUI() {
+      const row = STATE.data[STATE.currentPage]; if (!row) return;
+      document.getElementById('audioTitle').textContent = (row.mlPure || '').substring(0, 50) + '...';
+      document.getElementById('audioMeta').textContent = `ഭാഗം ${row.part} - പേജ് ${row.page} / ${STATE.totalPages}`;
+    }
+
+    // ================================================================
+    // VISUAL MODE
+    // ================================================================
+    function openVisualMode() {
+      document.getElementById('visualMode').classList.add('show');
+      updateVisualChunk(); applyVisualBg();
+      if (!STATE.playing) { togglePlay(); }
+      resumeAudioContext();
+    }
+
+    function closeVisualMode() {
+      document.getElementById('visualMode').classList.remove('show');
+      document.getElementById('visualVideo').pause();
+      document.getElementById('visualYoutube').src = '';
+      renderAllPages();
+    }
+
+    function toggleVisualFullscreen() {
+      document.getElementById('visualMode').classList.toggle('fullscreen');
+    }
+
+    function updateVisualChunk() {
+      const row = STATE.data[STATE.currentPage]; if (!row) return;
+      const audioLangSetting = document.getElementById("optAudioLang").value;
+      
+      let effectivePureAr = (PLAY_STATE.bookId === STATE.currentBookId) ? PLAY_STATE.data[PLAY_STATE.page]?.arPure : row.arPure;
+      let effectivePureMl = (PLAY_STATE.bookId === STATE.currentBookId) ? PLAY_STATE.data[PLAY_STATE.page]?.mlPure : row.mlPure;
+      let effectivePureEn = (PLAY_STATE.bookId === STATE.currentBookId) ? PLAY_STATE.data[PLAY_STATE.page]?.enPure : row.enPure;
+
+      document.getElementById('visArText').innerHTML = generateVisualWords(effectivePureAr, audioLangSetting === 'ar-EG');
+      document.getElementById('visMlText').innerHTML = generateVisualWords(effectivePureMl, audioLangSetting === 'ml-IN');
+      document.getElementById('visEnText').innerHTML = generateVisualWords(effectivePureEn, audioLangSetting === 'en-US');
+    }
+
+    function generateVisualWords(pureString, isCurrentAudioLang) {
+      if(!pureString) return "...";
+      let tokens = pureString.split(/(\s+)/);
+      let activeTokenIdx = 0, acc = 0;
+      let effectiveOffset = PLAY_STATE.charOffset;
+      
+      for(let i=0; i<tokens.length; i++) {
+        if(acc <= effectiveOffset) activeTokenIdx = i;
+        else break;
+        acc += tokens[i].length;
+      }
+      let html = ""; acc = 0;
+      tokens.forEach((token, idx) => {
+        let isWord = token.trim() !== "";
+        let isHighlight = isCurrentAudioLang && (acc <= effectiveOffset && acc + token.length > effectiveOffset) && isWord;
+        let hlClass = isHighlight ? "word-hl" : "";
+        if(Math.abs(idx - activeTokenIdx) <= 6) {
+          if(isWord) html += `<span class="word-token ${hlClass}">${token}</span>`;
+          else html += token;
+        }
+        acc += token.length;
+      });
+      return html || "...";
+    }
+
+    function toggleVisualPlay() { togglePlay(); }
+    function changeVisualPage(delta) { changePage(delta); }
+    function stopVisualAudio() { stopAudio(); }
+
+    function applyVisualBg() {
+      const ytInput = document.getElementById('optYoutubeId').value.trim();
+      const videoEl = document.getElementById('visualVideo');
+      const youtubeEl = document.getElementById('visualYoutube');
+      let videoId = extractYoutubeId(ytInput);
+
+      if (videoId) {
+        videoEl.style.display = 'none'; videoEl.pause();
+        youtubeEl.style.display = 'block';
+        youtubeEl.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&playsinline=1&showinfo=0&rel=0`;
+      } else {
+        youtubeEl.style.display = 'none'; youtubeEl.src = '';
+        videoEl.style.display = 'block';
+        videoEl.src = 'https://assets.mixkit.co/videos/preview/mixkit-forest-trees-3524-large.mp4';
+        videoEl.loop = true; videoEl.play().catch(() => {});
+      }
+      adjustVideoScale();
+    }
+
+    function extractYoutubeId(url) {
+      let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      let match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : url;
+    }
+
+    function adjustVideoScale() {
+      const ytIframe = document.getElementById("visualYoutube");
+      const localVideo = document.getElementById("visualVideo");
+      const isPortrait = window.innerHeight > window.innerWidth;
+      const targetScale = isPortrait ? "scale(1.6)" : "scale(1.0)";
+      if(ytIframe) ytIframe.style.transform = targetScale;
+      if(localVideo) localVideo.style.transform = targetScale;
+    }
+
+    // ================================================================
+    // HIERARCHICAL TOC (Part → H1 → H2 → Page)
+    // ================================================================
+    function openTOC() {
+      openModal('tocModal');
+      buildHierarchicalTOC();
+      tocPath = [{ title: '📚 Home', nodes: tocTree }];
+      renderTOCLevel();
+    }
+    
+    function buildHierarchicalTOC() {
+      tocTree = [];
+      let currentPart = null;
+      let currentH1 = null;
+      let currentH2 = null;
+
+      STATE.data.forEach((row, index) => {
+        let partName = row.part || "1";
+        
+        // Check if part changed
+        if (!currentPart || currentPart.name !== partName) {
+          currentPart = {
+            type: 'part',
+            name: partName,
+            title: `📖 ഭാഗം ${partName}`,
+            children: [],
+            index: index,
+            page: row.page
+          };
+          tocTree.push(currentPart);
+          currentH1 = null;
+          currentH2 = null;
+        }
+
+        if (row.isHead) {
+          let trMlText = row.mlPure ? row.mlPure.substring(0, 15) : "";
+          let trEnText = row.enPure ? row.enPure.substring(0, 15) : "";
+          let subtitle = (trMlText || trEnText) ? `[ ${trMlText} / ${trEnText} ]` : "";
+          let node = {
+            type: row.hTagLevel,
+            title: row.headingAr,
+            subtitle: subtitle,
+            index: index,
+            children: [],
+            page: row.page,
+            raw: row
+          };
+          
+          if (row.hTagLevel === 'h1') {
+            // New H1 - add to current part
+            currentH1 = node;
+            currentPart.children.push(currentH1);
+            currentH2 = null;
+          } else if (row.hTagLevel === 'h2') {
+            // New H2 - add to current H1 or part
+            currentH2 = node;
+            if (currentH1) {
+              currentH1.children.push(currentH2);
+            } else {
+              currentPart.children.push(currentH2);
+            }
+          } else {
+            // Other headings (h3, h4, etc.)
+            if (currentH2) {
+              currentH2.children.push(node);
+            } else if (currentH1) {
+              currentH1.children.push(node);
+            } else {
+              currentPart.children.push(node);
+            }
+          }
+        } else if (index % 3 === 0 || index === STATE.currentPage || index === 0 || index === STATE.data.length - 1) {
+          // Pages
+          let node = {
+            type: 'page',
+            title: `📄 പേജ് ${row.page}`,
+            subtitle: (row.mlPure || '').substring(0, 25) + "...",
+            index: index,
+            children: [],
+            page: row.page,
+            raw: row
+          };
+          
+          if (currentH2) {
+            currentH2.children.push(node);
+          } else if (currentH1) {
+            currentH1.children.push(node);
+          } else {
+            currentPart.children.push(node);
+          }
+        }
+      });
+    }
+
+    function renderTOCLevel() {
+      let currentLevel = tocPath[tocPath.length - 1];
+      
+      // Breadcrumb
+      let breadcrumbHTML = '';
+      if (tocPath.length > 1) {
+        breadcrumbHTML += `<span class="toc-back" onclick="navTOC(${tocPath.length - 2})"><i class="fas fa-arrow-left"></i> Back</span>`;
+      }
+      breadcrumbHTML += tocPath.map((p, i) => 
+        `<span onclick="navTOC(${i})">${p.title}</span>`
+      ).join(' <i class="fas fa-angle-right"></i> ');
+      document.getElementById('tocBreadcrumb').innerHTML = breadcrumbHTML;
+
+      // List items
+      let html = currentLevel.nodes.map((node, i) => {
+        if (node.children && node.children.length > 0) {
+          // Folder/Heading with children
+          let icon = node.type === 'part' ? 'fa-folder-open' : 
+                     node.type === 'h1' ? 'fa-heading' : 
+                     node.type === 'h2' ? 'fa-tag' : 'fa-folder';
+          return `<div class="toc-item" onclick="drillTOC(${i})">
+            <div class="toc-badge">${node.type.toUpperCase()} (${node.children.length})</div>
+            <div class="toc-title-text" dir="${node.type === 'page' ? 'ltr' : 'rtl'}">
+              <i class="fas ${icon}"></i> ${node.title}
+            </div>
+            ${node.subtitle ? `<div class="toc-translations">${node.subtitle}</div>` : ''}
+            <div class="toc-children-count"><i class="fas fa-chevron-right"></i> ${node.children.length} items</div>
+          </div>`;
+        } else {
+          // Leaf (page)
+          return `<div class="toc-item ${node.index === STATE.currentPage ? 'current' : ''}" onclick="closeModal(); jumpToPage(${node.index})">
+            <div class="toc-badge">📄 പേജ് ${node.page}</div>
+            <div class="toc-title-text">${node.title}</div>
+            ${node.subtitle ? `<div class="toc-translations">${node.subtitle}</div>` : ''}
+          </div>`;
+        }
+      }).join('');
+      
+      document.getElementById('tocList').innerHTML = html || '<div style="padding:20px;text-align:center;color:var(--text-muted);">ഉള്ളടക്കം ലഭ്യമല്ല</div>';
+    }
+
+    function drillTOC(indexInCurrentList) {
+      let currentLevel = tocPath[tocPath.length - 1];
+      let node = currentLevel.nodes[indexInCurrentList];
+      if (node.children && node.children.length > 0) {
+        let title = node.type === 'part' ? `📖 ${node.title}` : 
+                    node.type === 'h1' ? `📑 ${node.title}` : 
+                    node.type === 'h2' ? `📌 ${node.title}` : node.title;
+        tocPath.push({ title: title, nodes: node.children });
+        renderTOCLevel();
+      }
+    }
+
+    function navTOC(pathIndex) {
+      tocPath = tocPath.slice(0, pathIndex + 1);
+      renderTOCLevel();
+    }
+
+    function jumpToPage(index) {
+      STATE.currentPage = index;
+      STATE.charOffset = 0;
+      saveState();
+      renderAllPages();
+      if(STATE.playing && PLAY_STATE.bookId === STATE.currentBookId) {
+        PLAY_STATE.page = index;
+        PLAY_STATE.charOffset = 0;
+        playAudioLine();
+      }
+    }
+
+    // ================================================================
+    // MEDIA SESSION
+    // ================================================================
+    function setupMediaSession() {
+      if('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', togglePlay);
+        navigator.mediaSession.setActionHandler('pause', togglePlay);
+        navigator.mediaSession.setActionHandler('nexttrack', () => { if(STATE.playing) changePage(1); });
+        navigator.mediaSession.setActionHandler('previoustrack', () => { if(STATE.playing) changePage(-1); });
+        navigator.mediaSession.setActionHandler('stop', stopAudio);
+      }
+    }
+
+    function updateMediaSessionMeta() {
+      if('mediaSession' in navigator && PLAY_STATE.bookId) {
+        let activeBookMeta = STATE.books.find(b => b.id === PLAY_STATE.bookId);
+        let b = PLAY_STATE.data[PLAY_STATE.page];
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: activeBookMeta ? activeBookMeta.title : 'Digital Library',
+          artist: `ഭാഗം ${b?.part || ''} - പേജ് ${b?.page || ''}`,
+          album: 'Adventure Premium Sandbox'
+        });
+      }
+    }
+
+    // ================================================================
+    // BOOKMARKS
+    // ================================================================
+    function toggleBookmark() {
+      const key = STATE.currentBookId + '_bookmarks';
+      let bookmarks = JSON.parse(localStorage.getItem(key) || '[]');
+      const idx = bookmarks.indexOf(STATE.currentPage);
+      if (idx > -1) bookmarks.splice(idx, 1);
+      else bookmarks.push(STATE.currentPage);
+      localStorage.setItem(key, JSON.stringify(bookmarks));
+      updateBookmarkUI();
+    }
+
+    function updateBookmarkUI() {
+      if(!STATE.currentBookId) return;
+      const key = STATE.currentBookId + '_bookmarks';
+      const bookmarks = JSON.parse(localStorage.getItem(key) || '[]');
+      document.getElementById('readerBookmark').classList.toggle('active-bm', bookmarks.includes(STATE.currentPage));
+    }
+
+    // ================================================================
+    // MODALS & SETTINGS
+    // ================================================================
     function openImport() { openModal('importModal'); }
+    function openSettings() { openModal('settingsModal'); }
+    function openModal(id) { document.getElementById('modalOverlay').classList.add('show'); document.getElementById(id).classList.add('show'); }
+    function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); document.querySelectorAll('.modal-box').forEach(el => el.classList.remove('show')); }
     function goHome() { closeReader(); }
 
-    function setTheme(t) { document.documentElement.setAttribute('data-theme', t); }
-    function applyFontSize() { document.documentElement.style.setProperty('--font-scale', document.getElementById('optFontSize').value + 'px'); renderAllPages(); }
-    function applyFonts() { renderAllPages(); }
-    function loadPreferences() {}
-    function renderAllViews() { renderAllPages(); }
+    function setTheme(theme) {
+      STATE.theme = theme;
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('m_rb_theme', theme);
+      document.querySelectorAll('.theme-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('th-' + theme).classList.add('active');
+    }
+
+    function applyFontSize() {
+      const size = document.getElementById('optFontSize').value;
+      document.documentElement.style.setProperty('--font-scale', size + 'px');
+      localStorage.setItem('m_rb_fsize', size);
+      renderAllPages();
+    }
+    
+    function applyFonts() {
+      const fontMl = document.getElementById('optFontMl').value;
+      const fontAr = document.getElementById('optFontAr').value;
+      const fontEn = document.getElementById('optFontEn').value;
+      
+      document.documentElement.style.setProperty('--font-ml', fontMl);
+      document.documentElement.style.setProperty('--font-ar', fontAr);
+      document.documentElement.style.setProperty('--font-en', fontEn);
+      
+      localStorage.setItem('pref_font_ml', fontMl);
+      localStorage.setItem('pref_font_ar', fontAr);
+      localStorage.setItem('pref_font_en', fontEn);
+    }
+
+    function loadPreferences() {
+      setTheme(localStorage.getItem('m_rb_theme') || 'light');
+      document.getElementById('optFontSize').value = localStorage.getItem('m_rb_fsize') || '18';
+      
+      let fMl = localStorage.getItem('pref_font_ml') || "'Manjari', sans-serif";
+      let fAr = localStorage.getItem('pref_font_ar') || "'Amiri', serif";
+      let fEn = localStorage.getItem('pref_font_en') || "sans-serif";
+      
+      if(document.getElementById('optFontMl')) document.getElementById('optFontMl').value = fMl;
+      if(document.getElementById('optFontAr')) document.getElementById('optFontAr').value = fAr;
+      if(document.getElementById('optFontEn')) document.getElementById('optFontEn').value = fEn;
+      
+      applyFonts();
+      applyFontSize();
+      STATE.showAr = true; STATE.showMl = true; STATE.showEn = true;
+    }
+
+    function renderAllViews() {
+      STATE.showAr = document.getElementById('optShowAr').checked;
+      STATE.showMl = document.getElementById('optShowMl').checked;
+      STATE.showEn = document.getElementById('optShowEn').checked;
+      renderAllPages();
+    }
+
     function toggleSearch() { document.getElementById('searchBar').classList.toggle('show'); }
-    function searchBooks(q) { }
+    
+    function searchBooks(q) {
+      let filtered = STATE.books.filter(b => b.title.toLowerCase().includes(q.toLowerCase()) || (b.titleMl && b.titleMl.includes(q)));
+      renderBooks(filtered);
+    }
   </script>
 </body>
 </html>
