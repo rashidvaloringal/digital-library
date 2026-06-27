@@ -5,132 +5,327 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Adventure Digital Library Pro</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Manjari:wght@400;700&family=Chilanka&family=Gayathri&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Manjari:wght@400;700&family=Chilanka&family=Gayathri&family=Scheherazade+New:wght@400;700&family=Lateef&display=swap" rel="stylesheet">
   
   <style>
+    /* ================================================================
+       ROOT VARIABLES & THEMES
+       ================================================================ */
     :root {
-      --primary-green: #1b4d3e; --bg: #f4f7f6; --card-bg: #ffffff;
-      --text-dark: #2c3e50; --accent: #27ae60; --shadow: 0 4px 15px rgba(0,0,0,0.06);
-      --font-ar: 'Amiri', serif; --font-ml: 'Manjari', sans-serif; --font-en: sans-serif;
-      --surface: #ffffff; --text-muted: #7f8c8d; --primary-light: #f5ece3;
-      --border: #cbd5e1; --radius: 12px; --bottom-nav: 70px; --font-scale: 18px;
+      --primary-green: #1b4d3e; 
+      --bg: #f4f7f6; 
+      --card-bg: #ffffff;
+      --text-dark: #2c3e50; 
+      --accent: #27ae60; 
+      --shadow: 0 4px 15px rgba(0,0,0,0.06);
+      
+      --font-ar: 'Amiri', serif;
+      --font-ml: 'Manjari', sans-serif;
+      --font-en: sans-serif;
+      
+      --surface: #ffffff;
+      --text-muted: #7f8c8d;
+      --primary: #8b5a2b;
+      --primary-dark: #5c3a1a;
+      --primary-light: #f5ece3;
+      --border: #cbd5e1;
+      --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+      --radius: 12px;
+      --bottom-nav: 70px;
+      --mini-player: 65px;
+      --font-scale: 18px;
     }
-    [data-theme="dark"] { --bg: #0f172a; --surface: #1e293b; --card-bg: #1e293b; --text-dark: #f8fafc; --text-muted: #94a3b8; --border: #334155; --primary-light: rgba(27,77,62,0.3); }
-    [data-theme="sepia"] { --bg: #e2d9c8; --surface: #f4ecd8; --card-bg: #f4ecd8; --text-dark: #5c4b37; --text-muted: #8c7a65; --border: #d6cbb5; --primary-light: #ebdccb; }
+
+    [data-theme="dark"] {
+      --bg: #0f172a; --surface: #1e293b; --card-bg: #1e293b;
+      --text-dark: #f8fafc; --text-muted: #94a3b8;
+      --primary: #bb86fc; --primary-dark: #9c27b0;
+      --primary-light: rgba(187,134,252,0.15); --border: #334155;
+    }
+
+    [data-theme="sepia"] {
+      --bg: #e2d9c8; --surface: #f4ecd8; --card-bg: #f4ecd8;
+      --text-dark: #5c4b37; --text-muted: #8c7a65;
+      --primary: #d97706; --primary-dark: #b45309; --border: #d6cbb5;
+    }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text-dark); font-family: var(--font-ml); margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: 0.3s; }
-    button, select, input { font-family: inherit; border: none; outline: none; background: transparent; color: inherit; cursor: pointer; }
+    body {
+      background: var(--bg); color: var(--text-dark); font-family: var(--font-ml);
+      margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+      transition: background 0.3s, color 0.3s;
+    }
+    button, input, select { font-family: inherit; border: none; outline: none; background: transparent; color: inherit; cursor: pointer; }
 
-    #loader { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; gap: 20px; }
-    #loader.show { display: flex; }
-    #loader .spinner { width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.2); border-top: 5px solid #facc15; border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    #loader .status { color: white; font-size: 18px; font-weight: bold; text-align: center; }
-    #loader .sub-status { color: #ccc; font-size: 14px; text-align: center; }
+    /* ================================================================
+       LOADER UI
+       ================================================================ */
+    #loader {
+      position: fixed; inset: 0; background: var(--bg); z-index: 9999;
+      display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; transition: opacity 0.5s;
+    }
+    #loader.hidden { opacity: 0; pointer-events: none; }
+    .spinner { border: 4px solid var(--border); border-top: 4px solid var(--primary-green); border-radius: 50%; width: 45px; height: 45px; animation: spin 0.8s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .status { font-size: 16px; font-weight: bold; color: var(--primary-green); }
+    .import-btn { padding: 12px 30px; background: var(--primary-green); color: white; border-radius: 10px; font-weight: bold; transition: 0.2s; cursor: pointer; }
+    .import-btn:active { transform: scale(0.95); }
 
-    header.home-header { background: var(--primary-green); color: white; padding: 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+    /* ================================================================
+       HOME VIEW HEADER & NAVIGATION
+       ================================================================ */
+    #homeView { display: flex; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 90px; }
+    header.home-header {
+      background: var(--primary-green); color: white; padding: 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
     .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .home-title { font-size: 18px; font-weight: bold; }
-    .actions i { padding: 5px; font-size: 18px; margin-left: 10px; cursor: pointer; }
-    .actions .sync-icon { color: #facc15; }
-    .tabs { display: flex; justify-content: space-around; background: var(--primary-green); padding-bottom: 5px; }
-    .tab-item { color: #bdc3c7; padding: 10px; font-weight: bold; font-size: 13px; text-transform: uppercase; border-bottom: 3px solid transparent; transition: 0.3s; cursor: pointer; }
+    .home-title { font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+    .top-bar .actions i { cursor: pointer; padding: 5px; font-size: 18px; margin-left: 10px; }
+    .top-bar .actions .sync-icon { color: #facc15; }
+    
+    .tabs { display: flex; justify-content: space-around; background: var(--primary-green); padding-bottom: 5px; flex-wrap: wrap; }
+    .tab-item { color: #bdc3c7; padding: 10px; cursor: pointer; font-weight: bold; font-size: 13px; text-transform: uppercase; border-bottom: 3px solid transparent; transition: 0.3s; }
     .tab-item.active { color: white; border-bottom-color: white; }
 
-    #homeView { display: flex; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 90px; }
-    .container { padding: 15px; max-width: 1000px; margin: auto; width: 100%; }
+    .search-bar { padding: 10px 0; display: none; }
+    .search-bar.show { display: block; }
+    .search-bar input { width: 100%; padding: 10px 16px; border-radius: 25px; border: 2px solid transparent; font-size: 14px; font-family: var(--font-ml); background: rgba(255,255,255,0.2); color: white; }
+    .search-bar input::placeholder { color: #cbd5e1; }
 
-    .continue-card { background: var(--primary-light); border: 2px solid var(--primary-green); border-radius: var(--radius); padding: 15px 20px; margin-bottom: 20px; display: none; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; }
+    .container { padding: 15px; max-width: 1000px; margin: auto; width: 100%; }
+    
+    /* ================================================================
+       CONTINUE READING CARD
+       ================================================================ */
+    .continue-card {
+      background: var(--primary-light);
+      border: 2px solid var(--primary-green);
+      border-radius: var(--radius);
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: 0.2s;
+      grid-column: 1/-1;
+    }
     .continue-card:hover { transform: scale(1.01); }
+    .continue-card .info { flex: 1; }
     .continue-card .info h4 { color: var(--primary-green); font-size: 14px; margin-bottom: 4px; }
     .continue-card .info p { font-size: 12px; color: var(--text-muted); }
     .continue-card .btn { background: var(--primary-green); color: white; padding: 8px 20px; border-radius: 30px; font-size: 13px; }
 
+    /* ================================================================
+       BOOK CARD GRID SYSTEM & CATEGORY ACCORDION
+       ================================================================ */
     .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-    .book-card { background: var(--card-bg); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; flex-direction: column; position: relative; cursor: pointer; }
+    
+    details.group-details { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 15px; grid-column: 1/-1; overflow: hidden; }
+    details.group-details summary { padding: 15px; font-weight: bold; color: var(--primary-green); cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; background: var(--primary-light); }
+    details.group-details summary::-webkit-details-marker { display: none; }
+    details.group-details .group-content { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 15px; border-top: 1px solid var(--border); background: var(--bg); }
+    [data-theme="dark"] details.group-details summary { color: var(--primary); }
+
+    .book-card {
+      background: var(--card-bg); border-radius: var(--radius); overflow: hidden;
+      box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; flex-direction: column; transition: transform 0.2s; position: relative; cursor: pointer;
+    }
     .book-card:active { transform: scale(0.98); }
+    .book-cover { width: 100%; height: 200px; object-fit: cover; background: #eee; border-bottom: 1px solid var(--border); }
     .book-avatar-fallback { width: 100%; height: 200px; background: linear-gradient(135deg, var(--primary-green), #2c3e50); display: flex; align-items: center; justify-content: center; color: white; font-size: 48px; }
     .book-details { padding: 12px; text-align: center; flex-grow: 1; }
-    .book-details h3 { font-size: 15px; color: var(--primary-green); height: 42px; overflow: hidden; }
-    .book-parts-badge { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
-    .book-footer { display: flex; border-top: 1px solid var(--border); }
-    .open-btn { flex-grow: 1; color: var(--primary-green); font-weight: bold; padding: 12px; font-size: 14px; }
+    .book-details h3 { margin: 0; font-size: 15px; color: var(--primary-green); line-height: 1.4; height: 42px; overflow: hidden; }
+    [data-theme="dark"] .book-details h3 { color: var(--primary); }
+    .book-author { font-size: 12px; color: var(--text-muted); margin-top: 5px; height: 32px; overflow: hidden; }
+    .book-parts-badge { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: bold; z-index: 5; }
+    .book-footer { display: flex; border-top: 1px solid var(--border); align-items: stretch; }
+    .more-btn { width: 40px; border: none; background: none; color: var(--text-muted); border-right: 1px solid var(--border); cursor: pointer; }
+    .open-btn { flex-grow: 1; border: none; background: none; color: var(--primary-green); font-weight: bold; padding: 12px; cursor: pointer; font-size: 14px; }
+    [data-theme="dark"] .open-btn { color: var(--primary); }
 
-    .bottom-nav, .reader-bottom-nav { position: fixed; bottom: 0; width: 100%; height: var(--bottom-nav); background: var(--surface); display: flex; align-items: center; justify-content: space-around; z-index: 1000; border-top: 1px solid var(--border); box-shadow: 0 -2px 15px rgba(0,0,0,0.1); }
-    .nav-tab, .nav-link { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 11px; font-weight: bold; gap: 6px; cursor: pointer; }
-    .nav-tab.active, .nav-link.active { color: var(--primary-green); }
+    .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--surface); display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 15px rgba(0,0,0,0.1); z-index: 1000; border-top: 1px solid var(--border); }
+    .nav-link { text-align: center; color: var(--text-muted); font-size: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .nav-link i { font-size: 22px; }
+    .nav-link.active { color: var(--primary-green); font-weight: bold; }
+    [data-theme="dark"] .nav-link.active { color: var(--primary); }
 
+    /* ================================================================
+       READER MODE INTERFACE
+       ================================================================ */
     #readerView { display: none; flex-direction: column; height: 100%; position: fixed; inset: 0; background: var(--bg); z-index: 2000; }
     #readerView.show { display: flex; }
-    .reader-header { background: var(--surface); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); min-height: 55px; }
+    .reader-header { background: var(--surface); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; border-bottom: 1px solid var(--border); min-height: 55px; }
     .back-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-dark); padding: 5px; }
-    .reader-title { font-size: 16px; font-weight: bold; flex: 1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .reader-actions { display: flex; gap: 16px; font-size: 18px; color: var(--text-muted); }
-    .reader-actions i { cursor: pointer; }
-    .reader-actions .active-bm { color: #f59e0b; }
+    .reader-title { font-size: 16px; font-weight: bold; flex: 1; text-align: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .reader-actions { display: flex; gap: 16px; font-size: 18px; }
+    .reader-actions i { cursor: pointer; color: var(--text-muted); }
+    .reader-actions .active-bm { color: #f59e0b; text-shadow: 0 0 10px rgba(245,158,11,0.5); }
+    .reader-actions .sync-icon { color: #facc15; }
 
     .reader-content { flex: 1; overflow-y: auto; padding: 15px 15px 90px 15px; scroll-behavior: smooth; }
-    .reader-page-card { background: var(--surface); padding: 30px 25px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); min-height: 60vh; margin-bottom: 20px; }
-    .head-badge { display: table; margin: 0 auto 20px auto; padding: 6px 24px; background: var(--primary-light); color: var(--primary-green); font-weight: bold; border-radius: 50px; font-size: 13px; }
     
-    .ar-content { font-family: var(--font-ar); font-size: calc(var(--font-scale) + 6px); color: #1a5f7a; direction: rtl; line-height: 2.4; font-weight: bold; text-align: right; margin-bottom: 16px; }
+    /* ================================================================
+       EBOOK LAYOUT - Page Flip & Vertical Scroll
+       ================================================================ */
+    #readerPageContainer.mode-ebook-page {
+      display: flex; overflow: hidden; width: 100%; perspective: 1000px;
+    }
+    #readerPageContainer.mode-ebook-page .reader-page-card {
+      display: none; width: 100%; min-height: 65vh; animation: pageFlip 0.4s ease-in-out forwards;
+    }
+    #readerPageContainer.mode-ebook-page .reader-page-card.active-page {
+      display: block;
+    }
+
+    #readerPageContainer.mode-vertical .reader-page-card {
+      display: block; margin-bottom: 25px; opacity: 1 !important;
+    }
+
+    @keyframes pageFlip {
+      0% { transform: rotateY(15deg); opacity: 0.5; }
+      100% { transform: rotateY(0deg); opacity: 1; }
+    }
+
+    .reader-page-card {
+      background: var(--surface); padding: 30px 25px; border-radius: var(--radius);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08); border: 1px solid var(--border); position: relative; transition: all 0.3s;
+    }
+    
+    /* Page Breaker */
+    .page-breaker {
+      display: flex; align-items: center; justify-content: center; gap: 15px; margin: 10px 0 20px 0; color: var(--text-muted); font-size: 12px; opacity: 0.6;
+    }
+    .page-breaker::before, .page-breaker::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .page-breaker i { font-size: 14px; }
+
+    .head-badge {
+      display: table; margin: 0 auto 20px auto; padding: 6px 24px; background: var(--primary-light);
+      color: var(--primary-dark); font-weight: 700; border-radius: 50px; font-size: 13px; border: 1px solid var(--primary);
+    }
+    
+    .ar-content { font-family: var(--font-ar); font-size: calc(var(--font-scale) + 6px); color: #1a5f7a; direction: rtl; line-height: 2.4; font-weight: 700; text-align: right; margin-bottom: 16px; }
     [data-theme="dark"] .ar-content { color: #81d4fa; }
     .ml-content { font-family: var(--font-ml); font-size: var(--font-scale); line-height: 2.2; margin-bottom: 12px; }
+    .en-content { font-family: var(--font-en); font-size: calc(var(--font-scale) - 1px); line-height: 2; color: var(--text-muted); font-style: italic; border-top: 1px dashed var(--border); padding-top: 15px; margin-top: 10px; }
     
-    .word-token { cursor: pointer; padding: 0 2px; border-radius: 4px; transition: 0.2s; display: inline-block; }
-    .word-hl { background: #facc15 !important; color: #000 !important; font-weight: bold; box-shadow: 0 2px 10px rgba(250,204,21,0.5); }
-    [data-theme="dark"] .word-hl { background: #f59e0b !important; color: #fff !important; }
+    .word-token { cursor: pointer; transition: 0.15s; padding: 0 2px; border-radius: 4px; display: inline-block; }
+    .word-hl { background: #facc15 !important; color: #000 !important; font-weight: bold; border-radius: 4px; box-shadow: 0 2px 12px rgba(250,204,21,0.4); }
+    [data-theme="dark"] .word-hl { background-color: #f59e0b !important; color: #fff !important; }
 
-    .reader-pagination { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--surface); border-radius: 50px; border: 1px solid var(--border); margin-top: 10px; }
-    .reader-pagination button { padding: 8px 18px; border-radius: 30px; background: var(--bg); border: 1px solid var(--border); font-weight: bold; cursor: pointer; }
+    /* ================================================================
+       LOADING OVERLAY
+       ================================================================ */
+    .loading-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 9999;
+      display: none; justify-content: center; align-items: center; flex-direction: column; gap: 20px;
+    }
+    .loading-overlay.show { display: flex; }
+    .loading-overlay .loader-text { color: white; font-size: 18px; font-family: var(--font-ml); }
+    .loading-overlay .loader-spinner { width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.2); border-top: 5px solid #facc15; border-radius: 50%; animation: spin 0.8s linear infinite; }
 
-    .mini-player { position: fixed; bottom: var(--bottom-nav); width: 100%; height: 52px; background: var(--surface); border-top: 1px solid var(--border); display: none; align-items: center; padding: 0 14px; z-index: 1500; }
+    /* ================================================================
+       PAGINATION
+       ================================================================ */
+    .reader-pagination {
+      display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; margin-top: 15px; background: var(--surface); border-radius: 50px; border: 1px solid var(--border);
+    }
+    .reader-pagination button { padding: 8px 18px; border-radius: 30px; background: var(--bg); border: 1px solid var(--border); font-weight: bold; color: var(--text-dark); }
+    .page-num { font-weight: bold; color: var(--primary-green); font-size: 15px; }
+
+    /* ================================================================
+       BOTTOM TABS (E-Book, Audio, Visual)
+       ================================================================ */
+    .reader-bottom-nav { position: fixed; bottom: 0; width: 100%; height: var(--bottom-nav); background: var(--surface); display: flex; align-items: center; z-index: 500; border-top: 1px solid var(--border); }
+    .nav-tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 11px; font-weight: bold; gap: 6px; height: 100%; cursor: pointer; }
+    .nav-tab.active { color: var(--primary-green); }
+
+    /* ================================================================
+       MINI PLAYER
+       ================================================================ */
+    .mini-player { position: fixed; bottom: var(--bottom-nav); width: 100%; height: 52px; background: var(--surface); border-top: 1px solid var(--border); display: none; align-items: center; padding: 0 14px; z-index: 1500; box-shadow: 0 -4px 15px rgba(0,0,0,0.06); }
     .mini-player.show { display: flex; }
     .mini-details { flex: 1; overflow: hidden; cursor: pointer; }
-    .mini-title { font-size: 12px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mini-title { font-weight: bold; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .mini-progress { font-size: 10px; color: var(--text-muted); }
-    .mini-controls { display: flex; gap: 14px; font-size: 18px; color: var(--primary-green); }
-    .mini-controls i { cursor: pointer; }
-    
+    .mini-controls { display: flex; gap: 14px; font-size: 18px; color: var(--primary-green); align-items: center; }
+
+    /* ================================================================
+       AUDIO PLAYER
+       ================================================================ */
+    .audio-player { background: var(--surface); padding: 25px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-lg); text-align: center; }
+    .audio-icon { font-size: 60px; color: var(--primary-green); margin-bottom: 15px; }
+    .audio-title-text { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+    .audio-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
+    .audio-controls { display: flex; justify-content: center; align-items: center; gap: 25px; }
+    .audio-controls i { font-size: 28px; color: var(--primary-green); cursor: pointer; }
+    .play-big { font-size: 48px !important; background: var(--primary-green); color: white !important; border-radius: 50%; padding: 12px 18px; }
+    .audio-progress { width: 100%; height: 5px; background: var(--border); border-radius: 3px; margin-top: 20px; position: relative; }
+    .progress-bar { height: 100%; background: var(--primary-green); border-radius: 3px; width: 0%; transition: width 0.1s; }
+
+    /* ================================================================
+       CINEMATIC VISUAL VIEWPORT
+       ================================================================ */
     .visual-mode { position: fixed; inset: 0; z-index: 2500; display: none; background: #000; flex-direction: column; }
     .visual-mode.show { display: flex; }
-    .visual-video-wrapper { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .visual-video-wrapper iframe, .visual-video-wrapper video { width: 100vw; height: 100vh; object-fit: cover; pointer-events: none; border: none; }
-    .visual-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: 2; }
-    .visual-content { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px; color: white; text-align: center; }
-    .vis-ar { font-family: var(--font-ar); font-size: 34px; direction: rtl; line-height: 2; margin-bottom: 20px; color: #81d4fa; text-shadow: 2px 2px 15px rgba(0,0,0,0.9), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
-    .vis-ml { font-family: var(--font-ml); font-size: 24px; line-height: 2; color: #fff; text-shadow: 2px 2px 15px rgba(0,0,0,0.9), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+    .visual-mode.fullscreen .visual-video-wrapper iframe, .visual-mode.fullscreen .visual-video-wrapper video { transform: scale(1.3); }
     
-    .visual-controls { position: absolute; top: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 20; font-size: 24px; color: white; background: rgba(0,0,0,0.6); padding: 8px 25px; border-radius: 50px; backdrop-filter: blur(5px); }
-    .visual-controls i { cursor: pointer; }
+    .visual-video-wrapper { position: absolute; inset: 0; z-index: 1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .visual-video-wrapper iframe, .visual-video-wrapper video { width: 100vw; height: 100vh; object-fit: cover; pointer-events: none; border: none; }
+    .visual-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); z-index: 2; }
+    
+    .visual-content { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 120px 25px; color: white; text-align: center; }
+    .vis-ar { font-family: var(--font-ar); font-size: 34px; direction: rtl; line-height: 2.2; margin-bottom: 20px; color: #81d4fa; text-shadow: 2px 2px 5px rgba(0,0,0,0.9); }
+    .vis-ml { font-size: 24px; line-height: 2; margin-bottom: 15px; text-shadow: 2px 2px 5px rgba(0,0,0,0.9); color: #fff; }
+    .vis-en { font-size: 20px; font-style: italic; opacity: 0.9; text-shadow: 2px 2px 5px rgba(0,0,0,0.9); color: #ddd; }
 
+    .visual-controls { position: absolute; top: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 20; font-size: 24px; color: white; text-shadow: 0 2px 15px rgba(0,0,0,0.9); align-items: center; background: rgba(0,0,0,0.6); padding: 8px 20px; border-radius: 50px; backdrop-filter: blur(5px); flex-wrap: wrap; justify-content: center; }
+    .vis-play { font-size: 32px; color: #38bdf8; }
+    .vis-close-btn { color: #ef4444; }
+    .vis-fullscreen-btn { color: #facc15; }
+    .visual-progress { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 500px; height: 3px; background: rgba(255,255,255,0.3); }
+    .vis-progress-bar { height: 100%; background: #38bdf8; width: 0%; }
+
+    /* ================================================================
+       MODALS
+       ================================================================ */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 3000; }
     .modal-overlay.show { display: block; }
-    .modal-box { position: fixed; bottom: -100%; left: 0; width: 100%; max-height: 85vh; background: var(--surface); z-index: 3001; border-radius: 20px 20px 0 0; transition: 0.3s; display: flex; flex-direction: column; overflow: hidden; }
+    
+    .modal-box { position: fixed; bottom: -100%; left: 0; width: 100%; max-height: 85vh; background: var(--surface); z-index: 3001; border-radius: 20px 20px 0 0; transition: bottom 0.3s cubic-bezier(0.2,0.8,0.2,1); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -10px 40px rgba(0,0,0,0.2); }
     .modal-box.show { bottom: 0; }
-    .modal-header { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+    
+    .modal-header { flex-shrink: 0; background: var(--surface); display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--border); z-index: 10; color: var(--text-dark); font-weight: bold; }
     .modal-close { font-size: 22px; cursor: pointer; background: none; border: none; color: var(--text-dark); }
     .modal-body { flex: 1; overflow-y: auto; padding: 20px; }
-    
-    .toc-breadcrumb { padding: 10px 15px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 13px; font-weight: bold; color: var(--text-muted); }
-    .toc-breadcrumb span { cursor: pointer; color: var(--primary-green); }
-    .toc-item { padding: 15px; border-bottom: 1px solid var(--border); cursor: pointer; }
-    .toc-item:active { background: var(--bg); }
-    .toc-badge { display: inline-block; padding: 3px 8px; background: var(--primary-light); color: var(--primary-green); border-radius: 4px; font-size: 10px; font-weight: bold; margin-bottom: 6px; }
-    .toc-title-text { font-size: 16px; font-weight: bold; }
-    .toc-children-count { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
-    
-    .setting-group { margin-bottom: 18px; border-bottom: 1px dashed var(--border); padding-bottom: 15px; }
+
+    .setting-group { margin-bottom: 18px; }
     .setting-label { display: block; font-size: 12px; font-weight: bold; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
     .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg); border-radius: 8px; margin-bottom: 5px; font-size: 14px; border: 1px solid var(--border); }
     .setting-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary-green); }
-    .setting-group select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dark); margin-top: 5px; }
-    .setting-group input[type="range"] { width: 100%; accent-color: var(--primary-green); cursor: pointer; margin-top: 5px; }
+    .setting-group select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dark); }
+    .setting-row select { width: auto; padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-dark); }
+    .setting-group input[type="range"] { width: 100%; accent-color: var(--primary-green); cursor: pointer; }
     .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .theme-btn { padding: 10px; border: 2px solid var(--border); border-radius: 8px; text-align: center; font-size: 13px; cursor: pointer; background: var(--bg); color: var(--text-dark); }
+    .theme-btn { padding: 10px; border: 2px solid var(--border); border-radius: 8px; text-align: center; font-weight: bold; font-size: 13px; cursor: pointer; background: var(--bg); color: var(--text-dark);}
     .theme-btn.active { border-color: var(--primary-green); background: var(--primary-light); color: var(--primary-green); }
-    .import-btn { width: 100%; padding: 12px; background: var(--primary-green); color: white; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+
+    /* ================================================================
+       TOC - Hierarchical
+       ================================================================ */
+    .toc-breadcrumb { padding: 10px 15px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 13px; font-weight: bold; color: var(--text-muted); flex-shrink: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .toc-breadcrumb span { cursor: pointer; color: var(--primary-green); transition: 0.2s; }
+    .toc-breadcrumb .toc-back { color: var(--primary-green); font-size: 14px; cursor: pointer; }
+    .toc-item { padding: 15px; border-bottom: 1px solid var(--border); cursor: pointer; color: var(--text-dark); transition: 0.15s; display: flex; flex-direction: column; }
+    .toc-item:active { background: var(--bg); padding-left: 20px; }
+    .toc-item.current { background: var(--primary-light); border-left: 4px solid var(--primary-green); }
+    .toc-badge { display: inline-block; padding: 3px 8px; background: var(--primary-light); color: var(--primary-green); border-radius: 4px; font-size: 10px; font-weight: bold; margin-bottom: 6px; width: fit-content; text-transform: uppercase; }
+    .toc-title-text { font-size: 16px; font-weight: bold; }
+    .toc-translations { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+    .toc-children-count { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+    .toc-children-count i { margin-right: 5px; }
+
+    .import-zone { text-align: center; padding: 10px 20px; }
     .import-input-field { width: 100%; padding: 10px; margin-top: 5px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dark); }
 
     @media (max-width: 600px) {
@@ -147,13 +342,21 @@
   <!-- ===== LOADER ===== -->
   <div id="loader">
     <div class="spinner"></div>
-    <div class="status" id="loadStatus">📚 ഡിജിറ്റൽ ലൈബ്രറി ലോഡ് ചെയ്യുന്നു...</div>
+    <div class="status" id="loadStatus">📚 ഡിജിറ്റൽ ഗ്രന്ഥശേഖരം ലോഡ് ചെയ്യുന്നു...</div>
     <div class="sub-status" id="loadSubStatus"></div>
+    <div id="manualInjectControls" style="display:block; text-align:center; margin-top:15px; gap:10px;">
+      <button class="import-btn" onclick="document.getElementById('masterFileInput').click()">
+        <i class="fas fa-file-code"></i> 1. Import Setup (books.json)
+      </button>
+    </div>
+    <input type="file" id="masterFileInput" accept=".json" style="display:none;" onchange="handleMasterUpload(event)">
   </div>
 
-  <!-- ===== AUDIO ===== -->
+  <!-- ===== AUDIO ELEMENTS ===== -->
   <audio id="silentAudio" loop playsinline src="https://raw.githubusercontent.com/anars/blank-audio/master/10-minutes-of-silence.mp3"></audio>
   <audio id="bgMusic" loop playsinline src="Audio/nasheed_1.mp3"></audio>
+  <audio id="ambRain" loop src="https://assets.mixkit.co/active_storage/sfx/2433/2433-84.wav"></audio>
+  <audio id="ambWind" loop src="https://assets.mixkit.co/active_storage/sfx/2432/2432-84.wav"></audio>
 
   <!-- ===== HOME VIEW ===== -->
   <div id="homeView">
@@ -161,30 +364,45 @@
       <div class="top-bar">
         <div class="logo"><i class="fas fa-layer-group"></i> <span class="home-title">Adventure Library Pro</span></div>
         <div class="actions">
-          <i class="fas fa-sync-alt sync-icon" onclick="syncAllBooks()" title="Sync Parts"></i>
-          <i class="fas fa-cog" onclick="openModal('settingsModal')"></i>
+          <i class="fas fa-search" onclick="toggleSearch()"></i>
+          <i class="fas fa-sync-alt sync-icon" onclick="syncAllBooks()" title="Sync New Parts"></i>
+          <i class="fas fa-cloud-upload-alt" onclick="openImport()"></i>
         </div>
       </div>
+      <div class="search-bar" id="searchBar">
+        <input type="text" id="searchInput" placeholder="ഗ്രന്ഥങ്ങൾ തിരയുക..." oninput="searchBooks(this.value)">
+      </div>
       <div class="tabs">
-        <div class="tab-item active">All Books</div>
+        <div class="tab-item active" id="tab-all" onclick="filterShelf('all')">All Books</div>
+        <div class="tab-item" id="tab-cats" onclick="filterShelf('categories')">Categories</div>
+        <div class="tab-item" id="tab-auths" onclick="filterShelf('authors')">Authors</div>
       </div>
     </header>
 
     <div class="container">
+      <!-- Continue Reading Card -->
       <div class="continue-card" id="continueCard" onclick="continueReading()">
         <div class="info">
-          <h4><i class="fas fa-book-open"></i> വായന തുടരുക</h4>
+          <h4><i class="fas fa-book-open"></i> Continue Reading</h4>
           <p id="continueInfo">Loading...</p>
         </div>
         <div class="btn"><i class="fas fa-play"></i> Resume</div>
       </div>
+      
       <div class="book-grid" id="bookGrid"></div>
     </div>
 
     <nav class="bottom-nav">
-      <div class="nav-link active"><i class="fas fa-home"></i>Home</div>
-      <div class="nav-link" onclick="openModal('importModal')"><i class="fas fa-folder-plus"></i>Upload</div>
+      <button class="nav-link active" onclick="goHome()"><i class="fas fa-home"></i>Home</button>
+      <button class="nav-link" onclick="openImport()"><i class="fas fa-folder-plus"></i>Add Book</button>
+      <button class="nav-link" onclick="openSettings()"><i class="fas fa-sliders-h"></i>Settings</button>
     </nav>
+  </div>
+
+  <!-- ===== LOADING OVERLAY ===== -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loader-spinner"></div>
+    <div class="loader-text" id="loadingText">📖 പുസ്തകം ലോഡ് ചെയ്യുന്നു...</div>
   </div>
 
   <!-- ===== READER VIEW ===== -->
@@ -195,115 +413,176 @@
       <div class="reader-actions">
         <i class="fas fa-bookmark" id="readerBookmark" onclick="toggleBookmark()"></i>
         <i class="fas fa-list-ol" onclick="openTOC()"></i>
-        <i class="fas fa-sync-alt" onclick="syncCurrentBook()" title="Sync Parts" style="color:#facc15;"></i>
+        <i class="fas fa-sync-alt sync-icon" onclick="syncCurrentBook()" title="Sync New Parts"></i>
+        <i class="fas fa-cog" onclick="openSettings()"></i>
       </div>
     </header>
 
     <div class="reader-content" id="readerContent">
+      <!-- Ebook View -->
       <div id="ebookView">
-        <div id="readerPageContainer"></div>
+        <div id="readerPageContainer" class="mode-ebook-page"></div>
         <div class="reader-pagination">
           <button onclick="changePage(-1)"><i class="fas fa-chevron-left"></i> Prev</button>
           <span class="page-num" id="readerPageNum">0 / 0</span>
           <button onclick="changePage(1)">Next <i class="fas fa-chevron-right"></i></button>
         </div>
       </div>
-    </div>
 
-    <div class="mini-player" id="miniPlayer">
-      <div class="mini-details" onclick="switchMode('ebook')">
-        <div class="mini-title" id="miniTitle">Ready Track</div>
-        <div class="mini-progress" id="miniProgress">Part 0 - Page 0</div>
+      <!-- Audio View -->
+      <div id="audioView" style="display:none;">
+        <div class="audio-player">
+          <div class="audio-icon"><i class="fas fa-headphones-simple"></i></div>
+          <div class="audio-title-text" id="audioTitle">Audio Mode</div>
+          <div class="audio-meta" id="audioMeta">Page 0 / 0</div>
+          <div class="audio-controls">
+            <i class="fas fa-backward-step" onclick="changePage(-1)"></i>
+            <i class="fas fa-play play-big" id="audioPlayBtn" onclick="togglePlay()"></i>
+            <i class="fas fa-forward-step" onclick="changePage(1)"></i>
+            <i class="fas fa-stop-circle" onclick="stopAudio()"></i>
+          </div>
+          <div class="audio-progress"><div class="progress-bar" id="audioProgressBar"></div></div>
+        </div>
       </div>
-      <div class="mini-controls">
-        <i class="fas fa-backward" onclick="changePage(-1)"></i>
-        <i class="fas fa-play" id="miniPlayIcon" onclick="togglePlay()"></i>
-        <i class="fas fa-forward" onclick="changePage(1)"></i>
+
+      <!-- Visual View -->
+      <div id="visualView" style="display:none;">
+        <div style="text-align:center; padding:40px; color:var(--text-muted);">
+          <i class="fas fa-wand-magic-sparkles" style="font-size:48px; color:var(--primary-green);"></i>
+          <p style="margin-top:15px; font-weight:bold;">Cinematic Reels View Active</p>
+          <button onclick="openVisualMode()" class="import-btn" style="background:var(--primary-green); border-radius:30px;"><i class="fas fa-eye"></i> Launch Visual Screen</button>
+        </div>
       </div>
     </div>
 
     <nav class="reader-bottom-nav">
-      <div class="nav-tab active" onclick="switchMode('ebook')"><i class="fas fa-book"></i>E-Book</div>
-      <div class="nav-tab" onclick="switchMode('visual')"><i class="fas fa-video"></i>Visual</div>
+      <div class="nav-tab active" id="nav-ebook" onclick="switchViewportTab('ebook')"><i class="fas fa-book"></i><span>E-Book</span></div>
+      <div class="nav-tab" id="nav-audio" onclick="switchViewportTab('audio')"><i class="fas fa-headphones"></i><span>Audio</span></div>
+      <div class="nav-tab" id="nav-visual" onclick="switchViewportTab('visual')"><i class="fas fa-video"></i><span>Visual</span></div>
     </nav>
+  </div>
+
+  <!-- ===== MINI PLAYER ===== -->
+  <div class="mini-player" id="miniPlayer">
+    <div class="mini-details" onclick="restorePlayingBook()">
+      <div class="mini-title" id="miniTitle">Ready Track</div>
+      <div class="mini-progress" id="miniProgress">Part 0 - Page 0</div>
+    </div>
+    <div class="mini-controls">
+      <i class="fas fa-backward" onclick="changePage(-1)"></i>
+      <i class="fas fa-play" id="miniPlayIcon" onclick="togglePlay()"></i>
+      <i class="fas fa-forward" onclick="changePage(1)"></i>
+    </div>
   </div>
 
   <!-- ===== VISUAL MODE ===== -->
   <div class="visual-mode" id="visualMode">
-    <div class="visual-video-wrapper">
+    <div class="visual-video-wrapper" id="visualVideoWrapper">
       <video id="visualVideo" muted loop playsinline></video>
       <iframe id="visualYoutube" src="" allow="autoplay; fullscreen; encrypted-media;" playsinline></iframe>
     </div>
     <div class="visual-overlay"></div>
-    <div class="visual-controls">
-      <i class="fas fa-backward-step" onclick="changePage(-1)"></i>
-      <i class="fas fa-play" id="visPlayBtn" onclick="togglePlay()"></i>
-      <i class="fas fa-forward-step" onclick="changePage(1)"></i>
-      <i class="fas fa-expand" onclick="toggleVisualFullscreen()" style="color:#facc15;"></i>
-      <i class="fas fa-times-circle" style="color:#ef4444;" onclick="closeVisualMode()"></i>
+
+    <div class="visual-controls" id="visualControls">
+      <i class="fas fa-backward-step" onclick="changeVisualPage(-1)"></i>
+      <i class="fas fa-play vis-play" id="visPlayBtn" onclick="toggleVisualPlay()"></i>
+      <i class="fas fa-forward-step" onclick="changeVisualPage(1)"></i>
+      <i class="fas fa-stop" onclick="stopVisualAudio()"></i>
+      <i class="fas fa-expand vis-fullscreen-btn" onclick="toggleVisualFullscreen()" title="Fullscreen"></i>
+      <i class="fas fa-times-circle vis-close-btn" onclick="closeVisualMode()"></i>
     </div>
+
     <div class="visual-content">
       <div class="vis-ar" id="visArText">...</div>
       <div class="vis-ml" id="visMlText">...</div>
+      <div class="vis-en" id="visEnText">...</div>
     </div>
+    <div class="visual-progress"><div class="vis-progress-bar" id="visProgressBar"></div></div>
   </div>
 
   <!-- ===== MODALS ===== -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
 
-  <div class="modal-box" id="tocModal">
+  <div class="modal-box" id="settingsModal">
+    <div class="modal-header"><span>⚙️ ക്രമീകരണങ്ങൾ</span><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="setting-group">
+        <label class="setting-label">🔤 Fonts</label>
+        <div class="setting-row"><span>മലയാളം</span><select id="optFontMl" onchange="applyFonts()"><option value="'Manjari', sans-serif">Manjari</option><option value="'Chilanka', cursive">Chilanka</option><option value="'Gayathri', sans-serif">Gayathri</option></select></div>
+        <div class="setting-row"><span>Arabic</span><select id="optFontAr" onchange="applyFonts()"><option value="'Amiri', serif">Amiri</option><option value="'Scheherazade New', serif">Scheherazade</option></select></div>
+        <div class="setting-row"><span>English</span><select id="optFontEn" onchange="applyFonts()"><option value="sans-serif">Sans</option><option value="serif">Serif</option></select></div>
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">📖 Reading Mode</label>
+        <div class="setting-row"><span>Vertical Smooth Scroll</span><input type="checkbox" id="optVerticalScroll" onchange="toggleReadingStyle()"></div>
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">🎙️ TTS Voice</label>
+        <select id="optAudioLang" onchange="setupVoices(); applyAudioSettings(true);"><option value="ml-IN">മലയാളം</option><option value="ar-EG">അറബിക്</option><option value="en-US">ഇംഗ്ലീഷ്</option></select>
+        <select id="optVoice" onchange="applyAudioSettings(true)" style="margin-top:5px;"></select>
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">📏 Speed</label>
+        <input type="range" id="optSpeed" min="0.5" max="1.5" step="0.1" value="1.0" onchange="applyAudioSettings(true)">
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">📖 Display Layers</label>
+        <div class="setting-row"><span>Arabic</span><input type="checkbox" id="optShowAr" checked onchange="renderAllViews()"></div>
+        <div class="setting-row"><span>Malayalam</span><input type="checkbox" id="optShowMl" checked onchange="renderAllViews()"></div>
+        <div class="setting-row"><span>English</span><input type="checkbox" id="optShowEn" checked onchange="renderAllViews()"></div>
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">📏 Font Size</label>
+        <input type="range" id="optFontSize" min="14" max="30" value="18" onchange="applyFontSize()">
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">🎨 Theme</label>
+        <div class="theme-grid"><div class="theme-btn active" id="th-light" onclick="setTheme('light')">☀️ Light</div><div class="theme-btn" id="th-dark" onclick="setTheme('dark')">🌙 Dark</div><div class="theme-btn" id="th-sepia" onclick="setTheme('sepia')">📜 Sepia</div></div>
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">🎵 Background Ambient</label>
+        <select id="optBgMusic" onchange="handleBgMusic()"><option value="none">🔇 Off</option><option value="nasheed">🎵 Nasheed</option><option value="rain">🌧️ Rain</option><option value="wind">🍃 Wind</option></select>
+      </div>
+      <div class="setting-group">
+        <div class="setting-row"><span><b>🔄 Auto Next Page</b></span><input type="checkbox" id="optAutoNext" checked></div>
+        <div class="setting-row"><span><b>🔊 Click to Speak</b></span><input type="checkbox" id="optTouchSpeak" checked></div>
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">🎬 YouTube Video BG ID</label>
+        <input type="text" id="optYoutubeId" placeholder="e.g. dQw4w9WgXcQ" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text-dark);">
+        <button class="import-btn" style="width:100%; margin-top:5px; padding:8px;" onclick="applyVisualBg()">Update</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOC MODAL ===== -->
+  <div class="modal-box" id="tocModal" style="padding:0;">
     <div class="modal-header"><span>📑 സൂചിക (TOC)</span><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="toc-breadcrumb" id="tocBreadcrumb"></div>
     <div class="modal-body" id="tocList" style="padding:0;"></div>
   </div>
 
+  <!-- ===== IMPORT MODAL ===== -->
   <div class="modal-box" id="importModal">
     <div class="modal-header"><span>📂 ഫയൽ ഇൻജെക്ടർ</span><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body">
-      <div style="text-align:center;">
+      <div class="import-zone">
         <i class="fas fa-server" style="font-size:45px; color:var(--primary-green); margin-bottom:10px;"></i>
-        <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">books.json ലിസ്റ്റിലുള്ള പുസ്തകത്തിലേക്ക് ഭാഗങ്ങൾ ഇൻജെക്ട് ചെയ്യാം</p>
-        <div style="text-align:left; margin-bottom:15px;">
-          <label style="font-size:12px; font-weight:bold; color:var(--text-muted);">1. ടാർഗെറ്റ് പുസ്തകം</label>
-          <select id="injectorTargetBookSelect" style="margin-top:5px;"></select>
+        <h3>IndexedDB Storage</h3>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">books.json ലിസ്റ്റിലുള്ള പുസ്തകത്തിലേക്ക് ഭാഗങ്ങൾ ഇൻജെക്ട് ചെയ്യാം</p>
+        <div class="setting-group" style="text-align:left;">
+          <label class="setting-label">1. ടാർഗെറ്റ്</label>
+          <select id="injectorTargetBookSelect" style="margin-bottom:15px;"></select>
+          <label class="setting-label">2. JSON അപ്‌ലോഡ്</label>
+          <input type="file" id="bulkPartsFileInput" accept=".json" multiple onchange="handleBulkPartsUpload(event)" class="import-input-field">
+          <div style="margin-top:8px; font-size:12px; color:var(--text-muted);">
+            <i class="fas fa-info-circle"></i> വലിയ ഫയലുകൾ പോലും മെമ്മറി ഹാങ്ങ് ആകാതെ പ്രോസസ്സ് ചെയ്യും
+          </div>
         </div>
-        <div style="text-align:left; margin-bottom:15px;">
-          <label style="font-size:12px; font-weight:bold; color:var(--text-muted);">2. JSON അപ്‌ലോഡ്</label>
-          <input type="file" id="bulkPartsFileInput" accept=".json" multiple class="import-input-field">
+        <div style="border-top:1px dashed var(--border); margin-top:15px; padding-top:15px;">
+          <button class="import-btn" style="width:100%; background:#7f8c8d;" onclick="document.getElementById('masterFileInput').click()"><i class="fas fa-cog"></i> പുതിയ books.json</button>
         </div>
-        <button class="import-btn" onclick="document.getElementById('masterFileInput').click()"><i class="fas fa-cog"></i> പുതിയ books.json അപ്‌ലോഡ് ചെയ്യുക</button>
-        <input type="file" id="masterFileInput" accept=".json" style="display:none;" onchange="handleMasterUpload(event)">
         <div id="injectorStatusText" style="margin-top:12px; font-weight:bold; color:var(--accent);"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-box" id="settingsModal">
-    <div class="modal-header"><span>⚙️ ക്രമീകരണങ്ങൾ</span><button class="modal-close" onclick="closeModal()">✕</button></div>
-    <div class="modal-body">
-      <div class="setting-group">
-        <label class="setting-label">🎨 Theme</label>
-        <div class="theme-grid">
-          <div class="theme-btn active" id="th-light" onclick="setTheme('light')">☀️ Light</div>
-          <div class="theme-btn" id="th-dark" onclick="setTheme('dark')">🌙 Dark</div>
-          <div class="theme-btn" id="th-sepia" onclick="setTheme('sepia')">📜 Sepia</div>
-        </div>
-      </div>
-      <div class="setting-group">
-        <label class="setting-label">🎙️ TTS Voice & Speed</label>
-        <select id="optAudioLang" onchange="setupVoices()"><option value="ml-IN">മലയാളം</option><option value="ar-EG">അറബിക്</option></select>
-        <select id="optVoice" style="margin-top:5px;"></select>
-        <input type="range" id="optSpeed" min="0.5" max="1.5" step="0.1" value="1.0">
-      </div>
-      <div class="setting-group">
-        <label class="setting-label">📖 Display</label>
-        <div class="setting-row"><span>Auto Next Page</span><input type="checkbox" id="optAutoNext" checked></div>
-        <div class="setting-row"><span>Click to Speak</span><input type="checkbox" id="optTouchSpeak" checked></div>
-      </div>
-      <div class="setting-group">
-        <label class="setting-label">🎬 YouTube Video BG ID</label>
-        <input type="text" id="optYoutubeId" placeholder="e.g. dQw4w9WgXcQ" value="dQw4w9WgXcQ" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text-dark);">
-        <button class="import-btn" onclick="applyVisualBg()">Update Video</button>
       </div>
     </div>
   </div>
@@ -315,22 +594,35 @@
     let audioCtx = null, oscillator = null, gainNode = null;
     function initAudioContext() {
       try {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-          oscillator = audioCtx.createOscillator();
-          oscillator.type = 'sine';
-          oscillator.frequency.value = 18000;
-          gainNode = audioCtx.createGain();
-          gainNode.gain.value = 0.001;
-          oscillator.connect(gainNode);
-          gainNode.connect(audioCtx.destination);
-          oscillator.start();
-        }
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        oscillator = audioCtx.createOscillator();
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 18000;
+        gainNode = audioCtx.createGain();
+        gainNode.gain.value = 0.001;
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.start();
         if (audioCtx.state === 'suspended') audioCtx.resume();
       } catch(e) {}
     }
-    document.addEventListener('click', () => { if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); });
-    document.addEventListener('touchstart', () => { if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); });
+    function resumeAudioContext() { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }
+    document.addEventListener('click', resumeAudioContext);
+    document.addEventListener('touchstart', resumeAudioContext);
+
+    // ================================================================
+    // BACKGROUND MUSIC
+    // ================================================================
+    function handleBgMusic() {
+      const opt = document.getElementById('optBgMusic').value;
+      const bg = document.getElementById('bgMusic');
+      const rain = document.getElementById('ambRain');
+      const wind = document.getElementById('ambWind');
+      bg.pause(); rain.pause(); wind.pause();
+      if (opt === 'nasheed') { bg.volume = 0.1; bg.play().catch(()=>{}); } 
+      else if (opt === 'rain') { rain.volume = 0.1; rain.play().catch(()=>{}); } 
+      else if (opt === 'wind') { wind.volume = 0.1; wind.play().catch(()=>{}); }
+    }
 
     // ================================================================
     // DATABASE
@@ -343,9 +635,10 @@
     const STATE = {
       books: [], currentBook: null, currentPage: 0, totalPages: 0,
       data: [], bookmarks: [], playing: false, theme: 'light',
-      mode: 'ebook', showAr: true, showMl: true, showEn: true,
+      mode: 'ebook', fontScale: 18, showAr: true, showMl: true, showEn: true,
       ttsLang: 'ml-IN', speed: 1.0, autoNext: true, touchSpeak: true,
-      currentBookId: null, charOffset: 0, shelfFilter: 'all'
+      currentBookId: null, charOffset: 0, shelfFilter: 'all',
+      scrollStyle: 'page'
     };
 
     const PLAY_STATE = { bookId: null, data: [], page: 0, charOffset: 0, totalPages: 0 };
@@ -353,6 +646,9 @@
     let audioProgressInterval = null;
     let tocTree = [], tocPath = [];
 
+    // ================================================================
+    // INDEXEDDB - Lazy Loading Support
+    // ================================================================
     function openDB() {
       return new Promise((resolve, reject) => {
         let request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -401,19 +697,18 @@
       let db = await openDB();
       let tx = db.transaction(CHUNKS_STORE, "readwrite");
       let store = tx.objectStore(CHUNKS_STORE);
-      booksArray.forEach(item => store.put(item));
-    }
-
-    // ================================================================
-    // LOADER FUNCTIONS
-    // ================================================================
-    function showLoader(text, subText) {
-      document.getElementById('loadStatus').textContent = text || '📚 Loading...';
-      document.getElementById('loadSubStatus').textContent = subText || '';
-      document.getElementById('loader').classList.add('show');
-    }
-    function hideLoader() {
-      document.getElementById('loader').classList.remove('show');
+      const chunkSize = 100;
+      for (let i = 0; i < booksArray.length; i += chunkSize) {
+        const chunk = booksArray.slice(i, i + chunkSize);
+        for (let item of chunk) {
+          store.put(item);
+        }
+        await new Promise(resolve => setTimeout(resolve, 0));
+      }
+      return new Promise((resolve) => {
+        tx.oncomplete = resolve;
+        tx.onerror = resolve;
+      });
     }
 
     // ================================================================
@@ -438,8 +733,15 @@
     }
 
     // ================================================================
-    // PARSE ITEM
+    // LOAD & SYNC - With Lazy Processing
     // ================================================================
+    function showLoading(text) {
+      document.getElementById('loadingText').textContent = text || '📖 Loading...';
+      document.getElementById('loadingOverlay').classList.add('show');
+    }
+    function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
+
+    // Parse single item - memory efficient
     function parseSingleItem(item, bookId, partNum) {
       let ar = (item.ar || "").toString().trim();
       let ml = (item.ml || "").toString().trim();
@@ -475,96 +777,18 @@
     // ================================================================
     // PARALLEL FETCHING - MAIN FEATURE
     // ================================================================
-    async function syncAllBooks() {
-      showLoader("🔄 എല്ലാ പുസ്തകങ്ങളും സിങ്ക് ചെയ്യുന്നു...", "Parallel fetching all parts...");
-      
-      let totalBooks = STATE.books.length;
-      let processedBooks = 0;
-      
-      for (let book of STATE.books) {
-        let maxParts = book.parts || 10;
-        let folder = book.folder || book.id;
-        let fetchPromises = [];
-        
-        document.getElementById('loadSubStatus').textContent = `📖 ${book.titleMl || book.title} (${maxParts} parts)`;
-        
-        // Create parallel fetch promises
-        for (let i = 1; i <= maxParts; i++) {
-          let path = `Books/${folder}/${folder}_part_${i}.json`;
-          fetchPromises.push(
-            fetch(path)
-              .then(res => {
-                if (!res.ok) throw new Error(`Part ${i} not found`);
-                return res.json();
-              })
-              .then(data => ({ partNum: i, data: data }))
-              .catch(() => ({ partNum: i, data: null, error: true }))
-          );
-        }
-        
-        // Execute all fetches in parallel
-        let results = await Promise.allSettled(fetchPromises);
-        let allProcessedData = [];
-        let foundParts = 0;
-        
-        for (let res of results) {
-          if (res.status === 'fulfilled' && res.value && res.value.data) {
-            let processed = [];
-            for (let item of res.value.data) {
-              processed.push(parseSingleItem(item, book.id, res.value.partNum));
-            }
-            allProcessedData = allProcessedData.concat(processed);
-            foundParts++;
-          }
-        }
-        
-        // Save to IndexedDB if data found
-        if (allProcessedData.length > 0) {
-          allProcessedData.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-          
-          // Save in chunks
-          for (let i = 0; i < allProcessedData.length; i += 200) {
-            let chunk = allProcessedData.slice(i, i + 200);
-            for (let item of chunk) {
-              await saveIsolatedBookData([item]);
-            }
-          }
-          
-          book.parts = foundParts;
-          await saveCatalogToDB([book]);
-          processedBooks++;
-        }
-      }
-      
-      // Update book list in catalog
-      for (let book of STATE.books) {
-        await saveCatalogToDB([book]);
-      }
-      
-      renderBooks(STATE.books);
-      populateInjectorOptions();
-      hideLoader();
-      
-      if (processedBooks > 0) {
-        alert(`✅ ${processedBooks} പുസ്തകങ്ങൾ സിങ്ക് ചെയ്തു!`);
-      } else {
-        alert("ℹ️ പുതിയ ഭാഗങ്ങൾ ലഭ്യമല്ല");
-      }
-    }
-
-    async function syncCurrentBook() {
-      if (!STATE.currentBookId) return;
-      showLoader("🔄 ഈ പുസ്തകം സിങ്ക് ചെയ്യുന്നു...", "Parallel fetching parts...");
-      
-      const book = STATE.books.find(b => b.id === STATE.currentBookId);
-      if (!book) { hideLoader(); return; }
-      
+    async function loadAllParts(book) {
+      const folder = book.folder || book.id;
+      const basePath = `Books/${folder}/${folder}_part_`;
+      let allData = [];
       let maxParts = book.parts || 10;
-      let folder = book.folder || book.id;
       let fetchPromises = [];
       
+      showLoading(`📖 ${book.title || book.titleMl} - ലോഡ് ചെയ്യുന്നു...`);
+
+      // Create parallel fetch promises
       for (let i = 1; i <= maxParts; i++) {
-        let path = `Books/${folder}/${folder}_part_${i}.json`;
+        let path = `${basePath}${i}.json`;
         fetchPromises.push(
           fetch(path)
             .then(res => {
@@ -575,105 +799,59 @@
             .catch(() => ({ partNum: i, data: null, error: true }))
         );
       }
-      
+
+      // Execute all fetches in parallel
       let results = await Promise.allSettled(fetchPromises);
-      let allProcessedData = [];
       let foundParts = 0;
-      
+
       for (let res of results) {
         if (res.status === 'fulfilled' && res.value && res.value.data) {
           for (let item of res.value.data) {
-            allProcessedData.push(parseSingleItem(item, book.id, res.value.partNum));
+            allData.push(parseSingleItem(item, book.id, res.value.partNum));
           }
           foundParts++;
         }
       }
-      
-      if (allProcessedData.length > 0) {
-        allProcessedData.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-        
-        // Clear old data and save new
-        let existing = await getIsolatedBookData(book.id);
-        for (let item of existing) {
-          // We'll just overwrite with new data
-        }
-        
-        for (let i = 0; i < allProcessedData.length; i += 200) {
-          let chunk = allProcessedData.slice(i, i + 200);
-          for (let item of chunk) {
-            await saveIsolatedBookData([item]);
-          }
-        }
-        
-        book.parts = foundParts;
-        await saveCatalogToDB([book]);
-        await openBook(book.id);
-      }
-      
-      hideLoader();
-      if (foundParts > 0) {
-        alert(`✅ ${foundParts} ഭാഗങ്ങൾ കണ്ടെത്തി!`);
-      } else {
-        alert("ℹ️ പുതിയ ഭാഗങ്ങൾ ലഭ്യമല്ല");
-      }
-    }
 
-    // ================================================================
-    // BULK UPLOAD
-    // ================================================================
-    async function handleBulkPartsUpload(event) {
-      const files = event.target.files;
-      if (!files.length) return;
-      
-      const targetBookId = document.getElementById('injectorTargetBookSelect').value;
-      const statusText = document.getElementById('injectorStatusText');
-      showLoader("📂 ഫയലുകൾ പ്രോസസ്സ് ചെയ്യുന്നു...", `${files.length} files`);
-      
-      let allData = [];
-      for (let file of files) {
-        const text = await file.text();
-        try {
-          const rawData = JSON.parse(text);
-          if (rawData.length > 0) {
-            for (let item of rawData) {
-              allData.push(parseSingleItem(item, targetBookId, 1));
-            }
-          }
-        } catch (ex) {}
-      }
-      
       if (allData.length > 0) {
         allData.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-        
-        // Merge with existing
-        let existing = await getIsolatedBookData(targetBookId);
-        let uniqueData = [...existing];
-        let seen = new Set();
-        existing.forEach(item => seen.add(item.uid));
-        for (let item of allData) {
-          if (!seen.has(item.uid)) {
-            seen.add(item.uid);
-            uniqueData.push(item);
-          }
-        }
-        
-        for (let item of uniqueData) {
-          await saveIsolatedBookData([item]);
-        }
-        
-        const book = STATE.books.find(b => b.id === targetBookId);
-        if (book) {
-          const maxPart = uniqueData.reduce((max, item) => Math.max(max, parseInt(item.part) || 0), 0);
+        await saveIsolatedBookData(allData);
+        book.parts = foundParts;
+        await saveCatalogToDB([book]);
+      }
+      hideLoading();
+      return allData;
+    }
+
+    async function syncAllBooks() {
+      showLoading("🔄 എല്ലാ പുസ്തകങ്ങളും സിങ്ക് ചെയ്യുന്നു...");
+      for (const book of STATE.books) {
+        const data = await loadAllParts(book);
+        if (data && data.length > 0) {
+          const chunks = await getIsolatedBookData(book.id);
+          const maxPart = chunks.reduce((max, item) => Math.max(max, parseInt(item.part) || 0), 0);
           book.parts = maxPart || 1;
-          await saveCatalogToDB([book]);
         }
       }
-      
-      hideLoader();
-      statusText.textContent = `✅ ${allData.length} ഐറ്റങ്ങൾ സേവ് ചെയ്തു!`;
-      setTimeout(() => { statusText.textContent = ""; }, 3000);
-      if (STATE.currentBookId === targetBookId) openBook(targetBookId);
+      await saveCatalogToDB(STATE.books);
       renderBooks(STATE.books);
+      hideLoading();
+      alert("✅ എല്ലാ പുസ്തകങ്ങളും സിങ്ക് ചെയ്തു!");
+    }
+
+    async function syncCurrentBook() {
+      if (!STATE.currentBookId) return;
+      showLoading("🔄 ഈ പുസ്തകം സിങ്ക് ചെയ്യുന്നു...");
+      const book = STATE.books.find(b => b.id === STATE.currentBookId);
+      if (book) {
+        await loadAllParts(book);
+        const chunks = await getIsolatedBookData(book.id);
+        const maxPart = chunks.reduce((max, item) => Math.max(max, parseInt(item.part) || 0), 0);
+        book.parts = maxPart || 1;
+        await saveCatalogToDB([book]);
+        await openBook(STATE.currentBookId);
+      }
+      hideLoading();
     }
 
     // ================================================================
@@ -688,66 +866,101 @@
       setupMediaSession();
       
       STATE.books = await loadCatalogFromDB();
-      if (STATE.books && STATE.books.length > 0) {
+      if(STATE.books && STATE.books.length > 0) {
         renderBooks(STATE.books);
         populateInjectorOptions();
+        document.getElementById('loader').classList.add('hidden');
         updateContinueReading();
-        hideLoader();
       } else {
         loadLibrary();
       }
     });
 
     async function loadLibrary() {
-      showLoader("📚 ലൈബ്രറി ലോഡ് ചെയ്യുന്നു...", "Fetching books.json");
       try {
         const response = await fetch('books.json');
         const data = await response.json();
         if (data && data.length > 0) {
           STATE.books = data;
-          for (let book of data) {
-            await saveCatalogToDB([book]);
-          }
+          await saveCatalogToDB(data);
           renderBooks(data);
           populateInjectorOptions();
+          document.getElementById('loader').classList.add('hidden');
           updateContinueReading();
-        }
-      } catch (err) {
-        document.getElementById('loadStatus').textContent = '📂 books.json ഇൻജെക്ട് ചെയ്യുക';
-        document.getElementById('loadSubStatus').textContent = 'Upload books.json via Upload button';
-      }
-      hideLoader();
+        } else { showImportScreen(); }
+      } catch (err) { showImportScreen(); }
+    }
+
+    function showImportScreen() {
+      document.getElementById('loadStatus').textContent = '📂 books.json ഇൻജെക്ട് ചെയ്യുക';
+      document.getElementById('manualInjectControls').style.display = 'block';
     }
 
     function populateInjectorOptions() {
       const select = document.getElementById('injectorTargetBookSelect');
-      if (!select) return;
+      if(!select) return;
       select.innerHTML = STATE.books.map(b => `<option value="${b.id}">${b.titleMl || b.title} (${b.id})</option>`).join('');
-      
-      // Setup bulk upload handler
-      document.getElementById('bulkPartsFileInput').onchange = handleBulkPartsUpload;
     }
 
     async function handleMasterUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      if (file.name !== 'books.json') {
-        alert("books.json ഫയൽ മാത്രമേ അപ്‌ലോഡ് ചെയ്യാൻ പാടുള്ളൂ!");
-        return;
-      }
+      const file = e.target.files[0]; if (!file) return;
+      if (file.name !== 'books.json') { alert("books.json മാത്രമേ upload ചെയ്യാൻ പാടുള്ളൂ!"); return; }
       const text = await file.text();
       try {
         const parsed = JSON.parse(text);
         STATE.books = parsed;
-        for (let book of parsed) {
-          await saveCatalogToDB([book]);
-        }
+        await saveCatalogToDB(parsed);
         renderBooks(parsed);
         populateInjectorOptions();
-        alert("✅ books.json വിജയകരമായി സിങ്ക് ചെയ്തു!");
-      } catch (err) {
-        alert("Invalid JSON file");
+        document.getElementById('loader').classList.add('hidden');
+        alert("✅ books.json സിങ്ക് ചെയ്തു!");
+      } catch(err) { alert("Invalid JSON"); }
+    }
+
+    async function handleBulkPartsUpload(e) {
+      const files = e.target.files; if (!files.length) return;
+      const targetBookId = document.getElementById('injectorTargetBookSelect').value;
+      const statusText = document.getElementById('injectorStatusText');
+      statusText.innerText = "ഡാറ്റാബേസ് പ്രോസസ്സ് ചെയ്യുന്നു...";
+      
+      let allData = [];
+      for (let file of files) {
+        const text = await file.text();
+        try {
+          const rawData = JSON.parse(text);
+          if(rawData.length > 0) {
+            for (let item of rawData) {
+              allData.push(parseSingleItem(item, targetBookId, 1));
+            }
+          }
+        } catch(ex) { console.error(ex); }
       }
+      
+      if (allData.length > 0) {
+        let existing = await getIsolatedBookData(targetBookId);
+        let uniqueData = [...existing];
+        let seen = new Set();
+        existing.forEach(item => seen.add(item.uid));
+        for (let item of allData) {
+          if (!seen.has(item.uid)) {
+            seen.add(item.uid);
+            uniqueData.push(item);
+          }
+        }
+        await saveIsolatedBookData(uniqueData);
+        
+        const book = STATE.books.find(b => b.id === targetBookId);
+        if (book) {
+          const maxPart = uniqueData.reduce((max, item) => Math.max(max, parseInt(item.part) || 0), 0);
+          book.parts = maxPart || 1;
+          await saveCatalogToDB([book]);
+        }
+      }
+      
+      statusText.innerText = `✅ ${allData.length} ഐറ്റങ്ങൾ പ്രോസസ്സ് ചെയ്തു!`;
+      setTimeout(() => { statusText.innerText = ""; closeModal(); }, 3000);
+      if(STATE.currentBookId === targetBookId) openBook(targetBookId);
+      renderBooks(STATE.books);
     }
 
     // ================================================================
@@ -755,10 +968,7 @@
     // ================================================================
     function renderBooks(books) {
       const grid = document.getElementById('bookGrid');
-      if (!books || books.length === 0) {
-        grid.innerHTML = `<div class="empty-state"><h3>ഗ്രന്ഥങ്ങൾ ലഭ്യമല്ല</h3></div>`;
-        return;
-      }
+      if (!books || books.length === 0) { grid.innerHTML = `<div class="empty-state"><h3>ഗ്രന്ഥങ്ങൾ ലഭ്യമല്ല</h3></div>`; return; }
       
       grid.innerHTML = books.map(book => `
         <div class="book-card" onclick="openBook('${book.id}')">
@@ -771,43 +981,83 @@
             <div class="book-author">${book.author || 'Unknown'}</div>
           </div>
           <div class="book-footer">
+            <button class="more-btn" onclick="event.stopPropagation(); alert('${book.description || ''}')"><i class="fas fa-info-circle"></i></button>
             <button class="open-btn" onclick="event.stopPropagation();openBook('${book.id}')">Open</button>
           </div>
         </div>`).join("");
+    }
+
+    function filterShelf(type) {
+      document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + (type === 'all' ? 'all' : (type === 'categories' ? 'cats' : 'auths'))).classList.add('active');
+      STATE.shelfFilter = type;
+      
+      if(type === 'all') renderBooks(STATE.books);
+      else if(type === 'categories') {
+        let cats = {};
+        STATE.books.forEach(b => { let c = b.lang || "General"; if(!cats[c]) cats[c]=[]; cats[c].push(b); });
+        renderGroupedShelf(cats);
+      } else if(type === 'authors') {
+        let auths = {};
+        STATE.books.forEach(b => { let a = b.author || "Unknown Authors"; if(!auths[a]) auths[a]=[]; auths[a].push(b); });
+        renderGroupedShelf(auths);
+      }
+    }
+
+    function renderGroupedShelf(groupedObj) {
+      const grid = document.getElementById('bookGrid');
+      let html = "";
+      for(let key in groupedObj) {
+        html += `
+        <details class="group-details">
+          <summary><div><i class="fas fa-folder-open"></i> ${key}</div><div style="font-size:12px; color:var(--text-muted);"><i class="fas fa-book"></i> ${groupedObj[key].length} Books <i class="fas fa-chevron-down" style="margin-left:5px;"></i></div></summary>
+          <div class="group-content">`;
+        groupedObj[key].forEach(book => {
+          html += `
+            <div class="book-card" onclick="openBook('${book.id}')">
+              <span class="book-parts-badge">${book.parts || 0} Parts</span>
+              <div class="book-cover-wrapper">
+                ${book.cover && book.cover.startsWith('http') ? `<img src="${book.cover}" class="book-cover">` : `<div class="book-avatar-fallback">${book.cover || '📖'}</div>`}
+              </div>
+              <div class="book-details"><h3 dir="rtl">${book.title}</h3><div class="book-author">${book.author}</div></div>
+              <div class="book-footer">
+                <button class="more-btn" onclick="event.stopPropagation();"><i class="fas fa-ellipsis-v"></i></button>
+                <button class="open-btn" onclick="event.stopPropagation();openBook('${book.id}')">Open</button>
+              </div>
+            </div>`;
+        });
+        html += `</div></details>`;
+      }
+      grid.innerHTML = html;
     }
 
     // ================================================================
     // OPEN BOOK
     // ================================================================
     async function openBook(bookId) {
-      const book = STATE.books.find(b => b.id === bookId);
-      if (!book) return;
-      STATE.currentBook = book;
-      STATE.currentBookId = bookId;
-      
-      showLoader(`📖 ${book.titleMl || book.title}`, "Loading from IndexedDB...");
+      const book = STATE.books.find(b => b.id === bookId); if (!book) return;
+      STATE.currentBook = book; STATE.currentBookId = bookId;
       
       let localChunks = await getIsolatedBookData(bookId);
       if (localChunks && localChunks.length > 0) {
-        localChunks.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+        localChunks.sort((a, b) => a.id - b.id);
         compileBookCollections(localChunks, bookId);
       } else {
-        // Auto-sync if no data
-        hideLoader();
-        await syncCurrentBook();
-        return;
+        const data = await loadAllParts(book);
+        if (data && data.length > 0) {
+          compileBookCollections(data, bookId);
+        } else {
+          alert("ഫയലുകൾ ലഭ്യമല്ല. ഡാറ്റ ഇൻജെക്ട് ചെയ്യുക.");
+          openImport();
+        }
       }
-      hideLoader();
     }
 
     function compileBookCollections(list, bookId) {
-      STATE.data = list;
-      STATE.totalPages = list.length;
-      
+      STATE.data = list; STATE.totalPages = list.length;
       STATE.currentPage = parseInt(localStorage.getItem(bookId + '_index')) || 0;
       STATE.charOffset = parseInt(localStorage.getItem(bookId + '_offset')) || 0;
       if (STATE.currentPage >= STATE.totalPages) STATE.currentPage = 0;
-      
       openReader();
     }
 
@@ -816,11 +1066,11 @@
       document.getElementById('homeView').style.display = 'none';
       document.getElementById('readerTitle').textContent = STATE.currentBook.titleMl || STATE.currentBook.title;
       
-      renderPage();
+      renderAllPages();
       updateBookmarkUI();
       document.getElementById('miniPlayer').classList.add('show');
-      switchMode('ebook');
-      initAudioContext();
+      switchViewportTab('ebook');
+      resumeAudioContext();
     }
 
     function closeReader() {
@@ -833,13 +1083,13 @@
       }
       document.getElementById('readerView').classList.remove('show');
       document.getElementById('homeView').style.display = 'flex';
-      if (!STATE.playing) document.getElementById('miniPlayer').classList.remove('show');
+      if(!STATE.playing) document.getElementById('miniPlayer').classList.remove('show');
       closeVisualMode();
       updateContinueReading();
     }
 
     function saveState() {
-      if (!STATE.currentBookId) return;
+      if(!STATE.currentBookId) return;
       localStorage.setItem(STATE.currentBookId + '_index', STATE.currentPage);
       localStorage.setItem(STATE.currentBookId + '_offset', STATE.charOffset);
       const row = STATE.data[STATE.currentPage];
@@ -852,63 +1102,100 @@
       updateContinueReading();
     }
 
-    function switchMode(mode) {
+    // ================================================================
+    // READING STYLE TOGGLE
+    // ================================================================
+    function toggleReadingStyle() {
+      const isVertical = document.getElementById('optVerticalScroll').checked;
+      STATE.scrollStyle = isVertical ? 'vertical' : 'page';
+      renderAllPages();
+    }
+
+    function switchViewportTab(mode) {
       STATE.mode = mode;
       document.getElementById('ebookView').style.display = mode === 'ebook' ? 'block' : 'none';
+      document.getElementById('audioView').style.display = mode === 'audio' ? 'block' : 'none';
+      document.getElementById('visualView').style.display = mode === 'visual' ? 'block' : 'none';
+      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+      let activeTab = document.getElementById('nav-' + mode); if(activeTab) activeTab.classList.add('active');
+      
       if (mode === 'visual') {
         document.getElementById('visualMode').classList.add('show');
-        updateVisualChunk();
-        applyVisualBg();
+        updateVisualChunk(); applyVisualBg();
       } else {
         document.getElementById('visualMode').classList.remove('show');
         document.getElementById('visualVideo').pause();
-        renderPage();
+        renderAllPages();
       }
-      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-      if (mode === 'ebook') document.getElementById('nav-ebook').classList.add('active');
-      else document.getElementById('nav-visual').classList.add('active');
+      resumeAudioContext();
     }
 
-    function renderPage() {
+    // ================================================================
+    // RENDER PAGES
+    // ================================================================
+    function renderAllPages() {
       if (!STATE.data || STATE.data.length === 0) return;
-      const row = STATE.data[STATE.currentPage];
-      if (!row) return;
-
-      let html = `<div class="head-badge">ഭാഗം ${row.part || '?'} - പേജ് ${row.page || '?'}</div>`;
-      if (STATE.showAr && row.arStr) html += `<div class="ar-content">${row.arStr}</div>`;
-      if (STATE.showMl && row.mlStr) html += `<div class="ml-content">${highlightWords(row.mlStr)}</div>`;
-      if (STATE.showEn && row.enStr) html += `<div class="en-content">${row.enStr}</div>`;
-
-      document.getElementById('readerPageContainer').innerHTML = html;
+      
+      const container = document.getElementById('readerPageContainer');
+      container.className = STATE.scrollStyle === 'vertical' ? 'mode-vertical' : 'mode-ebook-page';
+      
+      let html = '';
+      STATE.data.forEach((row, index) => {
+        const isCurrent = index === STATE.currentPage;
+        html += `
+          <div class="reader-page-card ${isCurrent ? 'active-page' : ''}" id="page_${index}">
+            <div class="head-badge">ഭാഗം ${row.part || '?'} - പേജ് ${row.page || '?'}</div>
+            ${STATE.showAr && row.arStr ? `<div class="ar-content">${row.arStr}</div>` : ''}
+            ${STATE.showMl && row.mlStr ? `<div class="ml-content">${highlightWords(row.mlStr, index)}</div>` : ''}
+            ${STATE.showEn && row.enStr ? `<div class="en-content">${row.enStr}</div>` : ''}
+          </div>`;
+        
+        if (STATE.scrollStyle === 'vertical' && index < STATE.data.length - 1) {
+          html += `<div class="page-breaker"><i class="fas fa-book-open"></i> ${index + 1} <i class="fas fa-ellipsis-h"></i> ${index + 2} <i class="fas fa-book-open"></i></div>`;
+        }
+      });
+      
+      container.innerHTML = html;
       document.getElementById('readerPageNum').textContent = `${STATE.currentPage + 1} / ${STATE.totalPages}`;
       
-      if (!STATE.playing || PLAY_STATE.bookId === STATE.currentBookId) {
+      const row = STATE.data[STATE.currentPage];
+      if (row) {
         document.getElementById('miniTitle').textContent = (row.mlPure || '').substring(0, 40) + '...';
         document.getElementById('miniProgress').textContent = `ഭാഗം ${row.part} - പേജ് ${row.page}`;
         updateAudioUI();
       }
+      
       syncHighlights();
       if (document.getElementById('visualMode').classList.contains('show')) updateVisualChunk();
+      
+      if (STATE.scrollStyle === 'vertical') {
+        const el = document.getElementById(`page_${STATE.currentPage}`);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
-    function highlightWords(text) {
+    function highlightWords(text, pageIndex) {
       if (!text) return '';
+      if (pageIndex !== STATE.currentPage) return text;
+      
       let offsetAcc = 0;
       return text.split(/(\s+)/).map(token => {
-        if (token.trim() === "") { offsetAcc += token.length; return token; }
-        let span = `<span class="word-token" id="eb_w_${offsetAcc}" onclick="touchSeek(${offsetAcc})">${token}</span>`;
-        offsetAcc += token.length; return span;
+        if(token.trim() === "") { offsetAcc += token.length; return token; }
+        const isHighlighted = offsetAcc <= STATE.charOffset && (offsetAcc + token.length) > STATE.charOffset;
+        const span = `<span class="word-token ${isHighlighted ? 'word-hl' : ''}" id="w_${offsetAcc}" onclick="touchSeek(${offsetAcc})">${token}</span>`;
+        offsetAcc += token.length;
+        return span;
       }).join('');
     }
 
     function touchSeek(offset) {
-      if (!STATE.touchSpeak) return;
+      if(!STATE.touchSpeak) return;
       STATE.charOffset = offset;
       saveState();
       
-      if (PLAY_STATE.bookId === STATE.currentBookId) {
+      if(PLAY_STATE.bookId === STATE.currentBookId) {
         PLAY_STATE.charOffset = offset;
-        if (STATE.playing) { synth.cancel(); playAudioLine(); }
+        if(STATE.playing) { synth.cancel(); playAudioLine(); }
         else { togglePlay(); }
       } else {
         togglePlay();
@@ -921,7 +1208,7 @@
       STATE.currentPage = newPage;
       STATE.charOffset = 0;
       saveState();
-      renderPage();
+      renderAllPages();
       document.getElementById('readerContent').scrollTop = 0;
       
       if (STATE.playing && PLAY_STATE.bookId === STATE.currentBookId) {
@@ -933,19 +1220,23 @@
 
     function syncHighlights() {
       document.querySelectorAll(".word-token").forEach(el => el.classList.remove('word-hl'));
-      if (STATE.playing && (STATE.currentBookId !== PLAY_STATE.bookId || STATE.currentPage !== PLAY_STATE.page)) return;
+      if (!STATE.playing && !document.querySelector('.word-hl')) return;
       
-      let spans = document.querySelectorAll(".word-token");
+      const pageEl = document.getElementById(`page_${STATE.currentPage}`);
+      if (!pageEl) return;
+      
       let targetSpan = null;
-      let effectiveOffset = (STATE.playing && STATE.currentBookId === PLAY_STATE.bookId) ? PLAY_STATE.charOffset : STATE.charOffset;
-      
-      for (let i = spans.length - 1; i >= 0; i--) {
-        let spanOffset = parseInt(spans[i].id.replace('eb_w_', ''));
-        if (spanOffset <= effectiveOffset) { targetSpan = spans[i]; break; }
+      const spans = pageEl.querySelectorAll('.word-token');
+      for(let i=spans.length-1; i>=0; i--) {
+        const id = spans[i].id;
+        if (id) {
+          const offset = parseInt(id.replace('w_', ''));
+          if(offset <= STATE.charOffset) { targetSpan = spans[i]; break; }
+        }
       }
-      if (targetSpan) {
+      if(targetSpan) {
         targetSpan.classList.add('word-hl');
-        targetSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetSpan.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
     }
 
@@ -955,26 +1246,22 @@
     function setupVoices() {
       systemVoices = synth.getVoices();
       let sel = document.getElementById("optVoice");
-      if (!sel) return;
+      if(!sel) return;
       sel.innerHTML = "";
       let targetLang = document.getElementById("optAudioLang").value;
       let filteredVoices = systemVoices.filter(v => v.lang.includes(targetLang.split('-')[0]));
-      if (filteredVoices.length === 0 && systemVoices.length > 0) filteredVoices.push(systemVoices[0]);
+      if(filteredVoices.length === 0 && systemVoices.length > 0) filteredVoices.push(systemVoices[0]);
       filteredVoices.forEach(v => { sel.appendChild(new Option(`${v.name} (${v.lang})`, v.name)); });
     }
 
     function togglePlay() {
-      initAudioContext();
+      resumeAudioContext();
       if (STATE.playing) {
-        synth.pause();
-        STATE.playing = false;
-        updatePlayIcon();
+        synth.pause(); STATE.playing = false; updatePlayIcon();
         document.getElementById('silentAudio').pause();
       } else {
         if (synth.paused && PLAY_STATE.bookId === STATE.currentBookId) {
-          synth.resume();
-          STATE.playing = true;
-          updatePlayIcon();
+          synth.resume(); STATE.playing = true; updatePlayIcon();
           document.getElementById('silentAudio').play().catch(()=>{});
         } else {
           PLAY_STATE.bookId = STATE.currentBookId;
@@ -982,18 +1269,19 @@
           PLAY_STATE.page = STATE.currentPage;
           PLAY_STATE.charOffset = STATE.charOffset;
           PLAY_STATE.totalPages = STATE.totalPages;
-          STATE.playing = true;
-          updatePlayIcon();
+          STATE.playing = true; updatePlayIcon();
           playAudioLine();
         }
       }
     }
 
     function playAudioLine() {
-      if (!PLAY_STATE.data || PLAY_STATE.data.length === 0) return;
+      if(!PLAY_STATE.data || PLAY_STATE.data.length === 0) return;
       const row = PLAY_STATE.data[PLAY_STATE.page];
       if (!row) return;
       const audioLangSetting = document.getElementById("optAudioLang").value;
+      
+      resumeAudioContext();
       
       let fullText = row.mlStr;
       if (audioLangSetting === "ml-IN") fullText = row.mlStr;
@@ -1002,9 +1290,7 @@
 
       if (!fullText) {
         if (STATE.autoNext && PLAY_STATE.page < PLAY_STATE.totalPages - 1) {
-          PLAY_STATE.page++;
-          PLAY_STATE.charOffset = 0;
-          playAudioLine();
+          PLAY_STATE.page++; PLAY_STATE.charOffset = 0; playAudioLine();
         }
         return;
       }
@@ -1012,9 +1298,7 @@
       let playableText = fullText.substring(PLAY_STATE.charOffset);
       if (playableText.trim() === "") {
         if (STATE.autoNext && PLAY_STATE.page < PLAY_STATE.totalPages - 1) {
-          PLAY_STATE.page++;
-          PLAY_STATE.charOffset = 0;
-          playAudioLine();
+          PLAY_STATE.page++; PLAY_STATE.charOffset = 0; playAudioLine();
         }
         return;
       }
@@ -1024,7 +1308,7 @@
       currentUtterance.lang = audioLangSetting;
       
       let vName = document.getElementById("optVoice").value;
-      if (vName) currentUtterance.voice = systemVoices.find(v => v.name === vName);
+      if(vName) currentUtterance.voice = systemVoices.find(v => v.name === vName);
       currentUtterance.rate = parseFloat(document.getElementById("optSpeed").value) || 1.0;
 
       let baseCharOffset = PLAY_STATE.charOffset;
@@ -1033,16 +1317,19 @@
       if (audioProgressInterval) clearInterval(audioProgressInterval);
       let progress = 0;
       audioProgressInterval = setInterval(() => {
-        progress += 0.5;
-        if (progress > 100) progress = 0;
+        progress += 0.5; if (progress > 100) progress = 0;
         if (STATE.mode === 'audio' && STATE.currentBookId === PLAY_STATE.bookId) {
           document.getElementById('audioProgressBar').style.width = progress + '%';
+        }
+        if (STATE.currentBookId === PLAY_STATE.bookId) {
+          document.getElementById('visProgressBar').style.width = progress + '%';
         }
       }, 100);
 
       currentUtterance.onstart = () => {
         document.getElementById('silentAudio').play().catch(()=>{});
         updateMediaSessionMeta();
+        resumeAudioContext();
         const rowData = PLAY_STATE.data[PLAY_STATE.page];
         if (rowData) {
           localStorage.setItem('last_played_book_id', PLAY_STATE.bookId);
@@ -1054,13 +1341,13 @@
       };
       
       currentUtterance.onboundary = (e) => {
-        if (typeof e.charIndex === 'number' && (e.name === 'word' || !e.name)) {
+        if(typeof e.charIndex === 'number' && (e.name === 'word' || !e.name)) {
           PLAY_STATE.charOffset = baseCharOffset + e.charIndex;
           
-          if (STATE.currentBookId === PLAY_STATE.bookId && STATE.currentPage === PLAY_STATE.page) {
+          if(STATE.currentBookId === PLAY_STATE.bookId && STATE.currentPage === PLAY_STATE.page) {
             STATE.charOffset = PLAY_STATE.charOffset;
             saveState();
-            renderPage();
+            renderAllPages();
             updateVisualChunk();
           }
           
@@ -1074,12 +1361,12 @@
         if (STATE.playing && STATE.autoNext && PLAY_STATE.page === currentPageOnStart) {
           PLAY_STATE.page++;
           PLAY_STATE.charOffset = 0;
-          if (PLAY_STATE.page < PLAY_STATE.totalPages) {
-            if (STATE.currentBookId === PLAY_STATE.bookId) {
+          if(PLAY_STATE.page < PLAY_STATE.totalPages) {
+            if(STATE.currentBookId === PLAY_STATE.bookId) {
               STATE.currentPage = PLAY_STATE.page;
               STATE.charOffset = 0;
               saveState();
-              renderPage();
+              renderAllPages();
             }
             playAudioLine();
           } else {
@@ -1091,16 +1378,14 @@
     }
 
     function stopAudio() {
-      synth.cancel();
-      STATE.playing = false;
-      PLAY_STATE.bookId = null;
+      synth.cancel(); STATE.playing = false; PLAY_STATE.bookId = null;
       updatePlayIcon();
       if (audioProgressInterval) clearInterval(audioProgressInterval);
       document.getElementById('audioProgressBar').style.width = '0%';
+      document.getElementById('visProgressBar').style.width = '0%';
       document.getElementById('silentAudio').pause();
       syncHighlights();
-      
-      if (document.getElementById('homeView').style.display !== 'none') {
+      if(document.getElementById('homeView').style.display !== 'none') {
         document.getElementById('miniPlayer').classList.remove('show');
       }
     }
@@ -1108,12 +1393,29 @@
     function updatePlayIcon() {
       const icon = STATE.playing ? 'fa-pause' : 'fa-play';
       document.getElementById('miniPlayIcon').className = `fas ${icon}`;
+      if (STATE.mode === 'audio') document.getElementById('audioPlayBtn').className = `fas ${icon} play-big`;
       document.getElementById('visPlayBtn').className = `fas ${icon} vis-play`;
     }
 
+    function restorePlayingBook() {
+      if(PLAY_STATE.bookId && PLAY_STATE.bookId !== STATE.currentBookId) {
+        openBook(PLAY_STATE.bookId).then(() => {
+          STATE.currentPage = PLAY_STATE.page;
+          STATE.charOffset = PLAY_STATE.charOffset;
+          saveState();
+          renderAllPages();
+          switchViewportTab('audio');
+        });
+      } else {
+        openReader();
+        switchViewportTab('audio');
+      }
+    }
+
+    function applyAudioSettings(restart) { if(restart && STATE.playing) { synth.cancel(); playAudioLine(); } }
+
     function updateAudioUI() {
-      const row = STATE.data[STATE.currentPage];
-      if (!row) return;
+      const row = STATE.data[STATE.currentPage]; if (!row) return;
       document.getElementById('audioTitle').textContent = (row.mlPure || '').substring(0, 50) + '...';
       document.getElementById('audioMeta').textContent = `ഭാഗം ${row.part} - പേജ് ${row.page} / ${STATE.totalPages}`;
     }
@@ -1123,17 +1425,16 @@
     // ================================================================
     function openVisualMode() {
       document.getElementById('visualMode').classList.add('show');
-      updateVisualChunk();
-      applyVisualBg();
+      updateVisualChunk(); applyVisualBg();
       if (!STATE.playing) { togglePlay(); }
-      initAudioContext();
+      resumeAudioContext();
     }
 
     function closeVisualMode() {
       document.getElementById('visualMode').classList.remove('show');
       document.getElementById('visualVideo').pause();
       document.getElementById('visualYoutube').src = '';
-      renderPage();
+      renderAllPages();
     }
 
     function toggleVisualFullscreen() {
@@ -1141,16 +1442,46 @@
     }
 
     function updateVisualChunk() {
-      const row = STATE.data[STATE.currentPage];
-      if (!row) return;
+      const row = STATE.data[STATE.currentPage]; if (!row) return;
       const audioLangSetting = document.getElementById("optAudioLang").value;
       
       let effectivePureAr = (PLAY_STATE.bookId === STATE.currentBookId) ? PLAY_STATE.data[PLAY_STATE.page]?.arPure : row.arPure;
       let effectivePureMl = (PLAY_STATE.bookId === STATE.currentBookId) ? PLAY_STATE.data[PLAY_STATE.page]?.mlPure : row.mlPure;
+      let effectivePureEn = (PLAY_STATE.bookId === STATE.currentBookId) ? PLAY_STATE.data[PLAY_STATE.page]?.enPure : row.enPure;
 
-      document.getElementById('visArText').innerHTML = effectivePureAr || '...';
-      document.getElementById('visMlText').innerHTML = effectivePureMl || '...';
+      document.getElementById('visArText').innerHTML = generateVisualWords(effectivePureAr, audioLangSetting === 'ar-EG');
+      document.getElementById('visMlText').innerHTML = generateVisualWords(effectivePureMl, audioLangSetting === 'ml-IN');
+      document.getElementById('visEnText').innerHTML = generateVisualWords(effectivePureEn, audioLangSetting === 'en-US');
     }
+
+    function generateVisualWords(pureString, isCurrentAudioLang) {
+      if(!pureString) return "...";
+      let tokens = pureString.split(/(\s+)/);
+      let activeTokenIdx = 0, acc = 0;
+      let effectiveOffset = PLAY_STATE.charOffset;
+      
+      for(let i=0; i<tokens.length; i++) {
+        if(acc <= effectiveOffset) activeTokenIdx = i;
+        else break;
+        acc += tokens[i].length;
+      }
+      let html = ""; acc = 0;
+      tokens.forEach((token, idx) => {
+        let isWord = token.trim() !== "";
+        let isHighlight = isCurrentAudioLang && (acc <= effectiveOffset && acc + token.length > effectiveOffset) && isWord;
+        let hlClass = isHighlight ? "word-hl" : "";
+        if(Math.abs(idx - activeTokenIdx) <= 6) {
+          if(isWord) html += `<span class="word-token ${hlClass}">${token}</span>`;
+          else html += token;
+        }
+        acc += token.length;
+      });
+      return html || "...";
+    }
+
+    function toggleVisualPlay() { togglePlay(); }
+    function changeVisualPage(delta) { changePage(delta); }
+    function stopVisualAudio() { stopAudio(); }
 
     function applyVisualBg() {
       const ytInput = document.getElementById('optYoutubeId').value.trim();
@@ -1159,17 +1490,14 @@
       let videoId = extractYoutubeId(ytInput);
 
       if (videoId) {
-        videoEl.style.display = 'none';
-        videoEl.pause();
+        videoEl.style.display = 'none'; videoEl.pause();
         youtubeEl.style.display = 'block';
         youtubeEl.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&playsinline=1&showinfo=0&rel=0`;
       } else {
-        youtubeEl.style.display = 'none';
-        youtubeEl.src = '';
+        youtubeEl.style.display = 'none'; youtubeEl.src = '';
         videoEl.style.display = 'block';
         videoEl.src = 'https://assets.mixkit.co/videos/preview/mixkit-forest-trees-3524-large.mp4';
-        videoEl.loop = true;
-        videoEl.play().catch(() => {});
+        videoEl.loop = true; videoEl.play().catch(() => {});
       }
       adjustVideoScale();
     }
@@ -1185,37 +1513,56 @@
       const localVideo = document.getElementById("visualVideo");
       const isPortrait = window.innerHeight > window.innerWidth;
       const targetScale = isPortrait ? "scale(1.6)" : "scale(1.0)";
-      if (ytIframe) ytIframe.style.transform = targetScale;
-      if (localVideo) localVideo.style.transform = targetScale;
+      if(ytIframe) ytIframe.style.transform = targetScale;
+      if(localVideo) localVideo.style.transform = targetScale;
     }
 
     // ================================================================
-    // TOC
+    // HIERARCHICAL TOC (Part → H1 → H2 → Page)
     // ================================================================
     function openTOC() {
       openModal('tocModal');
-      buildTOCData();
+      buildHierarchicalTOC();
       tocPath = [{ title: '📚 Home', nodes: tocTree }];
       renderTOCLevel();
     }
     
-    function buildTOCData() {
+    function buildHierarchicalTOC() {
       tocTree = [];
-      let currentPart = null, currentH1 = null, currentH2 = null;
+      let currentPart = null;
+      let currentH1 = null;
+      let currentH2 = null;
 
       STATE.data.forEach((row, index) => {
         let partName = row.part || "1";
+        
         if (!currentPart || currentPart.name !== partName) {
-          currentPart = { type: 'part', name: partName, title: `📖 ഭാഗം ${partName}`, children: [], index: index, page: row.page };
+          currentPart = {
+            type: 'part',
+            name: partName,
+            title: `📖 ഭാഗം ${partName}`,
+            children: [],
+            index: index,
+            page: row.page
+          };
           tocTree.push(currentPart);
           currentH1 = null;
           currentH2 = null;
         }
 
         if (row.isHead) {
-          let trMlText = row.mlPure ? row.mlPure.substring(0, 10) : "";
-          let subtitle = trMlText ? `[ ${trMlText} ]` : "";
-          let node = { type: row.hTagLevel, title: row.headingAr, subtitle: subtitle, index: index, children: [], page: row.page, raw: row };
+          let trMlText = row.mlPure ? row.mlPure.substring(0, 15) : "";
+          let trEnText = row.enPure ? row.enPure.substring(0, 15) : "";
+          let subtitle = (trMlText || trEnText) ? `[ ${trMlText} / ${trEnText} ]` : "";
+          let node = {
+            type: row.hTagLevel,
+            title: row.headingAr,
+            subtitle: subtitle,
+            index: index,
+            children: [],
+            page: row.page,
+            raw: row
+          };
           
           if (row.hTagLevel === 'h1') {
             currentH1 = node;
@@ -1223,34 +1570,66 @@
             currentH2 = null;
           } else if (row.hTagLevel === 'h2') {
             currentH2 = node;
-            if (currentH1) currentH1.children.push(currentH2);
-            else currentPart.children.push(currentH2);
+            if (currentH1) {
+              currentH1.children.push(currentH2);
+            } else {
+              currentPart.children.push(currentH2);
+            }
           } else {
-            if (currentH2) currentH2.children.push(node);
-            else if (currentH1) currentH1.children.push(node);
-            else currentPart.children.push(node);
+            if (currentH2) {
+              currentH2.children.push(node);
+            } else if (currentH1) {
+              currentH1.children.push(node);
+            } else {
+              currentPart.children.push(node);
+            }
           }
-        } else if (index % 5 === 0 || index === STATE.currentPage || index === 0 || index === STATE.data.length - 1) {
-          let node = { type: 'page', title: `📄 പേജ് ${row.page}`, subtitle: (row.mlPure || '').substring(0, 20) + "...", index: index, children: [], page: row.page, raw: row };
-          if (currentH2) currentH2.children.push(node);
-          else if (currentH1) currentH1.children.push(node);
-          else currentPart.children.push(node);
+        } else if (index % 3 === 0 || index === STATE.currentPage || index === 0 || index === STATE.data.length - 1) {
+          let node = {
+            type: 'page',
+            title: `📄 പേജ് ${row.page}`,
+            subtitle: (row.mlPure || '').substring(0, 25) + "...",
+            index: index,
+            children: [],
+            page: row.page,
+            raw: row
+          };
+          
+          if (currentH2) {
+            currentH2.children.push(node);
+          } else if (currentH1) {
+            currentH1.children.push(node);
+          } else {
+            currentPart.children.push(node);
+          }
         }
       });
     }
 
     function renderTOCLevel() {
       let currentLevel = tocPath[tocPath.length - 1];
-      let breadcrumbHTML = tocPath.map((p, i) => `<span onclick="navTOC(${i})">${p.title}</span>`).join(' <i class="fas fa-angle-right"></i> ');
+      
+      let breadcrumbHTML = '';
+      if (tocPath.length > 1) {
+        breadcrumbHTML += `<span class="toc-back" onclick="navTOC(${tocPath.length - 2})"><i class="fas fa-arrow-left"></i> Back</span>`;
+      }
+      breadcrumbHTML += tocPath.map((p, i) => 
+        `<span onclick="navTOC(${i})">${p.title}</span>`
+      ).join(' <i class="fas fa-angle-right"></i> ');
       document.getElementById('tocBreadcrumb').innerHTML = breadcrumbHTML;
 
       let html = currentLevel.nodes.map((node, i) => {
         if (node.children && node.children.length > 0) {
+          let icon = node.type === 'part' ? 'fa-folder-open' : 
+                     node.type === 'h1' ? 'fa-heading' : 
+                     node.type === 'h2' ? 'fa-tag' : 'fa-folder';
           return `<div class="toc-item" onclick="drillTOC(${i})">
-            <div class="toc-badge">${node.type.toUpperCase()}</div>
-            <div class="toc-title-text" dir="rtl">${node.title}</div>
+            <div class="toc-badge">${node.type.toUpperCase()} (${node.children.length})</div>
+            <div class="toc-title-text" dir="${node.type === 'page' ? 'ltr' : 'rtl'}">
+              <i class="fas ${icon}"></i> ${node.title}
+            </div>
             ${node.subtitle ? `<div class="toc-translations">${node.subtitle}</div>` : ''}
-            <div class="toc-children-count"><i class="fas fa-folder-open"></i> ${node.children.length} items</div>
+            <div class="toc-children-count"><i class="fas fa-chevron-right"></i> ${node.children.length} items</div>
           </div>`;
         } else {
           return `<div class="toc-item ${node.index === STATE.currentPage ? 'current' : ''}" onclick="closeModal(); jumpToPage(${node.index})">
@@ -1260,14 +1639,17 @@
           </div>`;
         }
       }).join('');
-      document.getElementById('tocList').innerHTML = html;
+      
+      document.getElementById('tocList').innerHTML = html || '<div style="padding:20px;text-align:center;color:var(--text-muted);">ഉള്ളടക്കം ലഭ്യമല്ല</div>';
     }
 
     function drillTOC(indexInCurrentList) {
       let currentLevel = tocPath[tocPath.length - 1];
       let node = currentLevel.nodes[indexInCurrentList];
       if (node.children && node.children.length > 0) {
-        let title = node.type === 'part' ? `📖 ${node.title}` : `📑 ${node.title}`;
+        let title = node.type === 'part' ? `📖 ${node.title}` : 
+                    node.type === 'h1' ? `📑 ${node.title}` : 
+                    node.type === 'h2' ? `📌 ${node.title}` : node.title;
         tocPath.push({ title: title, nodes: node.children });
         renderTOCLevel();
       }
@@ -1282,11 +1664,36 @@
       STATE.currentPage = index;
       STATE.charOffset = 0;
       saveState();
-      renderPage();
-      if (STATE.playing && PLAY_STATE.bookId === STATE.currentBookId) {
+      renderAllPages();
+      if(STATE.playing && PLAY_STATE.bookId === STATE.currentBookId) {
         PLAY_STATE.page = index;
         PLAY_STATE.charOffset = 0;
         playAudioLine();
+      }
+    }
+
+    // ================================================================
+    // MEDIA SESSION
+    // ================================================================
+    function setupMediaSession() {
+      if('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', togglePlay);
+        navigator.mediaSession.setActionHandler('pause', togglePlay);
+        navigator.mediaSession.setActionHandler('nexttrack', () => { if(STATE.playing) changePage(1); });
+        navigator.mediaSession.setActionHandler('previoustrack', () => { if(STATE.playing) changePage(-1); });
+        navigator.mediaSession.setActionHandler('stop', stopAudio);
+      }
+    }
+
+    function updateMediaSessionMeta() {
+      if('mediaSession' in navigator && PLAY_STATE.bookId) {
+        let activeBookMeta = STATE.books.find(b => b.id === PLAY_STATE.bookId);
+        let b = PLAY_STATE.data[PLAY_STATE.page];
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: activeBookMeta ? activeBookMeta.title : 'Digital Library',
+          artist: `ഭാഗം ${b?.part || ''} - പേജ് ${b?.page || ''}`,
+          album: 'Adventure Premium Sandbox'
+        });
       }
     }
 
@@ -1304,48 +1711,20 @@
     }
 
     function updateBookmarkUI() {
-      if (!STATE.currentBookId) return;
+      if(!STATE.currentBookId) return;
       const key = STATE.currentBookId + '_bookmarks';
       const bookmarks = JSON.parse(localStorage.getItem(key) || '[]');
       document.getElementById('readerBookmark').classList.toggle('active-bm', bookmarks.includes(STATE.currentPage));
     }
 
     // ================================================================
-    // MEDIA SESSION
-    // ================================================================
-    function setupMediaSession() {
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.setActionHandler('play', togglePlay);
-        navigator.mediaSession.setActionHandler('pause', togglePlay);
-        navigator.mediaSession.setActionHandler('nexttrack', () => { if (STATE.playing) changePage(1); });
-        navigator.mediaSession.setActionHandler('previoustrack', () => { if (STATE.playing) changePage(-1); });
-        navigator.mediaSession.setActionHandler('stop', stopAudio);
-      }
-    }
-
-    function updateMediaSessionMeta() {
-      if ('mediaSession' in navigator && PLAY_STATE.bookId) {
-        let activeBookMeta = STATE.books.find(b => b.id === PLAY_STATE.bookId);
-        let b = PLAY_STATE.data[PLAY_STATE.page];
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: activeBookMeta ? activeBookMeta.title : 'Digital Library',
-          artist: `ഭാഗം ${b?.part || ''} - പേജ് ${b?.page || ''}`,
-          album: 'Adventure Premium Sandbox'
-        });
-      }
-    }
-
-    // ================================================================
     // MODALS & SETTINGS
     // ================================================================
-    function openModal(id) {
-      document.getElementById('modalOverlay').classList.add('show');
-      document.getElementById(id).classList.add('show');
-    }
-    function closeModal() {
-      document.getElementById('modalOverlay').classList.remove('show');
-      document.querySelectorAll('.modal-box').forEach(el => el.classList.remove('show'));
-    }
+    function openImport() { openModal('importModal'); }
+    function openSettings() { openModal('settingsModal'); }
+    function openModal(id) { document.getElementById('modalOverlay').classList.add('show'); document.getElementById(id).classList.add('show'); }
+    function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); document.querySelectorAll('.modal-box').forEach(el => el.classList.remove('show')); }
+    function goHome() { closeReader(); }
 
     function setTheme(theme) {
       STATE.theme = theme;
@@ -1355,11 +1734,56 @@
       document.getElementById('th-' + theme).classList.add('active');
     }
 
+    function applyFontSize() {
+      const size = document.getElementById('optFontSize').value;
+      document.documentElement.style.setProperty('--font-scale', size + 'px');
+      localStorage.setItem('m_rb_fsize', size);
+      renderAllPages();
+    }
+    
+    function applyFonts() {
+      const fontMl = document.getElementById('optFontMl').value;
+      const fontAr = document.getElementById('optFontAr').value;
+      const fontEn = document.getElementById('optFontEn').value;
+      
+      document.documentElement.style.setProperty('--font-ml', fontMl);
+      document.documentElement.style.setProperty('--font-ar', fontAr);
+      document.documentElement.style.setProperty('--font-en', fontEn);
+      
+      localStorage.setItem('pref_font_ml', fontMl);
+      localStorage.setItem('pref_font_ar', fontAr);
+      localStorage.setItem('pref_font_en', fontEn);
+    }
+
     function loadPreferences() {
       setTheme(localStorage.getItem('m_rb_theme') || 'light');
-      STATE.showAr = true;
-      STATE.showMl = true;
-      STATE.showEn = true;
+      document.getElementById('optFontSize').value = localStorage.getItem('m_rb_fsize') || '18';
+      
+      let fMl = localStorage.getItem('pref_font_ml') || "'Manjari', sans-serif";
+      let fAr = localStorage.getItem('pref_font_ar') || "'Amiri', serif";
+      let fEn = localStorage.getItem('pref_font_en') || "sans-serif";
+      
+      if(document.getElementById('optFontMl')) document.getElementById('optFontMl').value = fMl;
+      if(document.getElementById('optFontAr')) document.getElementById('optFontAr').value = fAr;
+      if(document.getElementById('optFontEn')) document.getElementById('optFontEn').value = fEn;
+      
+      applyFonts();
+      applyFontSize();
+      STATE.showAr = true; STATE.showMl = true; STATE.showEn = true;
+    }
+
+    function renderAllViews() {
+      STATE.showAr = document.getElementById('optShowAr').checked;
+      STATE.showMl = document.getElementById('optShowMl').checked;
+      STATE.showEn = document.getElementById('optShowEn').checked;
+      renderAllPages();
+    }
+
+    function toggleSearch() { document.getElementById('searchBar').classList.toggle('show'); }
+    
+    function searchBooks(q) {
+      let filtered = STATE.books.filter(b => b.title.toLowerCase().includes(q.toLowerCase()) || (b.titleMl && b.titleMl.includes(q)));
+      renderBooks(filtered);
     }
   </script>
 </body>
